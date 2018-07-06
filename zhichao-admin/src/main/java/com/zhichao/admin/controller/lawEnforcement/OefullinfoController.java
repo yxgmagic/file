@@ -7,34 +7,30 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.zhichao.common.constants.SystemConstants;
-import com.zhichao.common.exception.BusinessException;
-import com.zhichao.service.detecManage.ILscinfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.zhichao.beans.guns.Dict;
+import com.zhichao.beans.guns.Oefullinfo;
+import com.zhichao.common.constants.SystemConstants;
+import com.zhichao.common.exception.BusinessException;
+import com.zhichao.core.base.controller.BaseController;
 import com.zhichao.service.common.constant.factory.PageFactory;
-import com.zhichao.common.util.YUtil;
 import com.zhichao.service.core.log.LogObjectHolder;
 import com.zhichao.service.core.util.ParaUtil;
+import com.zhichao.service.detecManage.ILscinfoService;
 import com.zhichao.service.lawEnforcement.IOefullinfoService;
-import com.zhichao.dal.siteRegistration.FixedsiteDao;
-import com.zhichao.beans.guns.Dict;
-import com.zhichao.beans.guns.Fixedsite;
-import com.zhichao.beans.guns.Lscinfo;
-import com.zhichao.beans.guns.Oefullinfo;
-import com.zhichao.core.base.controller.BaseController;
-import com.zhichao.dal.mapper.BOseinfoMapper;
-import com.zhichao.dal.mapper.BsOsesiteMapper;
-import com.zhichao.dal.mapper.LscinfoMapper;
-import com.zhichao.dal.mapper.VehicleMapper;
 
 /**
  * 立案办理控制器
@@ -273,14 +269,7 @@ public class OefullinfoController extends BaseController {
     public String slendMsgPage(){
         return PREFIX + "sendMsg.html";
     }
-    /**
-     * 跳转到短信发送页面
-     * @return
-     */
-    @RequestMapping("carImages")
-    public String carImages(){
-        return PREFIX + "car_images.html";
-    }
+    
     /**----------------------------------------------页面跳转------------------------------------------------------------------------*/
 
 
@@ -342,7 +331,7 @@ public class OefullinfoController extends BaseController {
     }
     /**
      * 跳转到案件信息<br/>
-     * 这个可能会要调整,暂时只有精检站(固定治超站)和非现场的
+     * 暂时只有精检站(固定治超站)和非现场的
      */
     @RequestMapping("/oefullinfo_info/{oefullinfoId}/{caseType}")
     public String oefullinfoInfo(@PathVariable Integer oefullinfoId, @PathVariable String caseType, Model model) {
