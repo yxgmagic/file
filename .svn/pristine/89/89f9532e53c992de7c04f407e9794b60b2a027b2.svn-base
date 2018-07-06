@@ -1,0 +1,192 @@
+@layout("/common/_container.html"){
+<style>
+    .line-btn {
+        display: inline-block;
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        color: #ffffff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        background-color: #009688;
+    }
+</style>
+<div>
+    <div id="container" style="width:960px; height:480px"></div>
+    <div>
+        <button class="layui-btn layui-btn-sm" id="step1">选点</button>
+        <button class="layui-btn layui-btn-sm layui-btn-disabled" id="step2" disabled="disabled">生成折线</button>
+        <button class="layui-btn layui-btn-sm layui-btn-disabled" id="step3" disabled="disabled">调整路线</button>
+        <button class="layui-btn layui-btn-sm layui-btn-disabled" id="step4" disabled="disabled">生成路线</button>
+        <button class="layui-btn layui-btn-sm layui-btn-disabled" id="step5" disabled="disabled">确定</button>
+    </div>
+</div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.4&key=07d90f1910cb06705d375b35a38f6155&plugin=AMap.Geocoder,AMap.CircleEditor,AMap.PolyEditor"></script>
+<script src="//webapi.amap.com/ui/1.0/main.js"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+        zoom: 10,
+        center: [116.39, 39.9]
+    });
+    var line = [];
+    var polyline;
+    var Line;
+    var markerArr = [];
+    var pathSimplifierIns;
+    var PathSimplifiers = null;
+    
+    // 选点
+    $('#step1').bind("click", function () {
+
+        if ($('#step1')[0].innerText === '选点') {
+            map.on('click', clickEvent);
+            $('#step1')[0].innerText = '重新选点'
+            $('#step2').removeClass('layui-btn-disabled')
+            $('#step2').removeAttr('disabled')
+        } else {
+            Feng.GetFrame('/gismonitor/getLine').frameElement.contentWindow.location.reload(true);
+        }
+
+    });
+    // 生成折线
+    $('#step2').bind("click", function () {
+        // 注销点击地图添加marker的事件
+        map.off('click', clickEvent);
+        map.remove(markerArr);
+        markerArr = [];
+        polyline = new AMap.Polyline({
+            path: line,
+            strokeColor: "#3366FF", //线颜色
+            strokeOpacity: 1,       //线透明度
+            strokeWeight: 5,
+            strokeStyle: "solid",
+            strokeDasharray: [10, 5],
+            draggable: true
+        });
+        Line = new AMap.PolyEditor(map, polyline);
+        polyline.setMap(map);
+
+        $('#step3').removeClass('layui-btn-disabled')
+        $('#step3').removeAttr('disabled')
+        $('#step2').addClass('layui-btn-disabled')
+        $('#step2').attr('disabled', 'disabled')
+    });
+    // 调整路线
+    $('#step3').bind('click', function () {
+//        console.log('step3');
+        Line.open();
+
+        $('#step4').removeClass('layui-btn-disabled')
+        $('#step4').removeAttr('disabled')
+        $('#step3').addClass('layui-btn-disabled')
+        $('#step3').attr('disabled', 'disabled')
+    });
+    // 生成路线
+    $('#step4').bind('click', function () {
+        try{
+            AMapUI.load(['ui/misc/PathSimplifier'], function (PathSimplifier) {
+                if (!PathSimplifier.supportCanvas) {
+                    alert('当前环境不支持 Canvas！');
+                    return;
+                }
+                //启动页面
+                initPage(PathSimplifier);
+                rePathSimplifier(PathSimplifier);
+            });
+        } catch (e) {
+            Feng.GetFrame('/gismonitor/getLine').frameElement.contentWindow.location.reload(true);
+        }
+
+        $('#step5').removeClass('layui-btn-disabled')
+        $('#step5').removeAttr('disabled')
+        $('#step4').addClass('layui-btn-disabled')
+        $('#step4').attr('disabled', 'disabled')
+    });
+
+    $('#step5').bind('click', function () {
+        var ifr = Feng.GetFrame('/gistest')
+        ifr.$('#test').val(JSON.stringify(setLineData()));
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+
+    });
+
+
+    // 点击地图添加marker事件
+    function clickEvent(e) {
+        var lnglatXY = [e.lnglat.lng, e.lnglat.lat];
+        line.push(lnglatXY);
+        regeocoder(lnglatXY);
+    }
+    function regeocoder(lnglatXY){
+        var geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+        });
+        geocoder.getAddress(lnglatXY, function (status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                geocoder_CallBack(result);
+            }
+        });
+        var marker = new AMap.Marker({
+            map: map,
+            position: lnglatXY
+        });
+        markerArr.push(marker);
+    }
+    function geocoder_CallBack(data) {
+//        console.log(data)
+        var address = data.regeocode.formattedAddress; //返回地址描述
+    }
+
+    function initPage(PathSimplifier) {
+        PathSimplifiers = PathSimplifier
+        Line.close();
+        pathSimplifierIns = new PathSimplifier({
+            zIndex: 100,
+            map: map,
+            getPath: function (pathData, pathIndex) {
+                return pathData.path;
+            },
+            getHoverTitle: function (pathData, pathIndex, pointIndex) {
+                if (pointIndex >= 0) {
+                    return pathData.name + '，点:' + pointIndex + '/' + pathData.path.length;
+                }
+                return pathData.name + '，点数量' + pathData.path.length;
+            },
+            renderOptions: {
+                pathLineStyle: {
+                    strokeStyle: 'red',
+                    lineWidth: 8,
+                    dirArrowStyle: true
+                }
+            }
+        });
+        var data = setLineData();
+        pathSimplifierIns.setData([{
+            name: '路线',
+            path: data
+        }]);
+        map.remove(polyline);
+    }
+    
+    function setLineData() {
+        var polyData = [];
+        for (var i = 0; i < polyline.getPath().length; i++){
+            polyData[i] = [polyline.getPath()[i].lng, polyline.getPath()[i].lat]
+        }
+//        console.log(polyData)
+        return polyData;
+    }
+
+    function rePathSimplifier(PathSimplifier) {
+        return PathSimplifier
+    }
+</script>
+
+@}

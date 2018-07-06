@@ -1,0 +1,41 @@
+@layout("/common/_container.html"){
+<div class="row">
+	
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>省级信息管理</h5>
+            </div>
+            <div class="ibox-content">
+            	<div class="row row-lg">
+                    <div class="col-sm-12">
+                        <form class="form-inline Validator" data-toggle="validator" role="form">
+					  		<div class="form-group col-sm-5" style="text-align:right">
+					    		<label for="areaName">名称</label>
+					    		<input type="text" class="form-control" id="areaName"  style="width:200px">
+					  		</div>
+					  		<div class="form-group col-sm-5" style="text-align:right">
+					    		<label for="areaType">行政区域类别</label>
+					    		<input type="text" class="form-control" id="areaType" value="省级行政区" disabled style="width:200px">
+					  		</div>
+					  		<div class="form-group col-sm-5" style="text-align:right;margin-top:15px;">
+					    		<label for="areaNo">行政代码</label>
+					    		<input type="text" class="form-control" id="areaNo" style="width:200px">
+					  		</div>
+					  		<div class="form-group col-sm-5" style="text-align:right;margin-top:15px;">
+						  		<label for="areaCode">行政字母码</label>
+					    		<input type="text" class="form-control" id="areaCode" style="width:200px">
+					  		</div>
+					  		<div class="form-group col-sm-12" style="text-align:center">
+							    <button type="button" class="yice_btn_defulat" id="btnSubmit">确认修改</button>
+						  	</div>
+						</form>
+                   	</div>
+				</div>
+            </div>
+        </div>
+	</div>
+
+</div>
+<script src="${ctxPath}/static/modular/platformConfig/area/area.js"></script>
+@}

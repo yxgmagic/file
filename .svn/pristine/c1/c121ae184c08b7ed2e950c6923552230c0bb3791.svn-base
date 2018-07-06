@@ -1,0 +1,97 @@
+﻿@layout("/common/_container.html"){
+
+<!--
+	树形选择框的样式
+-->
+<style>
+	#idStationStree {
+		position: absolute;
+		border:1px solid #ccc;
+		max-height: 280px;
+		width: 90%;
+		background-color: #FEFEFE;
+		z-index: 20;
+		border-radius: 5px;
+		display: none;
+	}
+</style>
+
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <form class="form-horizontal" data-toggle="validator" id="idCargoHandlingForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="withholdno" name="暂扣单号" value="${item.withholdno}"  />
+                             
+                                                  
+                            <div class="form-group">
+                                <label for="fixedsitename" class="col-sm-3 control-label">检测站点</label>
+                                <div class="col-sm-9">
+                                    <input id="fixedsitename" name="fixedsitename" class="form-control" 
+                                     value="${item.fixedsitename}" readonly="readonly">
+                                    <input id="stationid" name="stationid" class="form-control" value="${item.stationid}" type="hidden"/>
+                                    <div id="idStationStree">
+			                        </div>
+                                </div>
+                            </div> 
+                            
+                            <!-- <#input id="stationid" name="检测站点" value="${item.fixedsitename}"  /> -->
+                            
+                            <#input id="vehicleid" name="车牌号码" value="${item.vehicleid}"  />
+                            <div class="form-group">
+                                <label for="unloadtimeString" class="col-sm-3 control-label">卸货日期</label>
+                                <div class="col-sm-9">
+                                    <input id="unloadtimeString" name="unloadtimeString" class="form-control" 
+                                    onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" value="${item.unloadtimeString}">
+                                </div>
+                            </div>
+                            
+							<div class="form-group">
+                                <label for="ulloadname" class="col-sm-3 control-label">卸货场</label>
+                                <div class="col-sm-9">
+                                    <input id="ulloadname" name="ulloadname" class="form-control" value="${item.ulloadname}" >
+                                    <input id="ulloadcode" name="ulloadcode" class="form-control" value="${item.ulloadcode}" type="hidden">
+                                </div>
+                            </div>                            
+                            
+
+                            <#input id="carowner" name="车辆联系人" value="${item.carowner}" />
+                            <#input id="carownertel" name="车辆联系方式" value="${item.carownertel}"  />
+                </div>
+
+                <div class="col-sm-6">
+                            
+                            <input type="hidden" id="caseno" value="${item.caseno}"/>
+                            
+                            <#input id="weightlimited" name="车货限重(kg)" value="${item.weightlimited}"  />
+                            <#input id="fctotalweight" name="卸货前总质量(kg)" value="${item.fctotalweight}" />
+                            <#input id="unloadweight" name="卸货重量(kg)" value="${item.unloadweight}"  />
+                            
+                            <div class="form-group">
+                                <label for="cargotype" class="col-sm-3 control-label">货物种类</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="cargotype" name="cargotype" dictName="itemName" dataStyle="btn" cssName="form-control" defaultSelected="${item.cargotype}"></#SelectDict>
+                                </div>
+                            </div>
+                            
+                            <#input id="rtnumber" name="道路运输证号" value="${item.rtnumber}"  />
+                            <#input id="cpqnumber" name="从业资格证号" value="${item.cpqnumber}"  />
+                            <#input id="corpname" name="车辆所属企业" value="${item.corpname}"  />
+                </div>
+            </div>
+	</form>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="CargoHandlingInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="CargoHandlingInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+		
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/lawEnforcement/cargoHandling/cargoHandling_info.js"></script>
+@}

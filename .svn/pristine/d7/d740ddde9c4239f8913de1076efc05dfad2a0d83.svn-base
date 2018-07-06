@@ -1,0 +1,134 @@
+﻿<div class="ibox float-e-margins">
+    @layout("/common/_container.html"){
+    <div class="ibox-content">
+        <div class="form-horizontal">
+        	<input type="hidden" id="id" value="${item.id}">
+		<div class="row row-bottom-20">
+			<div class="layui-carousel" id="photo" style="margin: auto">
+				<div carousel-item="" id="img_box">
+				</div>
+		    </div>
+		</div>
+
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>检测单号</td>
+                        <td>
+                        	<input value="${item.checkno}" class="layui-input" readonly="readonly"/>
+                        </td>
+                        <td>车牌号</td>
+                        <td>
+                        	<input id="vehicleid" value="${item.vehicleid}" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>超限量(kg)</td>
+                        <td>
+                        	<input id="overlimited" value="${item.overlimited}" class="layui-input"/>
+                        </td>
+                        <td>超长量(mm)</td>
+                        <td>
+                            <input id="overlength" value="${item.overlength}" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>超宽量(mm)</td>
+                        <td>
+                        	<input id="overwidth" value="${item.overwidth}" class="layui-input"/>
+                        </td>
+                        <td>超高量(mm)</td>
+                        <td>
+                            <input id="overheight" value="${item.overheight}" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>轴数</td>
+                        <td>
+                            <input id="axlesum" value="${item.axlesum}" class="layui-input"/>
+                        </td>
+						<td>车货限重(kg)</td>
+	                   	<td>
+	                   		<input id="weightlimited" value="${item.weightlimited}" class="layui-input"/>
+	                   	</td>
+					</tr>
+					<tr>
+                        <td>初检重量(kg)</td>
+                        <td>
+                            <input id="fctotalweight" value="${item.fctotalweight}" class="layui-input"/>
+                        </td>
+
+	                   	<td>复检总质量(kg)</td>
+						<td>
+							<input id="rctotalweight"  value="${item.rctotalweight}" class="layui-input"/>
+						</td>
+					</tr>
+                    
+                    <tr>
+                        <td>初检时间</td>
+						<td>
+							<input readonly="readonly" value="${timeMap.ftimeString}" class="layui-input"/>
+						</td>
+						<td>复检时间</td>
+						<td>
+							<input id="rtimeString" readonly="readonly" value="${timeMap.rtimeString}" class="layui-input"/>
+						</td>
+                    </tr>
+                </table>
+					
+            </div>
+            
+        </div>
+    </div>
+    
+    
+    <div class="row btn-group-m-t">
+        <div class="col-sm-12 text-center">
+        	<button class="layui-btn" id="idGetLoadometerData">从地磅获取数据</button>
+        	<button class="layui-btn" id="idPrintPreview">打印榜单</button>
+            <button class="layui-btn" id="saveBtn" onclick="LscinfoInfoDlg.editSubmit()">保存</button>
+            <button class="layui-btn layui-btn-primary cancel">取消</button>
+        </div>
+    </div>
+
+</div>
+
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+	<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+
+<script type="text/javascript">
+
+	$('.cancel').on('click', function () {
+            Module.Box.CloseDialog()
+        });
+        
+
+
+	$(function () {
+	    // var rctotalweightValue = "${item.rctotalweight}";
+        // if(rctotalweightValue != 0) {
+        //     $("#idGetLoadometerData").hide();
+        // }
+        // if($("#rtimeString").val().length < 1) {
+        //     $("#idPrintPreview").hide();
+        // }
+
+        var prostatus = "${item.prostatus}";
+        if(prostatus > 0) {
+            $("#idGetLoadometerData").hide();
+            $("#saveBtn").hide();
+        }
+    });
+</script>
+
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo_info.js"></script>
+@}

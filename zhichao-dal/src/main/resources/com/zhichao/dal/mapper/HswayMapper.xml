@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.HswayMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Hsway">
+		<id column="id" property="id" />
+		<result column="hswayname" property="hswayname" />
+		<result column="address" property="address" />
+		<result column="devicefirm" property="devicefirm" />
+		<result column="isnet" property="isnet" />
+		<result column="isdisting" property="isdisting" />
+		<result column="roadwidth" property="roadwidth" />
+		<result column="setbegindate" property="setbegindate" />
+		<result column="maxweight" property="maxweight" />
+		<result column="cameras" property="cameras" />
+		<result column="camerabrand" property="camerabrand" />
+		<result column="checkdirection" property="checkdirection" />
+		<result column="areacode" property="areacode" />
+		<result column="roadcode" property="roadcode" />
+		<result column="lng" property="lng" />
+		<result column="lat" property="lat" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hswayname, address, devicefirm, isnet,case isnet WHEN 1 THEN '是' WHEN 0 THEN '否' end  as isnetName
+		,isdisting,case isdisting when 1 then '是' when 0 then '否' end  as isdistingName
+		,roadwidth, setbegindate, maxweight, cameras, camerabrand, checkdirection
+		, areacode,(select areaname from bs_area where areacode=b.areacode LIMIT 0,1) as areaname
+		, roadcode,(select roadname from bs_road where roadcode=b.roadcode LIMIT 0,1) as roadname
+		,lng,lat
+		from bs_hsway b
+    </sql>
+
+	<select id="findList" resultType="map">
+		select * from (select
+		<include refid="Base_Column_List" />
+		) tab where 1=1
+		<if test="hsRoadName != null and hsRoadName != ''">
+			and tab.roadname like CONCAT('%',#{hsRoadName},'%')
+		</if>
+		<if test="hsWayName != null and hsWayName != ''">
+			and tab.hswayname like CONCAT('%',#{hsWayName},'%')
+		</if>
+	</select>
+</mapper>

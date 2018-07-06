@@ -1,0 +1,321 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.zhichao.parent</groupId>
+	<artifactId>zhichao</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<name>${project.artifactId}</name>
+	<packaging>pom</packaging>
+
+	<modules>
+		<!-- 省市县管理平台 -->
+		<module>zhichao-admin</module>
+		<!-- admin核心代码 -->
+		<module>zhichao-core</module>
+		<!-- 预留手机端接口 -->
+		<module>zhichao-rest</module>
+		<!-- admin代码生成 -->
+		<module>zhichao-generator</module>
+
+		<!-- 第二版模块拆分 -->
+		<!-- 工具模块 -->
+		<module>zhichao-common</module>
+		<!-- 实体模块 -->
+		<module>zhichao-beans</module>
+		<!-- 数据交互模块 -->
+		<module>zhichao-dal</module>
+		<!-- 服务模块 -->
+		<module>zhichao-service</module>
+		<!-- 任务中心 -->
+		<module>zhichao-jobCenter</module>
+		<!-- 消息中心 -->
+		<module>zhichao-msgCenter</module>
+		<!-- 站级平台 -->
+		<module>zhichao-web</module>
+	</modules>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.9.RELEASE</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<zhichao.version>1.0.0-SNAPSHOT</zhichao.version>
+		<mybatisplus-spring-boot-starter.version>1.0.5</mybatisplus-spring-boot-starter.version>
+		<shiro.version>1.4.0</shiro.version>
+		<mybatis-plus.version>2.1.8</mybatis-plus.version>
+		<fastjson.version>1.2.44</fastjson.version>
+		<commons.io.version>2.5</commons.io.version>
+		<velocity.version>1.7</velocity.version>
+		<kaptcha.version>2.3.2</kaptcha.version>
+		<ehcache.version>3.3.1</ehcache.version>
+		<zxing.version>3.2.1</zxing.version>
+		<druid.version>1.1.6</druid.version>
+		<beetl.version>2.7.15</beetl.version>
+		<swagger.version>2.2.2</swagger.version>
+		<commons-lang3.version>3.6</commons-lang3.version>
+		<ehcache.core.version>2.6.11</ehcache.core.version>
+		<mysql-connector-java.version>5.1.38</mysql-connector-java.version>
+		<jwt.version>0.7.0</jwt.version>
+		<flowable.version>6.2.0</flowable.version>
+		<hutool.version>4.0.0</hutool.version>
+		<kotlin.version>1.1.2</kotlin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!--子模块 -->
+			<dependency>
+				<groupId>com.zhichao.generator</groupId>
+				<artifactId>zhichao-generator</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.core</groupId>
+				<artifactId>zhichao-core</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.beans</groupId>
+				<artifactId>zhichao-beans</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.dal</groupId>
+				<artifactId>zhichao-dal</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.common</groupId>
+				<artifactId>zhichao-common</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.service</groupId>
+				<artifactId>zhichao-service</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.zhichao.jobCenter</groupId>
+				<artifactId>zhichao-jobCenter</artifactId>
+				<version>${zhichao.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.flowable</groupId>
+				<artifactId>flowable-spring-boot-starter-basic</artifactId>
+				<version>${flowable.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.5.9.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatisplus-spring-boot-starter</artifactId>
+				<version>${mybatisplus-spring-boot-starter.version}</version>
+			</dependency>
+			<!--shiro依赖 -->
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-spring</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-ehcache</artifactId>
+				<version>${shiro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql-connector-java.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons.io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.penggle</groupId>
+				<artifactId>kaptcha</artifactId>
+				<version>${kaptcha.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ehcache</groupId>
+				<artifactId>ehcache</artifactId>
+				<version>${ehcache.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>core</artifactId>
+				<version>${zxing.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ibeetl</groupId>
+				<artifactId>beetl</artifactId>
+				<version>${beetl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-core</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.ehcache</groupId>
+				<artifactId>ehcache-core</artifactId>
+				<version>${ehcache.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>${jwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-core</artifactId>
+				<version>${hutool.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-http</artifactId>
+				<version>${hutool.version}</version>
+			</dependency>
+			<!--Kotlin start-->
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-stdlib-jre8</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-reflect</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-kotlin</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<!--Kotlin end-->
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+
+		<!--为kotlin指定源代码路径-->
+		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>1.5.9.RELEASE</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中 -->
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!--kotlin的编译插件-->
+				<plugin>
+					<artifactId>kotlin-maven-plugin</artifactId>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<version>${kotlin.version}</version>
+					<configuration>
+						<compilerPlugins>
+							<plugin>spring</plugin>
+						</compilerPlugins>
+						<jvmTarget>1.8</jvmTarget>
+					</configuration>
+					<executions>
+						<execution>
+							<id>compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>test-compile</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.jetbrains.kotlin</groupId>
+							<artifactId>kotlin-maven-allopen</artifactId>
+							<version>${kotlin.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+
+</project>

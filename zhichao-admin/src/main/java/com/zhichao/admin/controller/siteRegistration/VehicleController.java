@@ -1,0 +1,133 @@
+package com.zhichao.admin.controller.siteRegistration;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.siteRegistration.IVehicleService;
+import com.zhichao.beans.guns.Vehicle;
+import com.zhichao.core.base.controller.BaseController;
+
+/**
+ * 源头企业车辆管理控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-01-02 19:59:39
+ */
+@Controller
+@RequestMapping("/vehicle")
+public class VehicleController extends BaseController {
+
+    private String PREFIX = "/siteRegistration/vehicle/";
+
+    @Autowired
+    private IVehicleService vehicleService;
+
+    /**
+     * 跳转到源头企业车辆管理首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "vehicle.html";
+    }
+
+    /**
+     * 跳转到添加源头企业车辆管理
+     */
+    @RequestMapping("/vehicle_add")
+    public String vehicleAdd() {
+        return PREFIX + "vehicle_add.html";
+    }
+
+    /**
+     * 跳转到修改源头企业车辆管理
+     */
+    @RequestMapping("/vehicle_update/{vehicleId}")
+    public String vehicleUpdate(@PathVariable Integer vehicleId, Model model) {
+        Vehicle vehicle = vehicleService.selectById(vehicleId);
+        model.addAttribute("item",vehicle);
+        LogObjectHolder.me().set(vehicle);
+        return PREFIX + "vehicle_edit.html";
+    }
+
+    /**
+     * 获取源头企业车辆管理列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(
+    		@RequestParam(value = "vehicleid", required = false)String vehicleid,
+    		@RequestParam(value = "owername", required = false)String owername,
+    		@RequestParam(value = "bizcertid", required = false)String bizcertid,
+    		@RequestParam(value = "corpname", required = false)String corpname,
+    		@RequestParam(value = "owertel", required = false)String owertel) {
+    	
+    	List<Vehicle> vehicle = vehicleService.queryVehicleByCondition(vehicleid,owername,bizcertid,corpname,owertel);
+        return vehicle;
+    }
+
+    /**
+     * 车牌号唯一性校验
+     */
+    @RequestMapping(value = "/vehicleidIsExist")
+    public @ResponseBody Object vehicleidIsExist(
+    		@RequestParam(value = "vehicleid", required = false)String vehicleid,
+    		@RequestParam(value = "id", required = false)Integer id) {
+    	
+        return vehicleService.vehicleidIsExist(id, vehicleid);
+    }
+    
+    /**
+     * 新增源头企业车辆管理
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(Vehicle vehicle) {
+        vehicleService.insert(vehicle);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除源头企业车辆管理
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam Integer vehicleId) {
+        vehicleService.deleteById(vehicleId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改源头企业车辆管理
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(Vehicle vehicle) {
+        vehicleService.updateById(vehicle);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 源头企业车辆管理详情
+     */
+    @RequestMapping(value = "/detail/{vehicleId}")
+    @ResponseBody
+    public Object detail(@PathVariable("vehicleId") Integer vehicleId) {
+        return vehicleService.selectById(vehicleId);
+    }
+    
+    /**
+     * 企业车辆管理时选择企业时打开选择企业弹框
+     */
+    @RequestMapping(value = "/vehiclePageSelCorp")
+    public String vehiclePageSelCorp() {
+    	return "/siteRegistration/vehicle/" + "bsCorp.html";
+    }
+}

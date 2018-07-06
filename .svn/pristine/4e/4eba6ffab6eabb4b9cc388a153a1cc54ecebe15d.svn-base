@@ -1,0 +1,32 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="paracode" name="参数别名" underline="true"/>
+                            <#input id="paraname" name="参数名称"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="paravalue" name="参数值" underline="true"/>
+                            <#input id="ramark" name="参数描述" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ParaListInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ParaListInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/paraList/paraList_info.js"></script>
+@}

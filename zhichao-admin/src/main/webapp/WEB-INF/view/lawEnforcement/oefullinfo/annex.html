@@ -1,0 +1,206 @@
+@layout("/common/_container.html"){
+<div class="row" id="annex_box">
+
+    <div class="row text-center" id="annex_list">
+        <div class="col-sm-12">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="100" align="center">
+                    <col width="350" align="center">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>名称</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="lawdoc_table_tbody">
+                <!--附件列表-->
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 上传附件按钮 -->
+    <div class="col-sm-12 text-center row-margin-tb20 hidden">
+        <input type="file" id="file" style="display: none;">
+        <label for="file" id="btn_upload_annex" class="btn btn-success">上传附件</label>
+    </div>
+</div>
+
+<script>
+
+    //获取上个页面的值
+    var msg = parent.msg;
+    var oeid;
+    //控制页面附件序号
+    var annexIndex = 1;
+
+    $(function () {
+        if (msg.flag){
+            $('.row-margin-tb20').removeClass('hidden');
+            oeid = Yang.Util.AJAX('/oefullinfo/getOeidByCheckno',[{'name':'checkno','data':msg.checkno}]);
+        }else {
+            oeid = msg.checkno;
+        }
+
+        if (oeid === -1 || oeid === -2){
+            Feng.info('无法访问,原因[缺少执法序号]!')
+            Yang.Tools.closeCurrentWindow()
+        }
+        showAnnexList();
+    });
+
+    /**
+     * 查询附件列表
+     */
+    function showAnnexList() {
+        var result = Yang.Util.AJAX('/oefullinfo/getAllAnnexByOeid/' + oeid);
+        console.log("result = " + result);
+        $('#lawdoc_table_tbody').empty();
+        if (result.length > 0) {
+            for (var i = 0; i < result.length; i++) {
+                createAnnexTable(result[i].id, result[i].fileName, Feng.ctxPath + '/oefullinfo/downloadAnnex/' + result[i].id);
+            }
+            //附件列表创建完成后,及时将列表id恢复
+            annexIndex = 1;
+        }
+    }
+
+
+    //上传附件
+    $("#file").change(function() {
+
+        var index = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+
+        var file = document.getElementById('file').files[0];
+        var fileName = file.name;
+
+        if (Yang.Tools.checkFileFormat(fileName,'annex_suffix')){
+            var uploadResult = upload(file);
+            if (uploadResult !== -1){
+                if (uploadResult.code === 200){
+                    showAnnexList();
+                    Feng.success('附件上传成功')
+                }else {
+                    Feng.error(uploadResult.msg)
+                }
+            }else {
+                Feng.info('附件上传失败,请重试')
+            }
+        }else {
+            Feng.info('文件格式不被支持')
+        }
+
+        layer.close(index);
+    });
+    
+    function upload(file) {
+        //设置遮罩等待上传完成
+        var index = layer.load(1, {
+            shade: [0.1,'#cfcfcf'] //0.1透明度的白色背景
+        });
+
+        var result = -1;
+        var formData = new FormData();
+        formData.append("file",file);
+        formData.append("oeid",oeid);
+        $.ajax({
+            type : "POST",
+            url : Feng.ctxPath+"/oefullinfo/uploadAnnex",
+            data : formData,
+            async: false,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function(data) {
+                result = data;
+            },
+            error : function() {}
+        });
+
+        //删除图片遮罩
+        layer.close(index);
+        return result;
+    }
+
+    //生成表格
+    function createAnnexTable(id,fileName,url) {
+        $('#lawdoc_table_tbody').append("<tr>" +
+            "                    <td>"+ (annexIndex++) +"</td>" +
+            "                    <td><a target='_blank' title='点击下载' onclick='downloadAnnex(this)' value='"+url+"'>"+fileName+"</a></td>" +
+                "                    <td><button class='btn btn-xs btn-file' onclick='delAnnex("+id+")'>删除</button></td>" +
+            "                </tr>")
+    }
+
+    /**
+     * 无需打开新页面实现附件下载
+     */
+    function downloadAnnex(v) {
+
+        var index = layer.load(1, {
+            shade: [0.1, '#fff']
+        });
+
+        var time1 = setInterval(function () {
+            Yang.Tools.download(v.getAttribute('value'),[]);
+
+            layer.close(index);
+            clearInterval(time1);
+        }, 3);
+    }
+
+    /**
+     * 删除附件(删除附件与业务之间的对应关系)
+     */
+    function delAnnex(id) {
+        var oper = function () {
+            var ajax = new $ax(Feng.ctxPath + '/oefullinfo/delAnnex/'+id, function (data) {
+                Feng.success('已成功删除附件');
+                showAnnexList();
+            }, function () {
+                Feng.error('删除失败!');
+            });
+            ajax.start();
+        }
+        Feng.confirm('你确定删除附件吗?', oper);
+    }
+</script>
+@}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

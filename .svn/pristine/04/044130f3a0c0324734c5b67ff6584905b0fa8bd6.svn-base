@@ -1,0 +1,359 @@
+/**
+ * 初始化源头企业车辆管理详情对话框
+ */
+var VehicleInfoDlg = {
+		vehicleInfoData : {}
+};
+
+/**
+ * 清除数据
+ */
+VehicleInfoDlg.clearData = function() {
+	this.vehicleInfoData = {};
+}
+
+/**
+ * 设置对话框中的数据
+ *
+ * @param key 数据的名称
+ * @param val 数据的具体值
+ */
+VehicleInfoDlg.set = function(key, val) {
+	this.vehicleInfoData[key] = (typeof val == "undefined") ? $("#" + key).val() : val;
+	return this;
+}
+
+/**
+ * 设置对话框中的数据
+ *
+ * @param key 数据的名称
+ * @param val 数据的具体值
+ */
+VehicleInfoDlg.get = function(key) {
+	return $("#" + key).val();
+}
+
+/**
+ * 关闭此对话框
+ * parent.layer.close(window.parent.Vehicle.layerIndex);
+ */
+VehicleInfoDlg.close = function() {
+	var winOpen=Feng.GetFrame("/vehicle");
+	top.layer.close(winOpen.Vehicle.layerIndex);
+}
+
+/**
+ * 收集数据 //被ning魔改了一下
+ */
+VehicleInfoDlg.collectData = function() {
+	this
+	.set('id')
+	.set('vehicleid')
+	.set('vehicletype')
+	.set('corpcode')
+	.set('owneridtype')
+	.set('ownerid')
+	.set('owername')
+	.set('owertel')
+	.set('model')
+	.set('engineid')
+	.set('vin')
+	.set('bizcertid')
+	.set('ratedtotalweight')
+	.set('ratedloading')
+	.set('length')
+	.set('width')
+	.set('height')
+	.set('axlesum')
+	.set('markVehicle')
+	.set('curbQuality');
+}
+
+/**
+ * 提交添加
+ */
+VehicleInfoDlg.addSubmit = function() {
+
+	this.clearData();
+	this.collectData();
+
+	$('#vehicleForm').bootstrapValidator('validate');
+	var bootstrapValidator = $("#vehicleForm").data('bootstrapValidator');
+	bootstrapValidator.validate();
+
+	//验证信息正确性
+	if(bootstrapValidator.isValid()){
+		//提交信息
+		var ajax = new $ax(Feng.ctxPath + "/vehicle/add", function(data){
+			Feng.success("添加成功!");
+			
+			var winOpen=Feng.GetFrame("/vehicle");
+			winOpen.Vehicle.table.refresh();
+			top.layer.close(winOpen.Vehicle.layerIndex);
+			
+		},function(data){
+			Feng.error("添加失败!" + data.responseJSON.message + "!");
+		});
+		ajax.set(this.vehicleInfoData);
+		ajax.start();
+	}else{
+		return false;
+	}
+}
+
+/**
+ * 提交修改
+ */
+VehicleInfoDlg.editSubmit = function() {
+
+	this.clearData();
+	this.collectData();
+
+	$('#vehicleForm').bootstrapValidator('validate');
+	var bootstrapValidator = $("#vehicleForm").data('bootstrapValidator');
+	bootstrapValidator.validate();
+
+	//验证信息正确性
+	if(bootstrapValidator.isValid()){
+		//提交信息
+		var ajax = new $ax(Feng.ctxPath + "/vehicle/update", function(data){
+			Feng.success("修改成功!");
+			
+			var winOpen=Feng.GetFrame("/vehicle");
+			winOpen.Vehicle.table.refresh();
+			top.layer.close(winOpen.Vehicle.layerIndex);
+			
+		},function(data){
+			Feng.error("修改失败!" + data.responseJSON.message + "!");
+		});
+		ajax.set(this.vehicleInfoData);
+		ajax.start();
+	}else{
+		return false;
+	}
+}
+
+/**
+ * 点击添加源头企业
+ */
+$("#corp_code").click(function(){
+	
+	var index = layer.open({
+        type: 2,
+        title: '请选择源头企业',
+        area: ['900px', '400px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/vehicle/vehiclePageSelCorp'
+    });
+    this.layerIndex = index;
+	
+});
+
+
+
+$(function() {
+	
+	$('#vehicleForm').bootstrapValidator({
+		message: '这个值没有被验证',
+		feedbackIcons: {
+			valid: 'glyphicon glyphicon-ok',
+			validating: 'glyphicon glyphicon-refresh'
+		},
+		fields: {
+			vehicleid: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/,
+						message: '车牌号格式不合法'
+					},
+					callback: {
+						message: '该车牌号已存在',
+						callback: function (value, validator) {
+							var id = $("#id").val();
+							var vehicleid = $("#vehicleid").val().replace(/(^\s*)|(\s*$)/g, '');
+							var res = true;
+							if (vehicleid != null && vehicleid != '') {
+								$.ajax({
+									url: Feng.ctxPath + '/vehicle/vehicleidIsExist',
+									type: 'POST',
+									dataType: 'json',
+									async: false,
+									data: { "id": id, "vehicleid": vehicleid },
+									success: function (data) {
+										if (data != '0') {
+											res = false;
+										}
+									}
+								});
+							}
+							return res;
+						}
+					}
+				}
+			},
+			ownerid: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/,
+						message: '所有人证件号码不合法'
+					}
+				}
+			},
+			owername: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					}
+				}
+			},
+			owertel: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/,
+						message: '所有人联系方式格式不正确'
+					}
+				}
+			},
+			model: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'  //品牌型号
+					}
+				}
+			},
+			engineid: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'  //发动机号
+					}
+				}
+			},
+			corp_code: {
+				trigger:"change",
+				validators: {
+					notEmpty: {
+						message: '必须添加源头企业'  //源头企业
+					}
+				}
+			},
+			vin: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项' //车辆识别代码
+					}
+				}
+			},
+			bizcertid: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项' //道路运输证号
+					}
+				}
+			},
+			ratedtotalweight: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+						message: '总质量格式不正确'
+					}
+				}
+			},
+			ratedloading: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+						message: '核定载质量格式不正确'
+					}
+				}
+			},
+			length: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+						message: '车长格式不正确'
+					}
+				}
+			},
+			width: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+						message: '车宽格式不正确'
+					}
+				}
+			},
+			height: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+						message: '车高格式不正确'
+					}
+				}
+			},
+			axlesum: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'
+					},
+					regexp: {
+						regexp: /(^[1-9]\d*$)/,
+						message: '轴数必须为大于0的整数'
+					}
+				}
+			},
+            markVehicle: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'  //车辆所属标记
+					}
+				}
+			},
+            curbQuality: {
+				validators: {
+					notEmpty: {
+						message: '该项为必填项'  //整备质量
+					}
+				}
+			},
+			vehicletype: {
+				validators: {
+					notEmpty: {
+						message: '请选择车型'  //车型
+					}
+				}
+			},
+			owneridtype: {
+				validators: {
+					notEmpty: {
+						message: '请选择证件类型'  //证件类型
+					}
+				}
+			}
+		}
+	});
+});

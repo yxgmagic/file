@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.gisManagement.GISMonitorDao">
+
+	<!-- v2查询固定治超站坐标 -->
+	<select id="selFixedSite" resultType="map">
+		SELECT longitude, latitude, sitename
+		FROM bs_fixedsite
+	</select>
+	<!-- v2查询预检站坐标 -->
+	<select id="selPreSite" resultType="map">
+		SELECT longitude, latitude, sitename
+		FROM bs_presite
+	</select>
+	<!-- v2 查询源头企业检测站坐标 -->
+	<select id="selCrop" resultType="map">
+		SELECT corpname, longitude, latitude FROM bs_corp
+	</select>
+	<!-- v2 查询高速公路出入口坐标 -->
+	<select id="selHsway" resultType="map">
+		SELECT hswayname, lng as 'longitude', lat as 'latitude' FROM bs_hsway
+	</select>
+	<!-- v2 查询移动单兵坐标 -->
+	<select id="sellawMan" resultType="map">
+		SELECT lem_name, longitude, latitude FROM bs_law_enforce_man
+	</select>
+	<!-- v2 查询移动单兵执法车 -->
+	<select id="sellawCar" resultType="map">
+		SELECT vehicleid, longitude, latitude FROM bs_law_enforcecar
+	</select>
+
+
+
+
+
+	<!-- v2根据坐标查询固定站sitecode -->
+	<select id="selLnglatFixed" resultType="map">
+		SELECT
+		sitecode,sitename,manager,id
+		FROM
+		bs_fixedsite
+		WHERE
+		<if test="longitude != null and longitude != ''">
+			longitude = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND latitude = #{latitude}
+		</if>
+	</select>
+	<!-- v2根据坐标查询预检站sitecode -->
+	<select id="selLnglatPre" resultType="map">
+		SELECT
+		sitecode,sitename,manager,id
+		FROM
+		bs_presite
+		WHERE
+		<if test="longitude != null and longitude != ''">
+			longitude = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND latitude = #{latitude}
+		</if>
+	</select>
+	<!-- v2根据坐标查询源头企业corpcode -->
+	<select id="selLnglatCorp" resultType="map">
+		SELECT
+		corpcode,corpname,manager,id
+		FROM
+		bs_corp
+		WHERE
+		<if test="longitude != null and longitude != ''">
+			longitude = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND latitude = #{latitude}
+		</if>
+	</select>
+	<!-- v2根据坐标查询高速公路出入口 -->
+	<select id="selLnglatHsway" resultType="map">
+		SELECT
+		id, hswayname
+		FROM
+		bs_hsway
+		WHERE 1=1 AND
+		<if test="longitude != null and longitude != ''">
+			lng = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND lat = #{latitude}
+		</if>
+	</select>
+	<!-- v2根据坐标查询移动单兵 -->
+	<select id="selLnglatLawMan" resultType="map">
+		SELECT
+		id, lem_name, lem_num, lem_contact
+		FROM
+		bs_law_enforce_man
+		WHERE 1=1 AND
+		<if test="longitude != null and longitude != ''">
+			longitude = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND latitude = #{latitude}
+		</if>
+	</select>
+	<!-- v2根据坐标查询移动执法车 -->
+	<select id="selLnglatLawCar" resultType="map">
+		SELECT
+		id, vehicleid, vehicleno, manager
+		FROM
+		bs_law_enforcecar
+		WHERE 1=1 AND
+		<if test="longitude != null and longitude != ''">
+			longitude = #{longitude}
+		</if>
+		<if test="latitude != null and latitude != ''">
+			AND latitude = #{latitude}
+		</if>
+	</select>
+
+
+	<!-- v2固定站总车流量 -->
+	<select id="selFixedInfo" resultType="int">
+		select count(id)  from b_lscinfo WHERE stationid = #{stationid}
+		<if test="fctime != null and fctime != ''">
+			AND fctime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	<!-- v2预检站总车流量 -->
+	<select id="selPreInfo" resultType="int">
+		select count(id)  from b_hspinfo WHERE stationid = #{stationid}
+		<if test="hsptime != null and hsptime != ''">
+			AND hsptime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	<!-- v2源头企业总车流量 -->
+	<select id="selCorpInfo" resultType="int">
+		select count(id)  from b_corpinfo WHERE corpcode = #{corpcode}
+		<if test="corptime != null and corptime != ''">
+			AND corptime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+
+
+	<!-- v2精检站超限车辆总数 -->
+	<select id="getFixedOverCar" resultType="int">
+		SELECT
+		count(id) AS overCar,
+		stationid AS stationid
+		FROM
+		b_lscinfo
+		WHERE
+		prostatus > 0
+		AND stationid = #{stationid}
+		<if test="fctime != null and fctime != ''">
+			AND fctime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	<!-- v2预检站超限车辆总数 -->
+	<select id="getPreOverCar" resultType="int">
+		SELECT
+		count(id) AS overCar,
+		stationid AS stationid
+		FROM
+		b_hspinfo
+		WHERE
+		prostatus > 0
+		AND stationid = #{stationid}
+		<if test="hsptime != null and hsptime != ''">
+			AND hsptime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	<!-- v2源头企业超限车辆总数 -->
+	<select id="getCorpOverCar" resultType="int">
+		SELECT
+		count(id) AS overCar
+		FROM
+		b_corpinfo
+		WHERE
+		overlimited > 0
+		AND corpcode = #{corpcode}
+		<if test="corptime != null and corptime != ''">
+			AND corptime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+
+
+	<!-- v2精检站已处理超限车辆总数 -->
+	<select id="getFixedProcessed" resultType="int">
+		SELECT
+		count(id) AS processed,
+		stationid AS stationid
+		FROM
+		b_lscinfo
+		WHERE
+		prostatus > 1
+		AND stationid = #{stationid}
+		<if test="fctime != null and fctime != ''">
+			AND fctime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	<!-- v2预检站已处理超限车辆总数 -->
+	<select id="getPreProcessed" resultType="int">
+		SELECT
+		count(id) AS processed,
+		stationid AS stationid
+		FROM
+		b_hspinfo
+		WHERE
+		prostatus > 1
+		AND stationid = #{stationid}
+		<if test="hsptime != null and hsptime != ''">
+			AND hsptime BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+
+
+	<!-- v2 根据sitecoe查询精简站图片 -->
+	<select id="selImgFixed"  resultType="Image" parameterType="map">
+		SELECT a.img, a.imgext
+		from
+		bs_image a,
+		bs_image_entity b,
+		bs_fixedsite c
+		WHERE
+		c.id = b.entityid
+		AND b.imageid = a.id
+		AND b.validflag = '1'
+		<if test="sitecode != null and sitecode != ''">
+			AND sitecode = #{sitecode}
+		</if>
+	</select>
+
+
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+        bs_fixedsite.id, sitecode, sitename, sitelevel, longitude, latitude, bs_fixedsite.address, planarea, unloadarea, bs_fixedsite.areacode, roadcode, deptid, lawperson, lawpersontel, setbegindate, unloadcode, unloadperson, unloadpersontel, manager, managertel, approves, actuals, checks, contracts
+    </sql>
+
+	<select id="selectList" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+		from bs_fixedsite where 1=1
+		<if test="sitename != null and sitename != ''">
+			and sitename like CONCAT('%',#{sitename},'%')
+		</if>
+		<if test="longitude != null and longitude != ''">
+			and longitude like CONCAT('%',#{longitude},'%')
+		</if>
+		<if test="latitude != null and latitude != ''">
+			and latitude like CONCAT('%',#{latitude},'%')
+		</if>
+
+	</select>
+
+
+	<!-- ******************************* fixedsite ***************************************** -->
+	<sql id="Base_GIS_List">
+        bs_fixedsite.id, sitename, longitude, latitude,sitecode
+    </sql>
+	<select id="selectGISList" resultType="map">
+		select
+		<include refid="Base_GIS_List" />
+		from bs_fixedsite
+	</select>
+
+	<!-- ******************************* presite ***************************************** -->
+	<sql id="Base_Presite_List">
+        bs_presite.id, sitename, longitude, latitude, sitecode
+    </sql>
+
+	<select id="selectPresiteList" resultType="map">
+		select
+		<include refid="Base_Presite_List" />
+		from bs_presite
+
+	</select>
+
+
+	<!-- ************************************************************************ -->
+	<sql id="Base_AreaShen_List">
+        bs_area.id, pid, areaname, areatype, areacode ,arealetter
+    </sql>
+
+	<select id="selectAreaShenList" resultType="map">
+		select
+		<include refid="Base_AreaShen_List" />
+		from bs_area where 1=1
+		<if test="pid != null and pid != ''">
+			and pid like CONCAT('%',#{pid},'%')
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		<if test="areaname != null and areaname != ''">
+			and areaname like CONCAT('%',#{areaname},'%')
+		</if>
+		<if test="areatype != null and areatype != ''">
+			and areatype like CONCAT('%',#{areatype},'%')
+		</if>
+		<if test="areacode != null and areacode != ''">
+			and areacode like CONCAT('%',#{areacode},'%')
+		</if>
+
+	</select>
+
+
+	<!-- 精检站总车流量 -->
+	<select id="getCarCount" resultType="int">
+		select count(id)  from b_lscinfo WHERE stationid = #{stationid};
+	</select>
+
+	<!-- 预检站总车流量 -->
+	<select id="getCarCounts" resultType="int">
+		select count(id)  from b_hspinfo WHERE stationid = #{stationid};
+	</select>
+
+	<!-- 精检站超限车辆总数 -->
+	<select id="getOverCar" resultType="int">
+		SELECT
+			count(id) AS overCar,
+			stationid AS stationid
+		FROM
+			b_lscinfo
+		WHERE
+			prostatus > 0
+		AND stationid = #{stationid};	
+	</select>
+
+	<!-- 预检站超限车辆总数 -->
+	<select id="getOverCars" resultType="int">
+		SELECT
+			count(id) AS overCar,
+			stationid AS stationid
+		FROM
+			b_hspinfo
+		WHERE
+			prostatus > 0
+		AND stationid = #{stationid};	
+	</select>
+
+	<!-- 精检站已处理超限车辆总数 -->
+	<select id="getProcessed" resultType="int">
+		
+		SELECT
+			count(id) AS processed,
+			stationid AS stationid
+		FROM
+			b_lscinfo
+		WHERE
+			prostatus > 1
+		AND stationid = #{stationid};
+			
+	</select>
+
+	<!-- 预检站已处理超限车辆总数 -->
+	<select id="getProcesseds" resultType="int">
+		
+		SELECT
+			count(id) AS processed,
+			stationid AS stationid
+		FROM
+			b_hspinfo
+		WHERE
+			prostatus > 1
+		AND stationid = #{stationid};
+			
+	</select>
+
+
+	<!--  查找站点 -->
+	<select id="selectSiteFix" resultType="map">
+		select longitude,latitude,sitename
+		from bs_fixedsite
+		where 1=1
+		<if test="sitename != null and sitename != ''">
+			AND sitename like CONCAT('%',#{sitename},'%')
+		</if>
+	</select>
+	<select id="selectSitePre" resultType="map">
+		select longitude,latitude,sitename
+		from bs_presite
+		where 1=1
+		<if test="sitename != null and sitename != ''">
+			AND sitename like CONCAT('%',#{sitename},'%')
+		</if>
+	</select>
+	<select id="selectSiteCorp" resultType="map">
+		select corpname, longitude, latitude
+		from bs_corp
+		where 1=1
+		<if test="corpname != null and corpname != ''">
+			AND corpname like CONCAT('%',#{corpname},'%')
+		</if>
+	</select>
+	<select id="selectSiteHsway" resultType="map">
+		select hswayname, lng as 'longitude', lat as 'latitude'
+		from bs_hsway
+		where 1=1
+		<if test="hswayname != null and hswayname != ''">
+			AND hswayname like CONCAT('%',#{hswayname},'%')
+		</if>
+	</select>
+	<select id="selectSiteLawMan" resultType="map">
+		select lem_name, longitude, latitude
+		from bs_law_enforce_man
+		where 1=1
+		<if test="lem_name != null and lem_name != ''">
+			AND lem_name like CONCAT('%',#{lem_name},'%')
+		</if>
+	</select>
+	<select id="selectSiteLawCar" resultType="map">
+		select manager, longitude, latitude
+		from bs_law_enforcecar
+		where 1=1
+		<if test="manager != null and manager != ''">
+			AND manager like CONCAT('%',#{manager},'%')
+		</if>
+		<if test="vehicleid != null and vehicleid != ''">
+			AND vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+	</select>
+
+
+
+
+
+
+
+
+
+
+	<!-- 根据用户ID查询用户拥有的权限 -->
+	<select id="selectOverRun" resultType="map">
+		SELECT DISTINCT sys_menu.name
+		from sys_menu
+		WHERE sys_menu.id in (
+		SELECT b.menuid
+		FROM sys_role a, sys_relation b, sys_user d
+		WHERE a.id = d.roleid AND a.id = b.roleid
+		AND
+		<if test="roleid != null and roleid != ''">
+			d.roleid = #{roleid}
+		</if>
+		)
+	</select>
+
+	<!-- 查询不停车预检站超限信息 -->
+	<select id="selectOverRunPreSite" resultType="map">
+		SELECT DISTINCT a.id, a.hspid, a.vehicleid, b.sitename, a.hsptime, a.prostatus, b.sitecode
+		FROM b_hspinfo a, bs_presite b
+		WHERE a.prostatus = 1 AND
+		a.show = false AND 
+		a.stationid = b.sitecode
+	</select>
+	<!-- 更新不停车预检站超限信息 -->
+	<update id="updateOverRunPreSite">
+		UPDATE
+		b_hspinfo
+		SET
+		`show` = true
+		WHERE
+		<if test="id != null and id != ''">
+			id = #{id}
+		</if>
+	</update>
+
+	<!-- 查询精检站超限信息 -->
+	<select id="selectOverRunFixedSite" resultType="map">
+		SELECT DISTINCT a.id, a.checkno, a.vehicleid, b.sitename, a.fctime, a.prostatus, b.sitecode
+		FROM b_lscinfo a, bs_fixedsite b
+		WHERE a.prostatus = 1 and
+		a.show = false and
+		a.stationid = b.sitecode		
+	</select>
+	<!-- 更新精检站超限信息 -->
+	<update id="updateOverRunFixedSite">
+		UPDATE
+		b_lscinfo
+		SET
+		`show` = true
+		WHERE
+		<if test="id != null and id != ''">
+			id = #{id}
+		</if>
+	</update>
+
+	<!-- 插入数据到超限信息弹框提示表 -->
+	<insert id="insertOverRun">
+		INSERT INTO b_overrun(vehicleid, stationid, violationlevel, deteno, time, sitename) 
+		VALUES (#{vehicleid}, #{stationid}, #{violationlevel}, #{deteno}, #{time}, #{sitename} )
+	</insert>
+
+	<!-- 信息表 -->
+	<select id="selectOverRunInfo" resultType="map">
+		SELECT * FROM b_overrun ORDER BY id DESC LIMIT 0,1
+	</select>
+
+
+	<!-- **************************2018/2/8 更新 ************************************ -->
+
+</mapper>

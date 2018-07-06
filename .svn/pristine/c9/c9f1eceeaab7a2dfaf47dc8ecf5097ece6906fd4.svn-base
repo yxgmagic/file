@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.SeqGenerateMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.zhichao.beans.guns.SeqGenerate">
+		<id column="id" property="id" />
+		<result column="seqtype" property="seqtype" />
+		<result column="seqnum" property="seqnum" />
+		<result column="seqcol" property="seqcol" />
+		<result column="seqlen" property="seqlen" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, seqtype, seqnum, seqcol, seqlen
+	</sql>
+	<select id="getSeqGenBytype" resultType="SeqGenerate">
+		select
+		seqnum,seqcol,seqlen
+		from bs_seq_generate
+		where
+		seqtype =#{seqtype}
+		order
+		by seqnum
+
+	</select>
+
+</mapper>

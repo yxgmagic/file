@@ -1,0 +1,61 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+            
+            <form class="form-horizontal classVehicleDriver row" data-toggle="validators" role="form">
+           		<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="corpcode" class="col-sm-4 control-label ccc">企业名称</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="corpcode" name="corpcode" class="form-control" placeholder="企业名称" required>
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="drivername" class="col-sm-4 control-label">姓名</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="drivername" name="drivername" class="form-control" placeholder="姓名" required>
+			    	</div>
+			  	</div>
+			  	
+				<div class="form-group col-sm-6 col-xs-12">
+		    		<label for="idcard" class="col-sm-4 control-label">身份证号</label>
+		    		<div class="col-sm-8 heig-55">
+		    			<input type="text" id="idcard" name="idcard" class="form-control" placeholder="身份证号" required>
+		  			</div>
+		  		</div>
+			  		
+		  		<div class="form-group col-sm-6 col-xs-12">
+		    		<label for="sex" class="col-sm-4 control-label">性别</label>
+		    		<div class="col-sm-8 heig-55">
+						<#SelectDict id="sex" name="sex" dictName="sex" dataStyle="btn" cssName="form-control"></#SelectDict>
+		  			</div>
+		  		</div>
+		  		
+		  		<div class="form-group col-sm-6 col-xs-12">
+		    		<label for="driverid" class="col-sm-4 control-label">驾驶证号</label>
+		    		<div class="col-sm-8 heig-55">
+		    			<input type="text" id="driverid" name="driverid" class="form-control" placeholder="驾驶证号" required>
+		  			</div>
+		  		</div>
+		  		
+		  		<div class="form-group col-sm-6 col-xs-12">
+		    		<label for="qualificationid" class="col-sm-4 control-label">从业资格证</label>
+		    		<div class="col-sm-8 heig-55">
+		    			<input type="text" id="qualificationid" name="qualificationid" class="form-control" placeholder="从业资格证" required>
+		  			</div>
+		  		</div>
+		  		<div class="form-group col-sm-12 col-xs-12">
+		    		<div class="col-sm-12 text-center">
+		    			<#button btnCss="info" name="确认" id="ensure" icon="fa-check" clickFun="VehicleDriverInfoDlg.addSubmit()"/>
+                 		<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="VehicleDriverInfoDlg.close()"/>
+		  			</div>
+		  		</div>
+		  	</form>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/vehicleDriver/vehicleDriver_info.js"></script>
+@}

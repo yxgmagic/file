@@ -1,0 +1,509 @@
+package com.zhichao.service.lawEnforcement.impl;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+import cn.hutool.core.lang.Console;
+import com.alibaba.fastjson.JSON;
+import com.zhichao.common.constants.SystemConstants;
+import com.zhichao.common.exception.BusinessException;
+import com.zhichao.service.core.log.factory.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.aspose.words.Document;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhichao.common.asposeword.TestWord;
+import com.zhichao.common.asposeword.WordAdd;
+import com.zhichao.common.asposeword.WordAddImple;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.util.DictUtil;
+import com.zhichao.service.core.util.ParaUtil;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.lawEnforcement.IOefullinfoService;
+import com.zhichao.service.oefulllawdoc.IOefullLawdocService;
+import com.zhichao.beans.guns.Dict;
+import com.zhichao.beans.guns.OefullLawdoc;
+import com.zhichao.beans.guns.Oefullinfo;
+import com.zhichao.dal.mapper.BOseinfoMapper;
+import com.zhichao.dal.mapper.LawDocMapper;
+import com.zhichao.dal.mapper.LscinfoMapper;
+import com.zhichao.dal.mapper.OefullLawdocMapper;
+import com.zhichao.dal.mapper.OefullinfoMapper;
+
+import net.sf.json.JSONObject;
+
+/**
+ * <p>
+ * 违章详细信息 服务实现类
+ * </p>
+ *
+ * @author fengshuonan
+ * @since 2018-01-24
+ */
+@Service
+public class OefullinfoServiceImpl extends ServiceImpl<OefullinfoMapper, Oefullinfo> implements IOefullinfoService {
+
+    @Autowired
+    private OefullinfoMapper oefullinfoMapper;
+
+    @Autowired
+    private LscinfoMapper lscMapper;
+
+    @Autowired
+    private OefullLawdocMapper lawdocMapper;
+
+    @Autowired
+    private IOefullLawdocService oefullLawdocService;
+    @Autowired
+    private OefullLawdocMapper om;
+    @Autowired
+    private LawDocMapper lm;
+    @Autowired
+    private BOseinfoMapper oseinfoMapper;
+
+    @Override
+    public List<Oefullinfo> selList(String casetime, String vehicleid, String caseno, Integer prostatus) {
+
+        String start = null, end = null;
+        casetime = YUtil.isNullOrEmptyReturnString(casetime, true);
+        vehicleid = YUtil.isNullOrEmptyReturnString(vehicleid, true);
+        caseno = YUtil.isNullOrEmptyReturnString(caseno, true);
+
+        if (!YUtil.isNullOrEmpty(casetime, true)) {
+
+            String[] time = casetime.split("~");
+
+            if (time.length == 2) {
+                start = time[0];
+                end = time[1];
+            }
+        }
+
+        List<Oefullinfo> oeList = oefullinfoMapper.selList(casetime, start, end, vehicleid, caseno, prostatus);
+
+        for (Oefullinfo oe : oeList) {
+            //重组案件状态
+            oe.setStatus(DictUtil.selectNameByEnameNum("prostatus", oe.getProstatus()));
+        }
+
+
+        return oeList;
+    }
+
+    @Override
+    public List<Dict> selIdTypeList(Integer oeid) {
+        return oefullinfoMapper.sel_lawdoc_list(oeid);
+    }
+
+    @Override
+    public List<Map<String, Object>> getOefullLawdocList(Integer oeid) {
+
+        return oefullinfoMapper.getOefullLawdocList(oeid);
+    }
+
+    @Override
+    public List<Map<String, Object>> selOefullList(Page<Map<String, Object>> page, String fctime, String vehicleid, String caseno, Integer prostatus) {
+
+        String start = null, end = null;
+        fctime = YUtil.isNullOrEmptyReturnString(fctime, true);
+        vehicleid = YUtil.isNullOrEmptyReturnString(vehicleid, true);
+        caseno = YUtil.isNullOrEmptyReturnString(caseno, true);
+
+        String[] datetime = YUtil.splitTimeInterval(fctime);
+        if (datetime != null) {
+            start = datetime[0];
+            end = datetime[1];
+        }
+
+        List<Map<String, Object>> oefullList = oefullinfoMapper.selOefullList(page, fctime, start, end, vehicleid, caseno, prostatus);
+
+        // 根据字典动态重组<案件状态>
+//        oefullList.forEach(lscinfo -> lscinfo.replace("prostatus", DictUtil.selectNameByEnameNum("prostatus", String.valueOf(lscinfo.get("prostatus")))));
+
+        return oefullList;
+    }
+
+    @Override
+    public Integer via(Integer id, String checkno, String caseSource) throws BusinessException {
+
+        //修改精检站中的数据状态从2-》3
+        updateProstarus(caseSource, null, checkno,  SystemConstants.Case.WAITAPPROVAL, SystemConstants.Case.HASBEENREGISTERED);
+
+        //修改案件表中的状态
+        return oefullinfoMapper.updateProstatus(id, SystemConstants.Case.WAITAPPROVAL, SystemConstants.Case.HASBEENREGISTERED);
+    }
+
+    @Override
+    public Integer reFiling(Integer id, String checkno) {
+
+		/*
+		 * 修改精检站中的数据状态从5-》3
+			1.未立案
+			2.立案待审批
+			3.已立案
+			4.已结案
+			5.驳回
+		 */
+        lscMapper.updateProstatus(null, checkno, SystemConstants.Case.TURNDOWN, SystemConstants.Case.HASBEENREGISTERED);
+
+        return oefullinfoMapper.updateProstatus(id, SystemConstants.Case.TURNDOWN, SystemConstants.Case.HASBEENREGISTERED);
+    }
+
+    @Override
+    public Integer turndown(Integer id, String checkno, String caseSource) throws BusinessException {
+
+        //修改精检站中的数据状态从2-》5
+        updateProstarus(caseSource, null, checkno, SystemConstants.Case.WAITAPPROVAL, SystemConstants.Case.TURNDOWN);
+
+        //删除业务模版关系
+        EntityWrapper<OefullLawdoc> ew = new EntityWrapper<>();
+        ew.where("oefullid={0}", id);
+        lawdocMapper.delete(ew);
+
+        //修改违章表重状态为驳回
+        return oefullinfoMapper.updateProstatus(id, SystemConstants.Case.WAITAPPROVAL, SystemConstants.Case.TURNDOWN);
+    }
+
+    @Override
+    public Integer insertPendingApproval(Oefullinfo oefullinfo) throws BusinessException {
+
+        //立案流程
+
+        //生成案号
+        PubUtil pub= new PubUtil();
+        Map<String,Object> map = pub.getSequence("caseno" , oefullinfo.getStationid() , oefullinfo.getFclaneno() , "caseno" , "b_oefullinfo");
+        oefullinfo.setCaseno(map.get("sequence").toString());
+
+        //获取案件来源
+        String caseSource = oefullinfo.getCaseSource();
+        updateProstarus(caseSource, oefullinfo.getId(), null, SystemConstants.Case.UNREGISTERED, SystemConstants.Case.WAITAPPROVAL);
+
+
+
+        oefullinfo.setProstatus("2");
+        oefullinfo.setCasetime(YUtil.StringToDate(oefullinfo.getCaseTimeString()));
+        oefullinfo.setFctime(YUtil.StringToDate(oefullinfo.getFcTimeString()));
+        oefullinfo.setRctime(YUtil.StringToDate(oefullinfo.getRctimeString()));
+        return oefullinfoMapper.insert(oefullinfo);
+    }
+
+    @Override
+    public Integer updateOefullinfoAndprostatus(Oefullinfo oefullinfo) throws BusinessException {
+
+        //驳回后重新立案
+        updateProstarus(oefullinfo.getCaseSource(), null, oefullinfo.getCheckno(), 5, 2);
+
+        //案件表(b_oefullinfo)中修改为2(立案待审批)
+        oefullinfo.setProstatus("2");
+        return oefullinfoMapper.updateById(oefullinfo);
+    }
+
+    @Override
+    public Integer getOefullinfoIdByCheckno(String checkno) {
+        return oefullinfoMapper.getOefullinfoIdByCheckno(checkno);
+    }
+
+    @Override
+    public List<Dict> getAllLawdocTypeList() {
+        return oefullinfoMapper.getAllLawdocTypeList();
+    }
+
+    @Override
+    public Map<String, Object> createAndDownloadLawdoc(Integer oeid, Integer[] ldtypes, HttpServletRequest req) {
+
+        if (ldtypes.length > 0) {
+
+            //将封面加入到文书中
+            int[] lawdocTypes = new int[ldtypes.length + 1];
+            lawdocTypes[0] = 1;
+            int index = 1;
+            for (Integer ldtype : ldtypes) {
+                lawdocTypes[index++] = ldtype;
+            }
+
+            //获取文书存放路径
+            String currPath = "";
+
+            //	项目的绝对路径
+            String projectPath = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+            projectPath = projectPath.substring(1);
+            //	拼接存储检定证书的实际目录	因为测试环境硬盘分区总是变动
+            currPath = projectPath + currPath;
+
+//            String currPath = "D:/ZC/admin-admin/target/classes/";
+            //存放文书地址
+            ArrayList<String> lawdocurlList = new ArrayList<>();
+
+            for (Integer ldtype : lawdocTypes) {
+                //将返回的文书地址存入list
+                try {
+					lawdocurlList.add(currPath + createOefullLawdoc(oeid, String.valueOf(ldtype)));
+				} catch (Exception e) {
+					e.printStackTrace();
+                    return YUtil.resultMap(500, null, "文书模板异常!");
+				}
+            }
+            lawdocurlList.add(1,currPath + createDirectory(oeid,ldtypes));
+
+            //合成文书存放路径
+            String outPath = "static/modular/lawdoc/文书.docx";
+
+            if (lawdocurlList.size() > 0) {
+
+                if (!TestWord.getLicense()){
+                    return YUtil.resultMap(400, null, "word文档缺少认证文件!");
+                }
+
+                WordAdd wordAdd = new WordAddImple();
+                Document document = wordAdd.AddDocs2DocByContinuous(lawdocurlList, currPath + outPath);
+                if (document != null) {
+                    return YUtil.resultMap(200, outPath, null);
+                }
+            }
+        }
+        return YUtil.resultMap(500, null, "文书模板不存在,请上传后重试!");
+    }
+
+    @Override
+    public Map<String, Object> uploadAnnex(Integer oeid, MultipartFile file) throws FileNotFoundException {
+
+        String fileName = file.getOriginalFilename();
+        String suffix = fileName.substring(fileName.indexOf(".") + 1);
+        String annex_suffix_str = ParaUtil.getParaValue("annex_suffix");
+        Map<String, Object> result = null;
+
+        if (annex_suffix_str != null) {
+
+            String[] annex_suffix = annex_suffix_str.split(",");
+
+            if (Arrays.asList(annex_suffix).contains(suffix)) {
+                result = saveAnnex(oeid, file, suffix);
+            } else {
+                result = YUtil.resultMap(400, null, "文件格式不正确，仅支持[" + annex_suffix_str + "]文件格式！");
+            }
+        } else {
+            result = YUtil.resultMap(400, null, "文件保存失败，请维护参数！");
+        }
+        return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllAnnexByOeid(Integer oeid) {
+
+        return oefullinfoMapper.getAllAnnexByOeid(oeid);
+    }
+
+    @Override
+    public List<Map<String, Object>> getLawEnforceMan() {
+        return oefullinfoMapper.getLawEnforceMan();
+    }
+
+    @Override
+    public void delAnnex(Integer id) {
+        oefullinfoMapper.delAnnex(id);
+    }
+
+    @Override
+    public Oefullinfo getOefullByCheckno(String checkno) {
+        return oefullinfoMapper.getOefullByCheckno(checkno);
+    }
+
+    @Override
+    public ResponseEntity<FileSystemResource> downloadAnnex(Integer id) throws UnsupportedEncodingException {
+
+        Map<String, Object> annex = oefullinfoMapper.getAnnexPathById(id);
+
+        String fileName = String.valueOf(annex.get("fileName"));
+        String filePath = String.valueOf(annex.get("url"));
+
+        return YUtil.export(new File(filePath), fileName);
+    }
+
+
+    /**
+     * 保存文件到指定路径
+     *
+     * @param oeid
+     * @param file
+     * @return
+     */
+    private Map<String, Object> saveAnnex(Integer oeid, MultipartFile file, String suffix) throws FileNotFoundException {
+        InputStream inputStream = null;
+        FileOutputStream os = null;
+
+        //文书存储路径
+        File annexFileSavePath = annexSavePath();
+
+        //文件名
+        String fileName = file.getOriginalFilename();
+        try {
+            inputStream = file.getInputStream();
+
+            byte[] bytes = new byte[1024 * 1024];
+            int len;
+
+            String fileSavePath = annexFileSavePath + File.separator + fileName;
+
+            os = new FileOutputStream(fileSavePath);
+
+            while ((len = inputStream.read(bytes)) != -1) {
+                os.write(bytes, 0, len);
+            }
+
+            //存储到数据库
+            oefullinfoMapper.saveAnnex(oeid, fileSavePath,file.getOriginalFilename());
+
+            return YUtil.resultMap(200, fileSavePath, "文件保存成功");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return YUtil.resultMap(500, null, "文件保存失败");
+        } finally {
+            try {
+                os.close();
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 生成文书,返回文书路径url
+     *
+     * @param oeid   业务表id
+     * @param ldtype 文书类型id
+     * @return
+     * @throws Exception
+     */
+    private String createOefullLawdoc(int oeid, String ldtype) throws Exception {
+        String fileurl = "";
+
+        Integer ldid = lm.getLdId(ldtype);
+
+        OefullLawdoc oefullLawdoc = om.getOefullLawdoc(oeid, ldtype);
+
+        if (null == oefullLawdoc) {
+            oefullLawdoc = new OefullLawdoc();
+            oefullLawdoc.setLdtype(ldtype);
+            oefullLawdoc.setLawdocid(ldid);
+            oefullLawdoc.setOefullid(oeid);
+        }
+
+        List<Map<String, String>> list = om.getoefullinfo(oeid);
+        if (list.size() == 1) {
+            Map<String, String> ldjson = list.get(0);
+            JSONObject ldjsonobj = JSONObject.fromObject(ldjson);
+            oefullLawdoc.setLawdocjson(ldjsonobj.toString());
+            oefullLawdoc.setProcstatus("1");
+
+            fileurl = oefullLawdocService.createOefullLawdoc(oefullLawdoc);
+        }
+
+        return fileurl;
+    }
+
+
+    /**
+     * 为文书创建目录
+     * @param oeid  违章表主键
+     * @param ldtypes  文书类型列表
+     * @return
+     */
+    private String createDirectory(int oeid, Integer[] ldtypes){
+        Map<String, String> map = new HashMap<>();
+        OefullLawdoc oefullLawdoc = om.getOefullLawdoc(oeid, "2");
+        if (oefullLawdoc == null){
+            oefullLawdoc = new OefullLawdoc();
+            oefullLawdoc.setOefullid(oeid);
+            oefullLawdoc.setLawdocid(2);
+        }
+        List<String> ldNames = oefullinfoMapper.getLdNameByLdType(ldtypes);
+
+        char index = 'j';
+        int i = 1;
+        for (String name : ldNames) {
+            map.put(String.valueOf(index++),i++ + "." + name );
+        }
+
+        oefullLawdoc.setProcstatus("1");
+        oefullLawdoc.setInputjson(JSON.toJSONString(map));
+        oefullLawdoc.setLdtype("2");
+        String fileUrl = "";
+        try {
+            fileUrl = oefullLawdocService.createOefullLawdoc(oefullLawdoc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileUrl;
+    }
+
+    /**
+     * 获取案件来源,根据案件来源修改不同案件来源表的状态<br/>
+     * 白话文版本: 有时候到了案件审批流程,结果给驳回了.那么驳回了的案件信息也要把他们的来源(治超站,非现场...)的状态也修改为正确状态<br/>
+     *
+     * @date 2018年6月8日
+     * @param caseSource 案件来源<br/>
+     *                   1-治超站检查,2-非现场执法,3-移动执法.同步时间:2018年4月9日.同步于:字典表
+     * @param id 业务表中的主键id
+     * @param checkno 业务表中的检测单号
+     *                 业务表中有时候不能得到id,提供checkno标识唯一业务id
+     * @param pro1 原始状态
+     * @param pro2 新状态
+     *
+     * 关于pro1 & pro2 <br/>
+     *             1.未立案, 2.立案待审批,3.已立案,4.已结案,5.驳回
+     *
+     */
+    private void updateProstarus(String caseSource, Integer id, String checkno, int pro1, int pro2) throws BusinessException {
+
+        Integer source = Integer.valueOf(caseSource);
+
+        switch (source) {
+            case SystemConstants.CaseSource.LSC:
+                //修改精检站中业务数据状态
+                lscMapper.updateProstatus(id, checkno, pro1, pro2);
+                break;
+            case SystemConstants.CaseSource.OSE:
+                //修改非现场执法检测站中业务数据状态
+                oseinfoMapper.updateProstatus(id, checkno, pro1, pro2);
+                break;
+            default:
+                throw new BusinessException("未知的案件来源");
+        }
+
+    }
+
+    /**
+     * 附件存储路径
+     * jar安装路径/annexSavePath/yyyy/MM/dd
+     * @return
+     */
+    private File annexSavePath(){
+
+        File annexFileSavePath = new File(YUtil.getJarInstallPath().getAbsolutePath(), "annexSavePath");
+
+        String format = "yyyy" + File.separator + "MM" + File.separator + "dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+
+        String now = sdf.format(new Date());
+
+        File file = new File(annexFileSavePath, now);
+
+        if (!file.exists()){
+            file.mkdirs();
+        }
+
+        return file;
+    }
+}

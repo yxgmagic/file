@@ -1,0 +1,71 @@
+@layout("/common/_container.html"){
+<script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>源头企业管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row row-bottom">
+                        	<div class="col-sm-5 col-sm-offset-1">
+                            	<div class="form-group">
+								    <label class="col-sm-3 control-label">企业名称</label>
+								    <div class="col-sm-9">
+								        <input type="text" class="form-control" id="corpname" name="corpname" required="required"/>
+								    </div>
+								</div>
+                            </div>
+                           <div class="col-sm-5">
+                           	<div class="form-group">
+							    <label class="col-sm-3 control-label">所属区域</label>
+							    <input id="areacode" name="所属行政区" type="hidden" value=""  />
+				      			<input id="roadcode" name="所属行政区" type="hidden" value=""  />
+							    <div class="col-sm-9">
+							        <div class="row">
+									<div class="col-sm-4">
+										<select id="Select1" name="Select1"  class="layui-input" onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'0');" ></select>  
+									</div>
+									<div class="col-sm-4">
+				       					<select id="Select2" name="Select2" class="layui-input" onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'0');"></select>  
+									</div>
+									<div class="col-sm-4">
+				      					 <select id="Select3" name="Select3" class="layui-input" onchange="selectRoad(document.getElementById('roadcode'));"></select>
+									</div>
+								</div>
+							    </div>
+							</div>
+                           </div>
+                        </div>
+                        <div class="row padding-top-100">
+                        	<div class="text-center col-sm-12">
+                                <#button name="查询" icon="fa-search" clickFun="BsCorp.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="BsCorpTableToolbar" role="group">
+                            @if(shiro.hasPermission("/bsCorp/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="BsCorp.openAddBsCorp()"/>
+                            @}
+                            @if(shiro.hasPermission("/bsCorp/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="BsCorp.openBsCorpDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/bsCorp/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="BsCorp.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="BsCorpTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/bsCorp/bsCorp.js"></script>
+<script type="text/javascript">
+
+	$("#")
+
+</script>
+@}

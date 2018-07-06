@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>货运企业统计表</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+    <div class="body-nopadding">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />货运企业统计表</h2>
+            </div>
+        </div>
+        <div class="ibox-content margin-bottom-30">
+            <div class="layui-row">
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">统计时间：</label>
+                    </div>
+
+                    <div class="layui-col-md6 text-left">
+                        <input type="text" class="layui-input" id="selectDateArea">
+                    </div>
+
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">企业名称：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-top-10">
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">车牌号：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center margin-top-30">
+                <button class="layui-btn">查询</button>
+            </div>
+        </div>
+        <div class="ibox-content margin-top-30">
+            <div class="text-right">
+                <button class="layui-btn layui-btn-sm">导出Excel</button>
+            </div>
+            <div class="layui-form">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">序号</th>
+                            <th>企业名称</th>
+                            <th>营业执照号</th>
+                            <th>法人</th>
+                            <th>身份证号</th>
+                            <th>企业地址</th>
+                            <th>货运车辆总数</th>
+                            <th>超限车辆总数</th>
+                            <th>占比</th>
+                            <th>抄告时间</th>
+                            <th>数据更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td>株洲申圆通物流公司</td>
+                            <td>412321323213232</td>
+                            <td>张三</td>
+                            <td>543313232321</td>
+                            <td>株洲市解放大道128号</td>
+                            <td>20</td>
+                            <td>3</td>
+                            <td>15%</td>
+                            <td></td>
+                            <td>2017-02-12</td>
+                            <td>
+                                <button class="layui-btn layui-btn-sm editor">车辆明细</button>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <div class="text-center" id="demo7"></div>
+            </div>
+        </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script>
+
+        //时间范围选择
+        layui.laydate.render({
+            elem: '#selectDateArea'
+            ,range: '~' //或 range: '~' 来自定义分割字符
+        });
+
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+            , layer = layui.layer;
+
+            //完整功能
+            laypage.render({
+                elem: 'demo7'
+              , count: 1
+              , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+              , jump: function (obj) {
+
+              }
+            });
+        });
+        $('.editor').on('click', function () {
+            Module.Box.OpenDialog('1000', '440', '车辆明细.html', '车辆明细')
+        });
+    </script>
+</body>
+</html>

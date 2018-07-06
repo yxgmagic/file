@@ -1,0 +1,139 @@
+@layout("/common/_container.html"){
+<style>
+    .head-sitebank{
+        margin-bottom: 14px;
+        font-size: 20px;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel ibox-title panel-body">
+            <h5>站点统计排名</h5>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="panel">
+                    <div class="panel-body">
+                        <p class="head-sitebank">超限率</p>
+                        <table class="table table-responsive table-bordered table-hover">
+                            <tr class="active">
+                                <td>站点</td>
+                                <td>超限率(%)</td>
+                                <td>名次</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3>超限率</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive table-bordered table-hover">
+                            <tr class="active">
+                                <td>站点</td>
+                                <td>超限率(%)</td>
+                                <td>名次</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3>超限率</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive table-bordered table-hover">
+                            <tr class="active">
+                                <td>站点</td>
+                                <td>超限率(%)</td>
+                                <td>名次</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3>超限率</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive table-bordered table-hover">
+                            <tr class="active">
+                                <td>站点</td>
+                                <td>超限率(%)</td>
+                                <td>名次</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>测试站点</td>
+                                <td>121</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@}

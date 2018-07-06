@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ActionParaMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.ActionPara">
+		<id column="id" property="id" />
+		<result column="actid" property="actid" />
+		<result column="paratype" property="paratype" />
+		<result column="paraid" property="paraid" />
+		<result column="paracode" property="paracode" />
+		<result column="paravalue" property="paravalue" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, actid, paratype, paraid, paracode, paravalue
+    </sql>
+
+</mapper>

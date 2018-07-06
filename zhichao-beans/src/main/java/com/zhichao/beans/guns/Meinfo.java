@@ -1,0 +1,644 @@
+package com.zhichao.beans.guns;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
+/**
+ * <p>
+ * 流动执法车数据表
+ * </p>
+ *
+ * @author imyzt
+ * @since 2018-01-22
+ */
+@TableName("b_meinfo")
+public class Meinfo extends Model<Meinfo> {
+
+    private static final long serialVersionUID = 1L;
+
+	@TableId(value="id", type= IdType.AUTO)
+	private Integer id;
+    /**
+     * 检测单号
+     */
+	private String checkno;
+    /**
+     * 车牌号
+     */
+	private String vehicleid;
+    /**
+     * 轴数
+     */
+	private Integer axlesum;
+    /**
+     * 车货限重
+     */
+	private Integer weightlimited;
+    /**
+     * 车辆标记总质量
+     */
+	private Integer ratedtotalweight;
+    /**
+     * 核定载质量
+     */
+	private Integer ratedloading;
+    /**
+     * 超限量
+     */
+	private Integer overlimited;
+	/**
+	 * 驾驶人员姓名
+	 */
+	private String drivername;
+    /**
+     * 超载量
+     */
+	private Integer overload;
+    /**
+     * 检测时间
+     */
+	private String fctime;
+    /**
+     * 车道号
+     */
+	private Integer fclaneno;
+    /**
+     * 总重量
+     */
+	private Integer fctotalweight;
+    /**
+     * 操作员
+     */
+	private String fcoper;
+    /**
+     * 轴重1
+     */
+	private Integer fcaxle1;
+    /**
+     * 轴重2
+     */
+	private Integer fcaxle2;
+    /**
+     * 轴重3
+     */
+	private Integer fcaxle3;
+    /**
+     * 轴重4
+     */
+	private Integer fcaxle4;
+    /**
+     * 轴重5
+     */
+	private Integer fcaxle5;
+    /**
+     * 轴重6
+     */
+	private Integer fcaxle6;
+    /**
+     * 轴重7
+     */
+	private Integer fcaxle7;
+    /**
+     * 轴重8
+     */
+	private Integer fcaxle8;
+    /**
+     * 车货总长
+     */
+	private Integer fclength;
+    /**
+     * 车货总宽
+     */
+	private Integer fcwidth;
+    /**
+     * 车货总高
+     */
+	private Integer fcheight;
+    /**
+     * 超长量
+     */
+	private Integer overlength;
+    /**
+     * 超宽量
+     */
+	private Integer overwidth;
+    /**
+     * 超高量
+     */
+	private Integer overheight;
+    /**
+     * 已卸载量
+     */
+	private Integer offload;
+    /**
+     * 车头图片
+     */
+	private String fcvehicleimage;
+    /**
+     * 车头图片1
+     */
+	private String fcvehicleimage1;
+    /**
+     * 车头图片2
+     */
+	private String fcvehicleimage2;
+    /**
+     * 流动执法车
+     */
+	private String vehicleno;
+	/**
+	 * 流动执法车车牌号
+	 */
+	@TableField(exist = false)
+	private String enforcecar;
+    /**
+     * 处理状态,0未违规,1以上为违规状态
+     */
+	private String prostatus;
+    /**
+     * 上传返回代码
+     */
+	private Integer result;
+    /**
+     * 上传返回信息
+     */
+	private String message;
+	/**
+	 * 复检总重量
+	 */
+	private Integer rctotalweight;
+
+	/**
+	 * 场景图
+	 */
+	private String picview;
+	/**
+	 * 车牌图
+	 */
+	private String picplate;
+	/**
+	 * 车尾图
+	 */
+	private String picviewback;
+	/**
+	 * 侧1场景图
+	 */
+	private String picside;
+	/**
+	 * 侧2场景图
+	 */
+	private String picside2;
+	/**
+	 * 全景图
+	 */
+	private String pictotal;
+	/**
+	 * 视频1
+	 */
+	private String video1;
+	/**
+	 * 视频2
+	 */
+	private String video2;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getCheckno() {
+		return checkno;
+	}
+
+	public void setCheckno(String checkno) {
+		this.checkno = checkno;
+	}
+
+	public String getVehicleid() {
+		return vehicleid;
+	}
+
+	public void setVehicleid(String vehicleid) {
+		this.vehicleid = vehicleid;
+	}
+
+	public Integer getAxlesum() {
+		return axlesum;
+	}
+
+	public void setAxlesum(Integer axlesum) {
+		this.axlesum = axlesum;
+	}
+
+	public Integer getWeightlimited() {
+		return weightlimited;
+	}
+
+	public void setWeightlimited(Integer weightlimited) {
+		this.weightlimited = weightlimited;
+	}
+
+	public Integer getRatedtotalweight() {
+		return ratedtotalweight;
+	}
+
+	public void setRatedtotalweight(Integer ratedtotalweight) {
+		this.ratedtotalweight = ratedtotalweight;
+	}
+
+	public Integer getRatedloading() {
+		return ratedloading;
+	}
+
+	public void setRatedloading(Integer ratedloading) {
+		this.ratedloading = ratedloading;
+	}
+
+	public Integer getOverlimited() {
+		return overlimited;
+	}
+
+	public void setOverlimited(Integer overlimited) {
+		this.overlimited = overlimited;
+	}
+
+	public Integer getOverload() {
+		return overload;
+	}
+
+	public void setOverload(Integer overload) {
+		this.overload = overload;
+	}
+
+	public String getFctime() {
+		return fctime;
+	}
+
+	public void setFctime(String fctime) {
+		this.fctime = fctime;
+	}
+
+	public Integer getFclaneno() {
+		return fclaneno;
+	}
+
+	public void setFclaneno(Integer fclaneno) {
+		this.fclaneno = fclaneno;
+	}
+
+	public Integer getFctotalweight() {
+		return fctotalweight;
+	}
+
+	public void setFctotalweight(Integer fctotalweight) {
+		this.fctotalweight = fctotalweight;
+	}
+
+	public String getFcoper() {
+		return fcoper;
+	}
+
+	public void setFcoper(String fcoper) {
+		this.fcoper = fcoper;
+	}
+
+	public Integer getFcaxle1() {
+		return fcaxle1;
+	}
+
+	public void setFcaxle1(Integer fcaxle1) {
+		this.fcaxle1 = fcaxle1;
+	}
+
+	public Integer getFcaxle2() {
+		return fcaxle2;
+	}
+
+	public void setFcaxle2(Integer fcaxle2) {
+		this.fcaxle2 = fcaxle2;
+	}
+
+	public Integer getFcaxle3() {
+		return fcaxle3;
+	}
+
+	public void setFcaxle3(Integer fcaxle3) {
+		this.fcaxle3 = fcaxle3;
+	}
+
+	public Integer getFcaxle4() {
+		return fcaxle4;
+	}
+
+	public void setFcaxle4(Integer fcaxle4) {
+		this.fcaxle4 = fcaxle4;
+	}
+
+	public Integer getFcaxle5() {
+		return fcaxle5;
+	}
+
+	public void setFcaxle5(Integer fcaxle5) {
+		this.fcaxle5 = fcaxle5;
+	}
+
+	public Integer getFcaxle6() {
+		return fcaxle6;
+	}
+
+	public void setFcaxle6(Integer fcaxle6) {
+		this.fcaxle6 = fcaxle6;
+	}
+
+	public Integer getFcaxle7() {
+		return fcaxle7;
+	}
+
+	public void setFcaxle7(Integer fcaxle7) {
+		this.fcaxle7 = fcaxle7;
+	}
+
+	public Integer getFcaxle8() {
+		return fcaxle8;
+	}
+
+	public void setFcaxle8(Integer fcaxle8) {
+		this.fcaxle8 = fcaxle8;
+	}
+
+	public Integer getFclength() {
+		return fclength;
+	}
+
+	public void setFclength(Integer fclength) {
+		this.fclength = fclength;
+	}
+
+	public Integer getFcwidth() {
+		return fcwidth;
+	}
+
+	public void setFcwidth(Integer fcwidth) {
+		this.fcwidth = fcwidth;
+	}
+
+	public Integer getFcheight() {
+		return fcheight;
+	}
+
+	public void setFcheight(Integer fcheight) {
+		this.fcheight = fcheight;
+	}
+
+	public Integer getOverlength() {
+		return overlength;
+	}
+
+	public void setOverlength(Integer overlength) {
+		this.overlength = overlength;
+	}
+
+	public Integer getOverwidth() {
+		return overwidth;
+	}
+
+	public void setOverwidth(Integer overwidth) {
+		this.overwidth = overwidth;
+	}
+
+	public Integer getOverheight() {
+		return overheight;
+	}
+
+	public void setOverheight(Integer overheight) {
+		this.overheight = overheight;
+	}
+
+	public Integer getOffload() {
+		return offload;
+	}
+
+	public void setOffload(Integer offload) {
+		this.offload = offload;
+	}
+
+	public String getFcvehicleimage() {
+		return fcvehicleimage;
+	}
+
+	public void setFcvehicleimage(String fcvehicleimage) {
+		this.fcvehicleimage = fcvehicleimage;
+	}
+
+	public String getFcvehicleimage1() {
+		return fcvehicleimage1;
+	}
+
+	public void setFcvehicleimage1(String fcvehicleimage1) {
+		this.fcvehicleimage1 = fcvehicleimage1;
+	}
+
+	public String getFcvehicleimage2() {
+		return fcvehicleimage2;
+	}
+
+	public void setFcvehicleimage2(String fcvehicleimage2) {
+		this.fcvehicleimage2 = fcvehicleimage2;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+	public String getVehicleno() {
+		return vehicleno;
+	}
+
+	public void setVehicleno(String vehicleno) {
+		this.vehicleno = vehicleno;
+	}
+
+	public String getEnforcecar() {
+		return enforcecar;
+	}
+
+	public void setEnforcecar(String enforcecar) {
+		this.enforcecar = enforcecar;
+	}
+
+	public String getProstatus() {
+		return prostatus;
+	}
+
+	public void setProstatus(String prostatus) {
+		this.prostatus = prostatus;
+	}
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	@Override
+	protected Serializable pkVal() {
+		return this.id;
+	}
+
+
+	public Integer getRctotalweight() {
+		return rctotalweight;
+	}
+
+	public void setRctotalweight(Integer rctotalweight) {
+		this.rctotalweight = rctotalweight;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getDrivername() {
+		return drivername;
+	}
+
+	public void setDrivername(String drivername) {
+		this.drivername = drivername;
+	}
+
+	@Override
+	public String toString() {
+		return "Meinfo{" +
+				"id=" + id +
+				", checkno='" + checkno + '\'' +
+				", vehicleid='" + vehicleid + '\'' +
+				", axlesum=" + axlesum +
+				", weightlimited=" + weightlimited +
+				", ratedtotalweight=" + ratedtotalweight +
+				", ratedloading=" + ratedloading +
+				", overlimited=" + overlimited +
+				", drivername='" + drivername + '\'' +
+				", overload=" + overload +
+				", fctime=" + fctime +
+				", fclaneno=" + fclaneno +
+				", fctotalweight=" + fctotalweight +
+				", fcoper='" + fcoper + '\'' +
+				", fcaxle1=" + fcaxle1 +
+				", fcaxle2=" + fcaxle2 +
+				", fcaxle3=" + fcaxle3 +
+				", fcaxle4=" + fcaxle4 +
+				", fcaxle5=" + fcaxle5 +
+				", fcaxle6=" + fcaxle6 +
+				", fcaxle7=" + fcaxle7 +
+				", fcaxle8=" + fcaxle8 +
+				", fclength=" + fclength +
+				", fcwidth=" + fcwidth +
+				", fcheight=" + fcheight +
+				", overlength=" + overlength +
+				", overwidth=" + overwidth +
+				", overheight=" + overheight +
+				", offload=" + offload +
+				", fcvehicleimage='" + fcvehicleimage + '\'' +
+				", fcvehicleimage1='" + fcvehicleimage1 + '\'' +
+				", fcvehicleimage2='" + fcvehicleimage2 + '\'' +
+				", vehicleno='" + vehicleno + '\'' +
+				", enforcecar='" + enforcecar + '\'' +
+				", prostatus='" + prostatus + '\'' +
+				", result=" + result +
+				", message='" + message + '\'' +
+				", rctotalweight=" + rctotalweight +
+				", picview='" + picview + '\'' +
+				", picplate='" + picplate + '\'' +
+				", picviewback='" + picviewback + '\'' +
+				", picside='" + picside + '\'' +
+				", picside2='" + picside2 + '\'' +
+				", pictotal='" + pictotal + '\'' +
+				", video1='" + video1 + '\'' +
+				", video2='" + video2 + '\'' +
+				'}';
+	}
+
+	public String getPicview() {
+		return picview;
+	}
+
+	public void setPicview(String picview) {
+		this.picview = picview;
+	}
+
+	public String getPicplate() {
+		return picplate;
+	}
+
+	public void setPicplate(String picplate) {
+		this.picplate = picplate;
+	}
+
+	public String getPicviewback() {
+		return picviewback;
+	}
+
+	public void setPicviewback(String picviewback) {
+		this.picviewback = picviewback;
+	}
+
+	public String getPicside() {
+		return picside;
+	}
+
+	public void setPicside(String picside) {
+		this.picside = picside;
+	}
+
+	public String getPicside2() {
+		return picside2;
+	}
+
+	public void setPicside2(String picside2) {
+		this.picside2 = picside2;
+	}
+
+	public String getPictotal() {
+		return pictotal;
+	}
+
+	public void setPictotal(String pictotal) {
+		this.pictotal = pictotal;
+	}
+
+	public String getVideo1() {
+		return video1;
+	}
+
+	public void setVideo1(String video1) {
+		this.video1 = video1;
+	}
+
+	public String getVideo2() {
+		return video2;
+	}
+
+	public void setVideo2(String video2) {
+		this.video2 = video2;
+	}
+}

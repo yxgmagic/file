@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.IndicatorMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Indicator">
+		<id column="id" property="id" />
+		<result column="indicatorName" property="indicatorName" />
+		<result column="indicatorCategory" property="indicatorCategory" />
+		<result column="indicatorDescription" property="indicatorDescription" />
+		<result column="judgeRules" property="judgeRules" />
+		<result column="score" property="score" />
+		<result column="scoreMethod" property="scoreMethod" />
+		<result column="notes" property="notes" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, indicatorName, indicatorCategory, indicatorDescription, judgeRules, score, scoreMethod, notes
+    </sql>
+
+</mapper>

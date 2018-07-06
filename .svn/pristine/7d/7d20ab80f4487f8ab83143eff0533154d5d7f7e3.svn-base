@@ -1,0 +1,71 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <!--图片组件-->
+            <div id="banner"></div>
+
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>非现场执法序号</td>
+                        <td>${item.oseid}</td>
+                        <td>车牌号码</td>
+                        <td>${item.vehicleid}</td>
+                    </tr>
+                    <tr>
+                        <td>货车类型</td>
+                        <td>${item.vehicletype}</td>
+                        <td>轴数</td>
+                        <td>${item.axlesum}</td>
+                    </tr>
+                    <tr>
+                        <td>车速(km/h)</td>
+                        <td>${item.speed}</td>
+                        <td>车道</td>
+                        <td>${item.laneno}</td>
+                    </tr>
+                    <tr>
+                        <td>总重(kg)</td>
+                        <td>${item.totalweight}</td>
+                        <td>超限量(kg)</td>
+                        <td>${item.overlimited}</td>
+                    </tr>
+                    <tr>
+                        <td>检测站点</td>
+                        <td>${item.stationid}</td>
+                        <td>检测时间</td>
+                        <td>${item.osetimeString}</td>
+                    </tr>
+                    <tr>
+                        <td>视频</td>
+                        <td><img id="video_img" src="${ctxPath}/static/Resource/Images/shipin.jpg" alt="" class="img-responsive" style="cursor: pointer" onclick="BOseinfoInfoDlg.openVideo('${item.video1}')"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="退出" id="ensure" icon="fa-check" clickFun="BOseinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/bOseinfo/bOseinfo_info.js"></script>
+<link href="http://vjs.zencdn.net/6.6.3/video-js.css" rel="stylesheet">
+
+<!-- If you'd like to support IE8 -->
+<script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+<script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
+@}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.siteRegistration.UnloadingDAO">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, ulcode, ulname, address, sitecode, manager, managertel
+    </sql>
+    
+    <select id="selectUnloadingList" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+			from bs_unloading where 1=1
+		<if test="ulname != null and ulname != ''">
+			and ulname like CONCAT('%',#{ulname},'%')
+		</if>
+		<if test="address != null and address != ''">
+			and address like CONCAT('%',#{address},'%')
+		</if>
+		<if test="sitecode != null and sitecode != ''">
+			and sitecode like CONCAT('%',#{sitecode},'%')
+		</if>
+		<if test="manager != null and manager != ''">
+			and manager like CONCAT('%',#{manager},'%')
+		</if>
+		<if test="managertel != null and managertel != ''">
+			and managertel like CONCAT('%',#{managertel},'%')
+		</if>
+		
+	</select>
+	
+</mapper>

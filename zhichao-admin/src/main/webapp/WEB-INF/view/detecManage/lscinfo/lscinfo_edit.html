@@ -1,0 +1,74 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" value="${item.id}" underline="true"/>
+                            <#input id="checkno" name="检测单号" value="${item.checkno}" underline="true"/>
+                            <#input id="vehicleid" name="车牌号" value="${item.vehicleid}" underline="true"/>
+                            <#input id="axlesum" name="轴数" value="${item.axlesum}" underline="true"/>
+                            <#input id="weightlimited" name="车货限重" value="${item.weightlimited}" underline="true"/>
+                            <#input id="ratedtotalweight" name="车辆标记总质量" value="${item.ratedtotalweight}" underline="true"/>
+                            <#input id="ratedloading" name="核定载质量" value="${item.ratedloading}" underline="true"/>
+                            <#input id="overlimited" name="超限量" value="${item.overlimited}" underline="true"/>
+                            <#input id="overload" name="载量" value="${item.overload}" underline="true"/>
+                            <#input id="fctime" name="初检时间" value="${item.fctime}" underline="true"/>
+                            <#input id="fclaneno" name="初检车道号" value="${item.fclaneno}" underline="true"/>
+                            <#input id="fctotalweight" name="初检总重量" value="${item.fctotalweight}" underline="true"/>
+                            <#input id="fcoper" name="初检操作员" value="${item.fcoper}" underline="true"/>
+                            <#input id="fcaxle1" name="初检轴重1" value="${item.fcaxle1}" underline="true"/>
+                            <#input id="fcaxle2" name="初检轴重2" value="${item.fcaxle2}" underline="true"/>
+                            <#input id="fcaxle3" name="初检轴重3" value="${item.fcaxle3}" underline="true"/>
+                            <#input id="fcaxle4" name="初检轴重4" value="${item.fcaxle4}" underline="true"/>
+                            <#input id="fcaxle5" name="初检轴重5" value="${item.fcaxle5}" underline="true"/>
+                            <#input id="fcaxle6" name="初检轴重6" value="${item.fcaxle6}" underline="true"/>
+                            <#input id="fcaxle7" name="初检轴重7" value="${item.fcaxle7}" underline="true"/>
+                            <#input id="fcaxle8" name="初检轴重8" value="${item.fcaxle8}" underline="true"/>
+                            <#input id="fclength" name="初检车货总长" value="${item.fclength}" underline="true"/>
+                            <#input id="fcwidth" name="初检车货总宽" value="${item.fcwidth}" underline="true"/>
+                            <#input id="fcheight" name="初检车货总高" value="${item.fcheight}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="overlength" name="超长量" value="${item.overlength}" underline="true"/>
+                            <#input id="overwidth" name="超宽量" value="${item.overwidth}" underline="true"/>
+                            <#input id="overheight" name="超高量" value="${item.overheight}" underline="true"/>
+                            <#input id="rctime" name="复检时间" value="${item.rctime}" underline="true"/>
+                            <#input id="rclaneno" name="复检车道号" value="${item.rclaneno}" underline="true"/>
+                            <#input id="rctotalweight" name="复检总重量" value="${item.rctotalweight}" underline="true"/>
+                            <#input id="rcoper" name="复检操作员" value="${item.rcoper}" underline="true"/>
+                            <#input id="rcaxle1" name="复检轴重1" value="${item.rcaxle1}" underline="true"/>
+                            <#input id="rcaxle2" name="复检轴重2" value="${item.rcaxle2}" underline="true"/>
+                            <#input id="rcaxle3" name="复检轴重3" value="${item.rcaxle3}" underline="true"/>
+                            <#input id="rcaxle4" name="复检轴重4" value="${item.rcaxle4}" underline="true"/>
+                            <#input id="rcaxle5" name="复检轴重5" value="${item.rcaxle5}" underline="true"/>
+                            <#input id="rcaxle6" name="复检轴重6" value="${item.rcaxle6}" underline="true"/>
+                            <#input id="rcaxle7" name="复检轴重7" value="${item.rcaxle7}" underline="true"/>
+                            <#input id="rcaxle8" name="复检轴重8" value="${item.rcaxle8}" underline="true"/>
+                            <#input id="rclength" name="复检车货总长" value="${item.rclength}" underline="true"/>
+                            <#input id="rcwidth" name="复检车货总宽" value="${item.rcwidth}" underline="true"/>
+                            <#input id="rcheight" name="复检车货总高" value="${item.rcheight}" underline="true"/>
+                            <#input id="offload" name="已卸载量" value="${item.offload}" underline="true"/>
+                            <#input id="fcvehicleimage" name="初检车头图片" value="${item.fcvehicleimage}" underline="true"/>
+                            <#input id="rcvehicleimage" name="复检车头图片" value="${item.rcvehicleimage}" underline="true"/>
+                            <#input id="stationid" name="检测站号" value="${item.stationid}" underline="true"/>
+                            <#input id="prostatus" name="处理状态,0未违规,1以上为违规状态" value="${item.prostatus}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="LscinfoInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="LscinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo_info.js"></script>
+@}

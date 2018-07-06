@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BOseinfoMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, oseid, osetime, stationid, vehicleid, vehicletype, axlesum, speed, laneno, totalweight, overlimited, axle1, axle2, axle3, axle4, axle5, axle6, axle7, axle8, vehicleimage, vehicleimage1, vehicleimage2, videourl, prostatus, result, message, isshow
+    </sql>
+
+    <!--list页面和详情页面查询内容-->
+    <sql id="list_sql">
+        a.id, b.`sitename` AS stationid, a.`vehicleid`, a.`vehicletype`, a.`axlesum`, a.`totalweight`, a.`overlimited`, a.`osetime`,a.prostatus,
+        a.`oseid`, a.`speed`, a.`laneno`, a.`video1`
+    </sql>
+
+    <sql id="ose_site_column">
+        info.id,site.sitecode,site.sitename,site.certificate,site.certificate_url,site.certificate_validity_period,site.due_bank,site.bank_address,site.bank_account,
+        site.bank_account_name,site.judicial_organ,
+        info.oseid,DATE_FORMAT(info.osetime,'%Y-%m-%d %H:%i:%s') osetime,info.stationid,info.vehicleid,info.vehicletype,info.axlesum,
+        info.speed,info.laneno,info.totalweight,info.overlimited,info.axle1,info.axle2,info.axle3,info.axle4,info.axle5,info.axle6,info.axle7,info.axle8,info.videourl,
+        info.prostatus,info.result,info.message,info.isshow,info.picview,info.picplate,info.picviewback,info.picside,info.picside2,info.pictotal,info.video1,info.video2
+    </sql>
+
+
+    <select id="selList" resultType="com.zhichao.beans.guns.BOseinfo">
+        SELECT
+          <include refid="list_sql"/>
+        FROM
+          b_oseinfo a, bs_osesite b
+        WHERE
+          a.`stationid` = b.`sitecode`
+        AND overlimited <![CDATA[ > ]]> 0
+        <if test="vehicleid != null and vehicleid != ''">
+          AND a.vehicleid LIKE CONCAT('%',#{vehicleid},'%')
+        </if>
+        <if test="osetime != null and osetime != ''">
+          AND a.osetime BETWEEN #{begin} AND #{end}
+        </if>
+        <if test="stationid != null and stationid != ''">
+          AND a.stationid = #{stationid}
+        </if>
+        <if test="depts != null and depts != ''">
+          AND b.deptid IN
+        	<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+              #{item}
+        	</foreach>
+        </if>
+        <if test="id != null and id != ''">
+          AND a.id = #{id}
+        </if>
+
+	</select>
+
+    <select id="oseInfo" resultType="com.zhichao.beans.guns.BOseinfo">
+        SELECT
+        <include refid="list_sql"/>
+        FROM
+        b_oseinfo a, bs_osesite b
+        WHERE
+        a.`stationid` = b.`sitecode`
+        AND a.id = #{id}
+    </select>
+    <!-- 跳转到修改不停车预检数据管理时找图片 -->
+    <select id="getVehicleImages" resultType="map">
+        SELECT
+            picview,picplate,picviewback,picside,picside2,pictotal
+        FROM
+            b_oseinfo
+        WHERE
+          id = #{id}
+    </select>
+
+    <!-- 根据站点id获取数据 -->
+    <select id="calcStation" resultType="java.lang.Double">
+        (SELECT COUNT(id) / 10000 AS vehicleNum FROM b_oseinfo WHERE stationid = #{stationid})
+
+        UNION ALL
+
+        (SELECT COUNT(id) AS overloadNum FROM b_oseinfo WHERE stationid = #{stationid} AND prostatus != '0')
+
+        UNION ALL
+
+        (SELECT AVG(overlimited) / 1000 AS avgOverload FROM b_oseinfo WHERE stationid = #{stationid} AND prostatus != '0')
+
+        UNION ALL
+
+        SELECT CONVERT(
+        (
+        SELECT COUNT(id) AS overloadNum FROM b_oseinfo WHERE stationid = #{stationid} AND prostatus != '0'
+        )/(
+        SELECT COUNT(id) AS vehicleNum FROM b_oseinfo WHERE stationid = #{stationid}
+        ),
+        DECIMAL(10,4)) * 100 AS overloadPercentage;
+    </select>
+
+
+    <!-- 根据部门id获取数据 -->
+    <select id="calcDept" resultType="java.lang.Double">
+        SELECT COUNT(a.id) / 10000 AS calcArea FROM b_oseinfo a, bs_osesite b
+        WHERE a.stationid = b.sitecode
+        <if test="depts != null and depts != ''">
+            AND b.deptid IN
+            <foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+                #{item}
+            </foreach>
+        </if>
+
+        UNION ALL
+
+        SELECT COUNT(*) AS overloadNum FROM b_oseinfo a, bs_osesite b
+        WHERE a.stationid = b.sitecode
+        AND prostatus != '0'
+        <if test="depts != null and depts != ''">
+            AND b.deptid IN
+            <foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+                #{item}
+            </foreach>
+        </if>
+
+        UNION ALL
+
+        SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) AS avgOverload
+        FROM b_oseinfo a, bs_osesite b
+        WHERE a.stationid = b.sitecode
+        AND a.prostatus != '0'
+        <if test="depts != null and depts != ''">
+            AND b.deptid IN
+            <foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="findOseAndOseSiteInfo" resultType="java.util.Map">
+        SELECT
+            <include refid="ose_site_column"/>
+        FROM
+            bs_osesite site,
+            b_oseinfo info
+        WHERE
+            site.sitecode = info.stationid
+            and info.id = #{id}
+    </select>
+
+    <!--
+	    修改非现场执法检测站中的数据状态从
+		1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.驳回
+     -->
+    <update id="updateProstatus">
+        UPDATE b_oseinfo
+        SET prostatus = #{newstatus} WHERE 1 = 1
+        <if test="id != null and id != ''">
+            AND id = #{id}
+        </if>
+        <if test="checkno != null and checkno != ''">
+            AND oseid = #{checkno}
+        </if>
+        <if test="oldstatus != null and oldstatus != ''">
+            AND prostatus = #{oldstatus}
+        </if>
+    </update>
+
+</mapper>

@@ -1,0 +1,41 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+         
+                            <#input id="rfcode" name="报表代码" value="${item.rfcode}" underline="true"/>
+                            <#input id="rfname" name="报表名称" value="${item.rfname}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="rfdesc" name="报表说明" value="${item.rfdesc}" underline="true"/>
+                            <#input id="rfsrc" name="报表模板路径" value="${item.rfsrc}" />
+                              <label for="img_hidden" class="btn btn-primary"> <i
+								class="glyphicon glyphicon-upload"></i>&nbsp;上传模板
+							</label> <input type="file" id="img_hidden" style="display: none" />  
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="TemplatesInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="TemplatesInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/reportForm/templates/templates_info.js"></script>
+<script type="text/javascript">
+$("#img_hidden").change(function() {
+	 
+	 TemplatesInfoDlg.ajaxFileUploadDoc('img_hidden');
+});
+</script>
+@}

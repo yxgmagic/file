@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>video</title>
+    <meta charset="utf-8" />
+    <link href="./css/main.css" rel="stylesheet" />
+    <link href="./layui/css/layui.css" rel="stylesheet" />
+    <link href="./css/mycss.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+    <div class="body-nopadding">
+        <div class="layui-row ">
+            <div class="layui-col-md3 ibox-content margin-right-0 margin-top-30">
+                <div class="layui-tab-item layui-show" id="demo1"></div>
+            </div>
+            <div class="layui-col-md8">
+                <div class="ibox-content margin-top-30">
+                    <div class="layui-row text-center">
+                        <div class="layui-col-md5" style="border:1px solid;background-color:#8c8c8c;height:200px;margin:30px 38px 30px;">
+                            <img src="img/play.png" style="width:80px;margin-top:60px;" />
+                        </div>
+                        <div class="layui-col-md5 " style="border:1px solid;background-color:#8c8c8c;height:200px;margin-top:30px;">
+                            <img src="img/play.png" style="width:80px;margin-top:60px;" />
+                        </div>
+                        <div class="layui-col-md5" style="border:1px solid;background-color:#8c8c8c;height:200px;margin:0 38px 30px;">
+                            <img src="img/play.png" style="width:80px;margin-top:60px;" />
+                        </div>
+                        <div class="layui-col-md5 " style="border:1px solid;background-color:#8c8c8c;height:200px">
+                            <img src="img/play.png" style="width:80px;margin-top:60px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./layui/layui.all.js"></script>
+    <script src="./js/module.js"></script>
+    <script>
+        $('.cancel').on('click', function () {
+//            console.log(1)
+            Module.Box.CloseDialog()
+        });
+
+        layui.tree({
+            elem: '#demo1' //传入元素选择器
+	  , nodes: [{ //节点
+	      name: '湖南省公路局'
+		, children: [{
+		    name: '株洲市公路局'
+			, children: [{
+			    name: '株洲县公路局'
+                , children: [{
+                    name: '王家洲超限检测站'
+                }]
+			}, {
+			    name: '攸县公路局'
+		, children: [{
+		    name: '菜花坪超限检测站'
+		}]
+			}, {
+			    name: '茶陵县公路局'
+			}, {
+			    name: '炎陵县公路局'
+			}, {
+			    name: '石峰区'
+		  , children: [{
+		      name: '云龙超限检测站'
+		  }]
+			}, {
+			    name: '醴陵市公路局'
+		  , children: [{
+		      name: '蛇湖超限检测站'
+		  }]
+			}, {
+			    name: '荷塘区'
+		  , children: [{
+		      name: '黄陂田超限检测站'
+		  }]
+			}]
+		}]
+	  }]
+        });
+    </script>
+</body>
+</html>

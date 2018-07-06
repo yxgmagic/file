@@ -1,0 +1,55 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>立案办理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <form class="form-horizontal" data-toggle="validator" role="form">
+							<div class="form-group col-sm-6 col-xs-12">
+						    	<label for="casetime" class="col-sm-4 control-label">时间</label>
+						    	<div class="col-sm-7">
+						    		<input type="text" id="casetime" class="form-control">
+						    	</div>
+						  	</div>
+						  	
+						  	<div class="form-group col-sm-6 col-xs-12">
+						    	<label for="vehicleid" class="col-sm-4 control-label">车牌号：</label>
+						    	<div class="col-sm-7">
+						      		<input type="text" id="vehicleid" class="form-control">
+						    	</div>
+						  	</div>
+
+						  	<div class="form-group col-sm-6 col-xs-12">
+						    	<label for="caseno" class="col-sm-4 control-label">案件号</label>
+						    	<div class="col-sm-7">
+						    		<input type="text" id="caseno" class="form-control">
+						    	</div>
+						  	</div>
+							<div class="form-group col-sm-6 col-xs-12">
+								<label class="col-sm-4 control-label">案件状态：</label>
+								<div class="col-sm-7">
+									<#SelectDict id="prostatus" name="prostatus"
+										dictName="prostatus" dataStyle="btn" cssName="form-control"></#SelectDict>
+								</div>
+							</div>
+
+							<div class="row row-bottom">
+								<div class="text-center col-sm-12">
+									<#button name="查询" icon="fa-search" clickFun="Oefullinfo.search()" />
+								</div>
+							</div>
+					  	</form>
+					  	<#table id="OefullinfoTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/zc_js/common/common.js"></script>
+<script src="${ctxPath}/static/modular/lawEnforcement/oefullinfo/oefullinfo.js"></script>
+@}

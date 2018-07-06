@@ -1,0 +1,36 @@
+ @layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="流程ID" value="${item.id}" underline="true"/>
+                            <#input id="name" name="流程名称" value="${item.name}" underline="true"/>
+                            <#input id="flowJson" name="流程创建json" value="${item.flowJson}" underline="true"/>
+                            <#input id="createBy" name="创建人ID" value="${item.createBy}" underline="true"/>
+                            <#input id="createDate" name="创建时间" value="${item.createDate}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="updataBy" name="最后更新人ID" value="${item.updataBy}" underline="true"/>
+                            <#input id="updataDate" name="最后更新时间" value="${item.updataDate}" underline="true"/>
+                            <#input id="remark" name="备注" value="${item.remark}" underline="true"/>
+                            <#input id="state" name="状态 1 初始化 2 启动 3 废除" value="${item.state}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="FlowInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="FlowInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/zc_js/flow/flow_info.js"></script>
+@}

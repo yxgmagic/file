@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.HlcminfoMapper">
+
+ 
+ 
+<select id="listhlcminfo" resultType="Hlcminfo">
+	select * from b_hlcminfo where 1=1
+	<if test="sitename != null and sitename != ''">
+		and sitename like CONCAT('%',#{sitename},'%')
+	</if>
+	<if test="begindt != null and begindt != ''">
+		and fctime  <![CDATA[>=]]>CONVERT(#{begindt},datetime)
+	</if>
+	<if test="enddt != null and enddt != ''">
+		and fctime <![CDATA[<=]]>CONVERT(#{enddt},datetime)
+	</if>
+	<if test="areacode != null and areacode != ''">
+		and areacode =#{areacode}
+	</if>
+	<if test="sitetype != null and sitetype != ''">
+		and sitetype =#{sitetype}
+	</if>
+	<if test="checkmode != null and checkmode != ''">
+		and checkmode =#{checkmode}
+	</if>
+	<if test="vehicleid != null and vehicleid != ''">
+		and vehicleid =#{vehicleid}
+	</if>
+</select>
+    <select id="selCorpInfo" resultType="Corpinfo">
+    	SELECT
+			a.id, a.corpid, DATE_FORMAT(corptime,'%Y-%m-%d:%H:%i:%s')  as  strTime, a.vehicleid, 
+			a.vehicletype, a.axlesum, a.speed, a.laneno, 
+			a.totalweight, a.overlimited, b.corpname
+		FROM
+			b_corpinfo a, bs_corp b
+		WHERE
+			a.corpcode = b.corpcode
+		AND 
+			a.id = #{id}
+    </select>
+    
+    <select id="selHspInfo" resultType="Corpinfo">
+    	SELECT
+			a.id, a.hspid as corpid, DATE_FORMAT(a.hsptime,'%Y-%m-%d:%H:%i:%s')  as strTime, a.vehicleid,
+			 a.vehicletype, a.axlesum, a.speed, a.laneno, 
+			 a.totalweight, a.overlimited, b.sitename as corpname
+ 
+		FROM
+			b_hspinfo a, bs_presite b
+		WHERE
+			a.stationid = b.sitecode
+		AND 
+			a.id = #{id}
+    </select>
+
+	<select id="selMeinfoById" resultType="Corpinfo">
+		SELECT
+		a.id,
+		checkno AS corpid,
+		DATE_FORMAT(a.fctime,'%Y-%m-%d:%H:%i:%s') as strTime,
+		a.vehicleid,
+		'' as vehicletype,
+		axlesum,
+		0 as speed,
+		fclaneno as laneno,
+		fctotalweight as totalweight,
+		overlimited,
+		b.vehicleno as corpname
+		FROM
+		b_meinfo a,
+		bs_law_enforcecar b
+		WHERE a.vehicleno = b.vehicleno
+		AND a.id = #{id}
+	</select>
+		<select id="selLscinfoById" resultType="Corpinfo">
+	SELECT
+		a.id,
+		checkno AS corpid,
+		DATE_FORMAT(a.fctime,'%Y-%m-%d:%H:%i:%s') as strTime,
+		a.vehicleid,
+		'' as vehicletype,
+		axlesum,
+		0 as speed,
+		fclaneno as laneno,
+		fctotalweight as totalweight,
+		overlimited,
+		b.sitename as corpname
+		FROM
+		 b_lscinfo a,
+		 bs_fixedsite b
+	 where a.stationid=b.sitecode
+		AND a.id = #{id}
+	</select>
+</mapper>

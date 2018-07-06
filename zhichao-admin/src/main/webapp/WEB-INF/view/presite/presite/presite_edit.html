@@ -1,0 +1,239 @@
+﻿@layout("/common/_container.html"){
+
+<div class="ibox float-e-margins">
+	<form class="form-horizontal presiteform" data-toggle="validator"
+		  role="form" id="idPresiteForm">
+		<h2 class="margin-left-30">
+			<img src="${ctxPath}/static/Resource/Images/title.png"
+				 style="width: 25px;" />基础信息
+		</h2>
+
+		<div class="ibox-content">
+
+			<div class="form-horizontal ">
+
+				<input type="hidden" id="id" value="${item.id}">
+
+				<div class="row">
+
+
+					<div class="col-sm-2 b-r">
+						<div class="panel-body">
+							<img alt="photo" src="${ctxPath}/static/img/loading.gif"
+								 class="img-responsive center-block" id="img_show">
+						</div>
+						<div class="panel-body text-center">
+							营业执照图片 <label for="img_hidden" class="btn btn-primary"> <i
+								class="glyphicon glyphicon-upload"></i>&nbsp;上传图片
+						</label> <input type="file" id="img_hidden" style="display: none" /> <input
+								type="hidden" id="img_id" name="img_id" value="0"
+								style="display: none" /> <input type="hidden" value="presite"
+																id="imagetype">
+						</div>
+						<div class="hr-line-dashed"></div>
+					</div>
+					<div class="col-sm-5 b-r">
+
+						<#input id="sitename" name="*站点名称" value="${item.sitename}"
+						underline="true" />
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">*地理坐标</label>
+							<div class="col-sm-9 row">
+								<div class="col-sm-6" style="padding:2px;">
+									<label for="longitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">经</label>
+									<div class="col-sm-8" style="padding:0px;margin:0px;">
+										<input id="longitude" name="longitude" readonly class="form-control getcoor2" style="padding:2px;" type="text"/>
+									</div>
+								</div>
+								<div class="col-sm-6" style="padding:2px;">
+									<label for="latitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">纬</label>
+									<div class="col-sm-8" style="padding:0px;margin:0px;">
+										<input id="latitude" name="latitude" readonly class="form-control getcoor2" style="padding:2px;" type="text"/>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="hr-line-dashed"></div>
+						<#input id="longlimited" name="*限长(毫米)" value="${item.longlimited}"
+						underline="true" />
+
+
+
+						<#input id="heightlimited" name="*限高(毫米)" value="${item.heightlimited}"
+						underline="true" />
+						<div class="form-group">
+							<label class="col-sm-3 control-label">*检测方式</label>
+							<div class="col-sm-9">
+								<#SelectDict id="checkmode" dictName="checkmode" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<#input id="stakeNumber" name="*桩号" value="${item.stake_number}" underline="true" />
+
+					<#input id="precision" name="*误差" value="${item.precision}"
+					underline="true" />
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">*等级</label>
+						<div class="col-sm-9">
+							<#SelectDict id="sitelevel" dictName="sitelevel" dataStyle="btn"
+							cssName="form-control  "></#SelectDict>
+					</div>
+				</div>
+				<div class="hr-line-dashed"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">*管理路段</label> <input
+						id="areacode" name="所属行政区" type="hidden"
+						value="${item.areacode}" /> <input id="roadcode" name="所属行政区"
+														   type="hidden" value="${item.roadcode}" />
+					<div class="col-sm-9">
+						<div class="row">
+							<div class="col-sm-4">
+								<select id="Select1" name="Select1" class="form-control"
+										onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'1');"></select>
+							</div>
+							<div class="col-sm-4">
+								<select id="Select2" name="Select2" class="form-control"
+										onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'1');"></select>
+							</div>
+							<div class="col-sm-4">
+								<select id="Select3" name="Select3" class="form-control"
+										onchange="selectRoad(document.getElementById('roadcode'));"></select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-sm-5">
+
+				<#input id="sitecode2" name="站点顺序号" readonly="true" value="${item.sitecode}"
+				underline="true" />
+				<#input id="sitecode" name="唯一标识" readonly="true" value="${item.sitecode}"
+				underline="true" />
+
+				<#input id="widthlimited" name="*限宽(毫米)" value="${item.widthlimited}"
+				underline="true" />
+				<#input id="weightlimited" name="*最大称重(kg)" value="${item.weightlimited}"
+				underline="true" />
+
+				<#input id="checkdirection" name="检测方向"
+				value="${item.checkdirection}" underline="true" />
+				<#input id="manager" name="负责人" value="${item.manager}"
+				underline="true" />
+				<#input id="managertel" name="联系方式" value="${item.managertel}"
+				underline="true" />
+				<div class="form-group">
+					<label class="col-sm-3 control-label">*管理部门</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="deptName" name="deptName"
+							   type="text" readonly="readonly" value="${item.simplename}"
+							   onclick="PresiteInfoDlg.showDeptSelectTree(); return false;"
+							   style="background-color: #ffffff !important;"> <input
+							class="form-control" type="hidden" id="deptid" value="${item.deptid}">
+					</div>
+				</div>
+				<div class="hr-line-dashed"></div>
+
+			</div>
+		</div>
+</div>
+</div>
+
+
+<input type="hidden" id="roadwidth">
+
+<h4 class="margin-left-30">&nbsp;</h4>
+<h2 class="margin-left-30">
+	<img src="${ctxPath}/static/Resource/Images/title.png"
+		 style="width: 25px;" />检定证书
+</h2>
+
+<div class="ibox-content form-horizontal">
+
+	<div class="row">
+
+		<div class="col-sm-6 form-group">
+			<label class="col-sm-3 control-label">*检定证书:</label>
+			<div class="col-sm-6">
+				<a id="certificateA" href="javascript:showCertificate();"
+				   style="line-height: 34px;color: #00B83F;">暂无</a>
+				<input type="text" id="certificate" name="certificate" class="form-control" value="${item.certificate}"
+					   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+			</div>
+			<div class="col-sm-3">
+				<label for="file_input" class="btn btn-primary">
+					<i class="glyphicon glyphicon-upload"></i>&nbsp;重新上传
+				</label>
+				<input type="file" id="file_input" style="display: none"/>
+			</div>
+
+		</div>
+		<div class="col-sm-6 form-group">
+			<label class="col-sm-3 control-label">*检定证书有效期</label>
+			<div class="col-sm-9">
+				<input type="text" id="certificateValidityPeriod" class="form-control text-center"
+					   value="${item.certificate_validity_period}"/>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+<!-- 父级部门的选择框 -->
+<div id="parentDeptMenu" class="menuContent"
+	 style="display: none; position: absolute; z-index: 200;">
+	<ul id="parentDeptMenuTree" class="ztree tree-box"
+		style="width: 252px !important;"></ul>
+</div>
+<div class="row btn-group-m-t">
+	<div class="col-sm-12 text-center">
+		<#button btnCss="info" name="保存" id="ensure" icon="fa-check"
+		clickFun="PresiteInfoDlg.editSubmit()" />
+		<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"
+		clickFun="PresiteInfoDlg.close()" />
+	</div>
+</div>
+</div>
+</form>
+</div>
+
+<script
+		src="${ctxPath}/static/js/common/form-check.js"></script>
+<script src="${ctxPath}/static/modular/presite/presite/presite_info.js"></script>
+<script
+		src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<script type="text/javascript">
+    $("#sitelevel").val("${item.sitelevel}");
+    $("#checkmode").val("${item.checkmode}");
+    $("#longitude").val("${item.longitude}");
+    $("#latitude").val("${item.latitude}");
+
+
+    $("#sitecode2").val("${item.sitecode}".substring(2, 6));
+
+    var certificateUrl = "${item.certificate_url}";
+    var certificateValue = "${item.certificate}";
+
+    //显示证书
+    if(certificateValue.length > 0) {
+        $("#certificateA").text(certificateValue);
+    } else {
+        $("#certificateA").text("暂无");
+    }
+
+    //console.log(getseq("psitecode", "","","/sequence/getseqtest"));
+    //	console.log(getseq("fsitecode", "","","/sequence/getseq"));
+
+    //console.log(getseq("checktest", "HN9999","3","/sequence/getseq"));
+
+
+
+</script>
+
+@}

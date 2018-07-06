@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PCI数据管理</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+    <div class="body-nopadding">
+        <h2 class="margin-left-30">
+            <img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />PCI数据管理
+        </h2>
+        <div class="ibox-content margin-bottom-30">
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">管理部门：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <form class="layui-form">
+                            <select lay-verify="required">
+                                <option value="">株洲县公路局</option>
+                                <option value="">攸县公路局</option>
+                                <option value="">茶陵县公路局</option>
+                                <option value="">炎陵县公路局</option>
+                                <option value="">醴陵市公路局</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">检测路段：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <form class="layui-form">
+                            <select lay-verify="required">
+                                <option value="">S211线K31+500</option>
+                                <option value="">S211线K57+100</option>
+                                <option value="">S211线K31</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">检测时间：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <input type="text" class="layui-input" id="selectDateArea">
+                    </div>
+                </div>
+            </div>
+            <div class="text-center margin-top-30">
+                <button class="layui-btn">查询</button>
+            </div>
+        </div>
+        <div class="ibox-content margin-top-30">
+            <div class="text-right">
+                <button class="layui-btn  layui-btn-sm editor">更新数据</button>
+            </div>
+            <div class="layui-form">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">序号</th>
+                            <th>管理部门</th>
+                            <th>检测路段</th>
+                            <th>PCI指数</th>
+                            <th>检测时间</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>71.2</td>
+                            <td>2018-03-28</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">2</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>74.6</td>
+                            <td>2017-11-23</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">3</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>79.1</td>
+                            <td>2016-07-03</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">4</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>83.2</td>
+                            <td>2015-06-23</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">5</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>86.9</td>
+                            <td>2014-04-01</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">6</td>
+                            <td>株洲市公路局</td>
+                            <td>S211线K31</td>
+                            <td>88.3</td>
+                            <td>2013-01-20</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center" id="demo7"></div>
+            </div>
+        </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script>
+
+
+
+        //时间范围选择
+        layui.laydate.render({
+            elem: '#selectDateArea'
+            ,range: '~' //或 range: '~' 来自定义分割字符
+        });
+
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+            , layer = layui.layer;
+
+            //完整功能
+            laypage.render({
+                elem: 'demo7'
+              , count: 6
+              , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+              , jump: function (obj) {
+
+              }
+            });
+        });
+    </script>
+
+</body>
+</html>

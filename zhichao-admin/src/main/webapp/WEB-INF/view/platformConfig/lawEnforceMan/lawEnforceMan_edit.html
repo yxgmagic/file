@@ -1,0 +1,178 @@
+@layout("/common/_container.html"){
+	
+	<input type="hidden" id="id" value="${item.id}">
+    <form class="form-horizontal" data-toggle="validator" id="idLawEnforceManForm">
+        <div class="body-nopadding">
+            <h2 class="margin-left-30">详细信息</h2>
+            <div class="ibox-content">
+                <div class="layui-row">
+                    <div class="layui-col-md2 text-center">
+                    
+                    	<div class="panel-body">
+							<img alt="photo" src="${ctxPath}/static/img/loading.gif" class="img-responsive center-block" id="img_show">
+						</div>
+						<div class="panel-body text-center">
+							人员图片
+							<label for="img_hidden" class="btn btn-primary">
+								<i class="glyphicon glyphicon-upload"></i>&nbsp;上传图片
+							</label>
+							<input type="file" id="img_hidden" style="display: none" />
+							<input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+							<input type="hidden" value="lawEnforceMan" id="imagetype">
+						</div>
+                    
+                        <!-- <img src="${ctxPath}/static/Resource/Images/p1.jpg" id="photo" style="width:121px;"/>
+                        <div class="margin-top-10">
+                        	<button type="button" class="layui-btn" id="test1">
+	                            <i class="layui-icon">&#xe67c;</i>上传图片
+	                        </button>
+                        </div> -->
+                        
+                    </div>
+                    <div class="layui-col-md10">
+                        <div class="layui-row">
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemName" class="col-sm-4 control-label">姓名：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="lemName" name="lemName" class="form-control" >
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemSex" class="col-sm-4 control-label">性别：</label>
+                                <div class="col-sm-8">
+                                    <select id="lemSex" name="lemSex" class="form-control" ></select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemBirthday" class="col-sm-4 control-label">出生年月：</label>
+                                <div class="col-sm-8">
+                                    <input id="lemBirthday" name="lemBirthday" type="text" class="form-control" onclick="laydate({istime: false, format: 'YYYY-MM-DD'})" style="padding:7px;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemEduBg" class="col-sm-4 control-label">学历：</label>
+                                <div class="col-sm-8">
+                                    <select id="lemEduBg" name="lemEduBg" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemPoliticsStatus" class="col-sm-4 control-label">政治面貌：</label>
+                                <div class="col-sm-8">
+                                    <select id="lemPoliticsStatus" name="lemPoliticsStatus" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemIdCardNum" class="col-sm-4 control-label">身份证号：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="lemIdCardNum" name="lemIdCardNum" class="form-control" style="padding:7px;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md4 form-group">
+                                <label for="lawEnforcementAgencies" class="col-sm-4 control-label">执法单位名称：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="lawEnforcementAgencies" name="lawEnforcementAgencies" class="form-control" >
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemContact" class="col-sm-4 control-label">联系方式：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="lemContact" name="lemContact" class="form-control" >
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemDuty" class="col-sm-4 control-label">职务：</label>
+                                <div class="col-sm-8">
+                                    <select id="lemDuty" name="lemDuty" class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemGrade" class="col-sm-4 control-label">级别：</label>
+                                <div class="col-sm-8">
+                                    <select id="lemGrade" name="lemGrade" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemNum" class="col-sm-4 control-label">工作编号：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="lemNum" name="lemNum" class="form-control" >
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md4 form-group">
+                                <label for="lemNum" class="col-sm-4 control-label">所属行政区域：</label>
+                                <div class="col-sm-8">
+                                    <input id="areacode" name="areacode" type="hidden" class="form-control" value="${item.areacode}"/>
+                                    <input id="roadcode" name="roadcode" type="hidden" class="form-control" />
+
+                                    <div class="col-sm-6" style="padding:0px 3px">
+                                        <select id="Select1" name="Select1"  class="form-control" style="padding:0px 3px"
+                                        onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'1');" ></select>  
+                                    </div>
+                                    <div class="col-sm-6" style="padding:0px 3px">
+                                        <select id="Select2" name="Select2" class="form-control" style="padding:0px 3px"
+                                        onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'1');" ></select>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="layui-btn" onclick="LawEnforceManInfoDlg.editSubmit()">保存</button>
+                    <button class="layui-btn layui-btn-primary cancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+
+    <script>
+        $('.cancel').on('click', function () {
+            Module.Box.CloseDialog()
+        });
+        
+        //给各个input赋值
+        
+        $("#lemName").val("${item.lemName}");
+        $("#lemBirthday").val("${item.lemBirthday}");
+        $("#lemIdCardNum").val("${item.lemIdCardNum}");
+        $("#lawEnforcementAgencies").val("${item.lawEnforcementAgencies}");
+        $("#lemContact").val("${item.lemContact}");
+        $("#lemNum").val("${item.lemNum}");
+
+        var lemSexValue = "${item.lemSex}";
+        var lemEduBgValue = "${item.lemEduBg}";
+        var lemPoliticsStatusValue = "${item.lemPoliticsStatus}";
+        var lemDutyValue = "${item.lemDuty}";
+        var lemGradeValue = "${item.lemGrade}";
+        var lemAreacodeValue = "${item.areacode}";
+        
+        
+    </script>
+
+
+
+<script src="${ctxPath}/static/modular/platformConfig/lawEnforceMan/lawEnforceMan_info.js"></script>
+@}
+
+

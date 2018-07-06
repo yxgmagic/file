@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.system.IndexDataDao">
+	
+	<select id="getFixedsiTetotalFlow" resultType="int">
+		
+		SELECT
+			count(a.id)
+		FROM
+			b_lscinfo a,
+			bs_fixedsite b
+			
+		WHERE
+		<if test="month1 != '' and month1 != null" >
+			YEAR(now()) = YEAR(a.fctime) AND
+			#{month1} = MONTH(a.fctime) AND
+		</if>
+
+		b.sitecode = a.stationid
+
+		AND b.deptid IN (
+			SELECT
+				id
+			FROM
+				sys_dept
+			WHERE
+		        1=0
+		<if test="userdeptid != '' and userdeptid != null" >
+			or pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+		</if>
+		);
+	
+	</select>
+	
+	<select id="getFixedsiOverloadFlow" resultType="int">
+		
+		SELECT
+			count(a.id)
+		FROM
+			b_lscinfo a,
+			bs_fixedsite b
+		WHERE
+		<if test="month1 != '' and month1 != null" >
+			YEAR(now()) = YEAR(a.fctime) and
+			#{month1} = MONTH(a.fctime) AND
+		</if>
+		 b.sitecode = a.stationid
+		AND a.prostatus > 0
+		AND b.deptid IN (
+			SELECT
+				id
+			FROM
+				sys_dept
+			WHERE
+			1=0
+			<if test="userdeptid != '' and userdeptid != null" >
+				or pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+			</if>
+		);
+		
+	</select>
+
+	<select id="getFixedsiteHandleCount" resultType="int">
+
+		SELECT
+		count(a.id)
+		FROM
+		b_lscinfo a,
+		bs_fixedsite b
+		WHERE
+		<if test="month1 != '' and month1 != null" >
+		    YEAR(now()) = YEAR(a.fctime) AND
+			#{month1} = MONTH(a.fctime) AND
+		</if>
+		  b.sitecode = a.stationid
+		AND a.prostatus > 1
+		AND b.deptid IN (
+		SELECT
+		id
+		FROM
+		sys_dept
+		WHERE
+		1=0
+		<if test="userdeptid != '' and userdeptid != null" >
+			or pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+		</if>
+		);
+	</select>
+	
+	<select id="getFixedsiteTotalUnloadWeight" resultType="int" >
+		SELECT
+		sum(a.unloadweight)
+		FROM
+		b_cargo_handling a,
+		bs_fixedsite b
+		WHERE
+		b.sitecode = a.stationid
+		<if test="month1 != '' and month1 != null" >
+			AND YEAR(now()) = YEAR(a.unloadtime)
+			AND #{month1} = MONTH(a.unloadtime)
+		</if>
+		AND b.deptid IN (
+		SELECT
+		id
+		FROM
+		sys_dept
+		WHERE
+		1=0
+		<if test="userdeptid != '' and userdeptid != null" >
+			or pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+		</if>
+		);
+	</select>
+	<!--获取车流量数据-->
+	<select id="getTrafficFlow" resultType="Map" >
+
+		select count(b.id) as sum,sum(case when b.prostatus > 0 then 1 else 0 end) as oversum
+		from bs_fixedsite a, b_lscinfo b, sys_dept c
+		where a.sitecode = b.stationid
+		and a.deptid = c.id
+		and a.deptid in
+		(select id from sys_dept where pids LIKE CONCAT('%[', #{userdeptid}, ']%') OR
+			id = #{userdeptid})
+		AND fctime
+		BETWEEN #{beginTime}
+		AND #{endTime}
+
+	</select>
+
+	<select id="getTrafficAxle" resultType="Map" >
+
+		SELECT
+			count(a.id) as count1,
+			axlesum
+		FROM
+			b_lscinfo a,
+			bs_fixedsite b
+		WHERE
+			b.sitecode = a.stationid
+		AND b.deptid IN (
+			SELECT
+				id
+			FROM
+				sys_dept
+			WHERE
+			1=0
+			<if test="userdeptid != '' and userdeptid != null" >
+				or pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+				or id = #{userdeptid}
+			</if>
+		)
+		AND
+		fctime BETWEEN #{beginTime}
+		AND #{endTime}
+		GROUP BY
+			axlesum
+
+	</select>
+
+	<!--判断该部门是否为用户所在部门-->
+	<select id="hasDeptidPermission" resultType="map">
+		select id from sys_dept where id = #{thatDeptid} and pids LIKE CONCAT('%[', #{userdeptid}, ']%')
+	</select>
+	<!--获取该部门的所有子部门-->
+	<select id="getChildsDepts" resultType="map">
+		select id,simplename from sys_dept where pid = #{thatDeptid}
+	</select>
+	<!--获取该部门的父级id-->
+	<select id="getParentDepts" resultType="map">
+		select pid as id,simplename from sys_dept where id = #{thatDeptid}
+	</select>
+
+</mapper>

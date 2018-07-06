@@ -1,0 +1,140 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+<form id="lawdocform">
+			<input type="hidden" id="id" value="${item.id}">
+
+			<div class="row">
+				<div class="col-sm-6 b-r">
+
+					<input id="ldcode" name="执法文书编号" value="${item.ldcode}"  type="hidden" />
+					<#input id="ldname" name="执法文书名称" value="${item.ldname}"
+						underline="true" />
+					<div class="form-group">
+						<label class="col-sm-3 control-label">执法文书类型</label>
+						<div class="col-sm-9">
+							<#SelectDict id="ldtype" dictName="ldtype" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+										<div class="form-group">
+						<label class="col-sm-3 control-label">执法文书状态</label>
+						<div class="col-sm-9">
+							<#SelectDict id="ldstatus" dictName="status" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+									<div class="hr-line-dashed"></div>
+				</div>
+
+				<div class="col-sm-6">
+
+
+
+	
+
+					<#input id="ldno" name="模板版本序号"  readonly="true" value="${item.ldno}"
+						underline="true" />
+					<#input id="ldfileurl" name="模板文件路径" readonly="true" value="${item.ldfileurl}" />
+					<label for="img_hidden" class="btn btn-primary"> <i
+								class="glyphicon glyphicon-upload"></i>&nbsp;上传模板
+							</label> <input type="file" id="img_hidden" style="display: none" />  
+				</div>
+			</div>
+
+			<div class="row btn-group-m-t">
+				<div class="col-sm-12 text-center">
+					<button class="btn btn-info"  name="保存"  id="ensure"  
+						onclick="LawDocInfoDlg.editSubmit()" >  <i class="fa fa-check"></i>&nbsp;保存</button>
+					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"
+						clickFun="LawDocInfoDlg.close()" />
+				</div>
+			</div>
+			</form>
+		</div>
+
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/lawdoc/lawDoc/lawDoc_info.js">
+
+
+</script>
+<script type="text/javascript">
+$("#ldtype").val("${item.ldtype}");
+$("#ldstatus").val("${item.ldstatus}");
+//监听上传按钮的改变事件
+$("#img_hidden").change(function() {
+	 
+	 LawDocInfoDlg.ajaxFileUploadDoc('img_hidden');
+});
+
+/*
+	function ajaxFileUploadDoc() {
+		var index = layer.load(1, {
+			shade : [ 0.1, '#fff' ] //0.1透明度的白色背景
+		});
+
+		Array.prototype.contains = function(item) {
+			return RegExp("\\b" + item + "\\b").test(this);
+		};
+		var formData = new FormData();
+		//从隐藏的file input中取值
+		formData.append("file", document.getElementById('img_hidden').files[0]);
+
+		formData.append("ldname", document.getElementById('ldname').value);
+		var ldno = parseInt(document.getElementById('ldno').value) + 1;
+
+		formData.append("ldno", ldno);
+
+		formData.append("id", document.getElementById('id').value);
+		var fileName = $("#img_hidden").val();
+		var suffix = fileName.substring(fileName.indexOf(".") + 1).toLowerCase();
+		var ext = [ 'doc', 'docx', 'wps' ];
+
+		//设置遮罩等待图片上传完成
+		if (ext.contains(suffix)) {
+
+			$.ajax({
+				type : "POST",
+				url : Feng.ctxPath + "/lawDoc/lawDocUpload",
+				data : formData,
+				async : false,
+				cache : false,
+				contentType : false,
+				processData : false,
+				success : function(data) {
+
+					if (data.code == 200) {
+
+
+						document.getElementById('ldfileurl').value = data.msg;
+						document.getElementById('ldno').value = (parseInt(document.getElementById('ldno').value) + 1);
+
+
+					} else {
+
+						Feng.info(data.msg);
+					}
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown, data) {
+					Feng.error("上传失败,请重试");
+				}
+			});
+			//删除图片遮罩
+
+		} else {
+
+			Feng.info("仅支持doc,docx格式,请重新选择");
+
+			layer.close(index);
+			return false;
+		}
+
+		layer.close(index);
+	}
+	*/
+</script>
+
+@}

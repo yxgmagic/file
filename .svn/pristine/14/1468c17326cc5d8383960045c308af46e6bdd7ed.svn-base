@@ -1,0 +1,265 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input id="id" type="hidden">
+            <input id="sitecode" class="layui-input" type="hidden"/>
+            <input type="hidden" id="trucksRuleName">
+            <input type="hidden" id="picplate">
+            <input type="hidden" id="picside">
+            <input type="hidden" id="picside2">
+            <input type="hidden" id="pictotal">
+            <input type="hidden" id="picview">
+            <input type="hidden" id="picviewback">
+            <input type="hidden" id="video1">
+            <input type="hidden" id="video2">
+            <input type="hidden" id="stationid">
+            <div class="row row-bottom-20">
+                <div class="layui-carousel" id="photo" style="margin: auto">
+                    <div carousel-item="" id="img_box">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>检测单号</td>
+                        <td>
+                            <input id="checkno" class="layui-input" readonly="readonly"/>
+                        </td>
+                        <td>车牌号</td>
+                        <td>
+                            <input id="vehicleid"  class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>超限量(kg)</td>
+                        <td>
+                            <input id="overlimited" class="layui-input"/>
+                        </td>
+                        <td>超长量(mm)</td>
+                        <td>
+                            <input id="overlength" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>超宽量(mm)</td>
+                        <td>
+                            <input id="overwidth" class="layui-input"/>
+                        </td>
+                        <td>超高量(mm)</td>
+                        <td>
+                            <input id="overheight" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>轴数</td>
+                        <td>
+                            <input id="axlesum" class="layui-input"/>
+                        </td>
+                        <td>车货限重(kg)</td>
+                        <td>
+                            <input id="weightlimited" class="layui-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>初检重量(kg)</td>
+                        <td>
+                            <input id="fctotalweight" class="layui-input"/>
+                        </td>
+
+                        <td>复检总质量(kg)</td>
+                        <td>
+                            <input id="rctotalweight" readonly="readonly" class="layui-input"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>初检时间</td>
+                        <td>
+                            <input id="ftimeString" readonly="readonly" class="layui-input"/>
+                        </td>
+                        <td>复检时间</td>
+                        <td>
+                            <input id="rtimeString" readonly="readonly" class="layui-input"/>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+                <!--<table class="layui-table">-->
+                    <!--<colgroup>-->
+                        <!--<col width="150">-->
+                        <!--<col width="200">-->
+                        <!--<col width="150">-->
+                        <!--<col width="200">-->
+                    <!--</colgroup>-->
+                    <!--<tr>-->
+                        <!--<td>检测单号</td>-->
+                        <!--<td>-->
+                            <!--<input id="checkno" class="layui-input" readonly="readonly"/>-->
+                        <!--</td>-->
+                        <!--<td>车牌号</td>-->
+                        <!--<td>-->
+                            <!--<input id="vehicleid"  class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>轴数</td>-->
+                        <!--<td>-->
+                            <!--<input id="axlesum" class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>初检重量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="fctotalweight"  class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>超限量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="overlimited"  class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>超载量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="overload" class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>初检车货总长(mm):</td>-->
+                        <!--<td>-->
+                            <!--<input id="fclength"  class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>超长量(mm)</td>-->
+                        <!--<td>-->
+                            <!--<input id="overlength" class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>初检车货总宽(mm)</td>-->
+                        <!--<td>-->
+                            <!--<input id="fcwidth" class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>超宽量(mm)</td>-->
+                        <!--<td>-->
+                            <!--<input id="overwidth"  class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>初检车货总高(mm)</td>-->
+                        <!--<td>-->
+                            <!--<input id="fcheight"  class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>超高量(mm)</td>-->
+                        <!--<td>-->
+                            <!--<input id="overheight"  class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+
+                    <!--<tr>-->
+                        <!--<td>车货限重(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="weightlimited" class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>车辆标记总质量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="ratedtotalweight"  class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td>核定载质量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="ratedloading"  class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>复检总质量(kg)</td>-->
+                        <!--<td>-->
+                            <!--<input id="rctotalweight"  readonly="readonly" class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+
+                    <!--<tr>-->
+                        <!--<td>初检时间</td>-->
+                        <!--<td>-->
+                            <!--<input id="fctimeString" readonly="readonly" class="layui-input"/>-->
+                        <!--</td>-->
+                        <!--<td>复检时间</td>-->
+                        <!--<td>-->
+                            <!--<input id="rtimeString" readonly="readonly" class="layui-input"/>-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row btn-group-m-t">
+        <div class="col-sm-12 text-center">
+            <button class="layui-btn" onclick="getFirstLoadometerData()" >从地磅获取数据</button>
+            <!--<button class="layui-btn" >打印榜单</button>-->
+            <button class="layui-btn" onclick="LscinfoInfoDlg.addSubmit()">保存</button>
+            <button class="layui-btn layui-btn-primary cancel">取消</button>
+        </div>
+    </div>
+
+</div>
+
+<link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+<link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+<link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+
+<script type="text/javascript">
+
+    $('.cancel').on('click', function () {
+        Module.Box.CloseDialog()
+    });
+
+
+
+    var stationid;
+
+    $(function () {
+        $("#photo").hide();
+        var s = '${sequenceMap.sequence}';
+
+        if(s.length < 1) {
+            layer.msg("获取检测单号出错:sequence");
+            Module.Box.CloseDialog();
+            return;
+        } else {
+            $("#checkno").val(s);
+        }
+
+        var winOpen=Feng.GetFrame("/lscinfo");
+        if (winOpen!=undefined) {
+            stationid = winOpen.stationid;
+            if (stationid.length > 0) {
+                $("#stationid").val(stationid);
+            } else {
+                layer.msg("站点信息有误");
+                top.layer.close(winOpen.Lscinfo.layerIndex);
+            }
+        } else {
+            layer.msg("窗口信息有误:lscinfo_add");
+            Module.Box.CloseDialog();
+            return;
+        }
+
+    });
+
+</script>
+
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo_info.js"></script>
+@}

@@ -1,0 +1,145 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+			<div class="row">
+				<div class="col-sm-4 b-r">
+					站点类型：<select name="sitetype" id="sitetype" onchange="selectCity()">
+					<option value="0">所有</option>
+					<option value="1">不停车预检站</option>
+						<option value="2">源头企业检测站</option>
+						<option value="3">精检站</option>
+						<option value="4">移动执法车</option>
+					</select>
+					<div class="hr-line-dashed"></div>
+					   <#input id="fctime" name="初检时间" clickFun="laydate({istime: false, format: 'YYYY-MM-DD hh:mm:ss', type: 'datetime'})"/>
+					 
+					<#input id="ratedloading" name="核定载质量(千克)" value="0" readonly="true" underline="true" />
+					<#input id="fctotalweight" name="车货总重(千克)" value="0" underline="true" />
+					
+				</div>
+				<div class="col-sm-4 b-r">
+					站点名称：<select name="sitecode" id="sitecode"></select>
+					<div class="hr-line-dashed"></div>
+										 <div class="form-group">
+                                <label for="vehicletypename" class="col-sm-3 control-label">车型</label>
+                                <div class="col-sm-9">
+                                    <input id="vehicletypename" name="vehicletypename" class="form-control" 
+                                    	readonly="readonly" placeholder="单击选择车型轴数">
+                                    <input id="vehicletype" name="vehicletype" class="form-control" type="hidden">
+                                </div>
+                            </div> 
+					
+					<#input id="ratedtotalweight" name="车辆标记总质量(千克)"  value="0" underline="true" />
+				</div>
+				<div class="col-sm-4 b-r">
+					<#input id="vehicleid" name="车牌号" underline="true" />
+ 
+				<#input id="axlesum" name="轴数" value="0" readonly="true"  underline="true" />
+				 
+					<#input id="fclaneno" name="初检车道号" value="0" underline="true" />
+					
+				</div>
+			</div>
+
+			<div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="LscinfoInfoDlg.addSubmitSimulate()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="LscinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo_info.js"></script>
+ 
+ 
+<script type="text/javascript">
+  
+
+function getArealist(url) {
+	var areajson =null;
+    var ajax = new $ax(Feng.ctxPath + url, function (data) {
+    	areajson=data;
+    }, function (data) {
+        Feng.error("失败!" + data.responseJSON.message + "!");
+        
+    });
+ ajax.start();
+return areajson;
+ 
+};
+
+	var json;
+	var roadjson;
+    window.onload = function() {  
+	json= getArealist("/lscinfo/sitelist");
+	initArea();   
+    }  
+      
+   
+    function initArea() { 
+        var dropElement2=document.getElementById("sitecode");   
+        removeDropDownList(dropElement2);  
+        var cOption = document.createElement("option");  
+        cOption.value = "0";  
+        cOption.text = "所有";  
+        dropElement2.add(cOption);  
+    }  
+      
+
+    
+      
+    /** 
+     * 当选择一个市的时候自动的添加该市下的区县
+     */      
+    function selectCity() {  
+    	var dropElement1=document.getElementById("sitetype");   
+    	//获取选中项的内容  
+    	var sitetype1=dropElement1.options[dropElement1.selectedIndex].value;  
+    	var dropElement2=document.getElementById("sitecode");   
+    	removeDropDownList(dropElement2);  
+    	var cOption = document.createElement("option");  
+    	cOption.value = "";  
+    	cOption.text = "所有";  
+    	dropElement2.add(cOption);  
+
+    
+                for(var p in json){//遍历json数组时，这么写p为索引，0,1
+				   var sitecode2=json[p].sitecode;
+				   var sitename2=json[p].sitename;
+				   var sitetype2=json[p].sitetype;;
+               	   if(sitetype1==sitetype2){
+	               	  var pOption = document.createElement("option");  
+				          pOption.value = sitecode2;  
+				          pOption.text = sitename2;  
+				          dropElement2.add(pOption);
+               	   }
+               }//for
+ 
+    }  
+      
+
+    
+      
+      
+    /* 清除下拉框的选项 */  
+    function removeDropDownList(obj) {  
+        //如果obj不为空的时候  
+        if(obj) {  
+            var length = obj.options.length;  
+            if(length > 0) {  
+                for(var i=length;i >= 0;i--) {  
+                    obj.remove(i);  
+                }  
+            }  
+        }  
+    }  
+      
+ 
+</script>
+@}

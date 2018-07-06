@@ -1,0 +1,64 @@
+package com.zhichao.dal.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhichao.beans.guns.Lscinfo;
+
+/**
+ * <p>
+  * 精检站数据表 Mapper 接口
+ * </p>
+ *
+ * @author fengshuonan
+ * @since 2018-01-17
+ */
+@Repository
+public interface LscinfoMapper extends BaseMapper<Lscinfo> {
+	
+	List<Lscinfo> selList(@Param("page") Page<Lscinfo> page,@Param("depts") String depts,
+			@Param("stationid") String stationid,@Param("vehicleid") String vehicleid,
+						  @Param("chekStatus") String chekStatus,
+			@Param("fctime") String fctime,@Param("begin") String begin,
+			@Param("end") String end);
+
+
+	
+	//计算大屏数据(根据站点)
+	List<Double> calcStation(@Param("stationid") String stationid);
+	
+	//计算大屏数据(根据部门)
+	List<Double> calcArea(@Param("depts") String depts);
+	
+	//获取车辆图片
+	Map<String, Object> getVehicleImages(@Param("id") Integer id);
+	/**
+	 * 模拟数据取站点列表
+	 * @param entity
+	 * @param rtimeString
+	 * @return
+	 */
+	 List<Map<String, Object>> listSelect(); 
+	
+	/**
+	 * 修改精检站中状态
+	 * @param id 精检站数据id
+	 * @param checkno 检测单号
+	 * @param oldstatus 旧状态
+	 * @param newstatus 新状态
+	 */
+	Integer updateProstatus(@Param(value="id") Integer id, @Param(value="checkno") String checkno,
+			@Param(value="oldstatus") Integer oldstatus, @Param(value="newstatus") Integer newstatus);
+	
+	/**
+	 * 根据车牌号获取历史超限记录
+	 * @param vehicleid
+	 * @return
+	 */
+	List<Map<String, Object>> selHistoryListByVehicleid(@Param(value="vehicleid") String vehicleid);
+}

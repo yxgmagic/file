@@ -1,0 +1,296 @@
+﻿@layout("/common/_container.html"){
+<style>
+	.col-sm-12{ margin-bottom: 15px; }
+</style>
+
+<form id="oefullinfoform">
+
+	<!--这是非现场执法初次立案的页面-->
+
+	<div class="ibox float-e-margins">
+		<input type="hidden" value="${oseAndOseSiteInfo.id}" id="id">
+		<input type="hidden" value="${oseAndOseSiteInfo.prostatus}" id="prostatus">
+		<input type="hidden" value="${oseAndOseSiteInfo.osetime}" id="fctime">
+		<input type="hidden" value="${oseAndOseSiteInfo.totalweight}" id="fctotalweight">
+		<input type="hidden" value="${oseAndOseSiteInfo.totalweight - oseAndOseSiteInfo.overlimited}" id="ratedloading">
+		<input type="hidden" id="checkno" value="${oseAndOseSiteInfo.oseid}"/>
+		<!-- 案件信息 -->
+		<p class="min-title-desc">
+			案件信息
+		</p>
+		<div class="ibox-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="casetype" class="col-sm-3 control-label">案件类型：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="casetype" name="casetype" dictName="casetype" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="caseSource" class="col-sm-3 control-label">案件来源：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="caseSource" name="caseSource" dictName="caseSource" dataStyle="btn" cssName="form-control" defaultSelected="2"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="casegist" class="col-sm-3 control-label">案由：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="casegist" name="casegist" dictName="casegist" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+                    <div class="col-sm-3">
+                        <#input id="casetime" name="立案时间：" underline="false" />
+                    </div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="LawType" class="col-sm-3 control-label">*执法类型：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="LawType" name="LawType" dictName="LawType" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<#input id="withholdno" name="暂扣单号：" readonly="readonly" underline="false" />
+					</div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="accordance" class="col-sm-3 control-label">法律依据：</label>
+                            <div class="col-sm-9">
+                                <#SelectDict id="accordance" name="accordance" dictName="accordance" dataStyle="btn" cssName="form-control"></#SelectDict>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="t_violation" class="col-sm-3 control-label">违法类型：</label>
+                            <div class="col-sm-9">
+                                <#SelectDict id="t_violation" name="t_violation" dictName="t_violation" dataStyle="btn" cssName="form-control"></#SelectDict>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="illegalWay" class="col-sm-3 control-label">违法方式：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="illegalWay" name="illegalWay" dictName="illegalWay" dataStyle="btn" cssName="form-control" disabled="disabled"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="correct" class="col-sm-3 control-label">是否修正：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="correct" name="correct" dictName="correct" dataStyle="btn" cssName="form-control" disabled="disabled"></#SelectDict>
+							</div>
+						</div>
+					</div>
+				</div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="notes" class="col-sm-1 control-label">备注：</label>
+                        <div class="col-sm-11">
+                            <input type="text" class="form-control" id="notes">
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+
+		<!-- 司机信息 -->
+		<p class="min-title-desc">
+			司机信息
+		</p>
+		<div class="ibox-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="drivername" name="*司机姓名：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="driveridcard" name="*身份证号：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="driverphone" name="*电话：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="driverage" name="年龄：" underline="false"/>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">*性别：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="drivergender" name="drivergender" dictName="sex" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<#input id="qualificationid" name="*从业资格证号：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="driverres" name="司机户籍：" underline="false"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 车辆信息 -->
+		<p class="min-title-desc">
+			车辆信息
+		</p>
+		<div class="ibox-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="vehicleid" name="*车牌号：" value="${oseAndOseSiteInfo.vehicleid}" underline="false" readonly="readonly"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="driverid" name="*驾驶证号：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="drivinglicense" name="*行驶证号：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="bizcertid" name="*道路运输证号：" underline="false"/>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="lawpersonname" name="*法人姓名：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">*法人证件类型：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="lawpersonidtype" name="lawpersonidtype" dictName="idtype" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<#input id="lawpersonid" name="*法人证件号码：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">车型：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="vehicletype" name="vehicletype" dictName="trucksType" dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="departure" name="*出发地点：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="destination" name="*目的地区：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="bcnum" name="经营许可证：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">*货物名称：</label>
+							<div class="col-sm-9">
+								<#SelectDict id="cargoname" name="cargoname" dictName="itemName"  dataStyle="btn" cssName="form-control"></#SelectDict>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="axlesum" name="轴数：" value="${oseAndOseSiteInfo.axlesum}" underline="false" readonly="readonly"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 检测信息 -->
+		<p class="min-title-desc">
+			检测信息
+		</p>
+		<div class="ibox-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#select name="执法人1姓名" id="enforcername1" class="form-control"/>
+					</div>
+					<div class="col-sm-3">
+						<#select name="执法人2姓名" id="enforcername2" class="form-control"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="sitename" name="检测站点：" value="${oseAndOseSiteInfo.sitename}" readonly="readonly"  underline="false"/>
+						<input type="hidden" id="stationid" value="${oseAndOseSiteInfo.stationid}">
+                    </div>
+					<div class="col-sm-3">
+						<#input id="overlimited" name="超限量(kg)：" value="${oseAndOseSiteInfo.overlimited}" underline="false"/>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="due_bank" name="收款银行：" value="${oseAndOseSiteInfo.due_bank}" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="bank_address" name="银行地址：" value="${oseAndOseSiteInfo.bank_address}" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="bank_account" name="银行账号：" value="${oseAndOseSiteInfo.bank_account}" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="judicial_organ" name="审判机关：" value="${oseAndOseSiteInfo.judicial_organ}" underline="false"/>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="col-sm-3">
+						<#input id="shouldpay" name="应收罚款(元)：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="damageamount" name="*赔(补)偿费(元)：" underline="false"/>
+					</div>
+					<div class="col-sm-3">
+						<#input id="punishamount" name="*罚没收入(元)：" underline="false"/>
+					</div>
+				</div>
+				<!-- 保存按钮 -->
+				<div class="col-sm-12 text-center row-margin-tb30">
+					<button class="btn btn-info" id="ensure" onclick="OefullinfoInfoDlg.addSubmit()">
+						<i class='fa fa-check'></i>
+						<span>保存</span>
+					</button>
+					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"/>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script src="${ctxPath}/static/modular/lawEnforcement/oefullinfo/oefullinfo_info.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script>
+    $('#cancel').on('click', function () {
+        Module.Box.CloseDialog()
+    });
+    /**
+     * 关闭并刷新
+     */
+    function refushtable() {
+        var winOpen=Feng.GetFrame("/bOseinfo");
+        if (winOpen!==undefined){
+            winOpen.BOseinfo.table.refresh();
+            top.layer.close(winOpen.BOseinfo.layerIndex);
+        }
+    }
+
+</script>
+@}

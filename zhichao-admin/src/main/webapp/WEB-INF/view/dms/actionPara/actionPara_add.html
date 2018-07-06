@@ -1,0 +1,33 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="actid" name="数据服务步骤" underline="true"/>
+                            <#input id="paratype" name="参数类型:0引用，1替换值,2新建"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="paraid" name="功能参数" underline="true"/>
+                            <#input id="paracode" name="参数名" underline="true"/>
+                            <#input id="paravalue" name="参数替换值" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ActionParaInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ActionParaInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/actionPara/actionPara_info.js"></script>
+@}

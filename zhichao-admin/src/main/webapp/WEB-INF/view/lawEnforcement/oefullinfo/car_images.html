@@ -1,0 +1,50 @@
+ @layout("/common/_container.html"){
+ <div class="body-nopadding">
+    <div class="ibox-content margin-top-30">
+        <div class="layui-row margin-bottom-10">
+            <div class="layui-col-md12 text-center">
+                <div class="carousel">
+                    <div class="box_1">
+                        <img src="../../Resource/Images/truck.jpg" id="photo" />
+                        <img src="../../Resource/Images/truck.jpg" id="photo" />
+                        <img src="../../Resource/Images/truck.jpg" id="photo" />
+                        <img src="../../Resource/Images/truck.jpg" id="photo" />
+                    </div>
+                    <div class="left">
+                        <i class="layui-icon" style="font-size: 30px; color: #fff;line-height:50px;">&#xe603;</i>
+                    </div>
+                    <div class="right">
+                        <i class="layui-icon" style="font-size: 30px; color: #fff;line-height:50px;">&#xe602;</i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="../../Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="../../Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="../../Resource/Scripts/Js/modules/module.js"></script>
+<script>
+    $('.cancel').on('click', function () {
+        console.log(1)
+        Module.Box.CloseDialog()
+    });
+
+
+    var len = $(".box_1 img").length//得到图片个数
+    $(".box_1").width(1200 * len)//给图片盒子赋宽度值
+    //移动坐标从0到-545
+    $(".right").click(function () {
+        $(".box_1").stop().animate({ left: -545 }, 1000, function () {
+            $(".box_1 img:last").after($(".box_1 img:first"))//动画播放完毕后，将第一张图放在最后一张图的后面
+            $(".box_1").css("left", 0)//动画播放完毕后，将盒子坐标设置为0
+        })
+    })
+    $(".left").click(function () {
+        $(".box_1 img:first").before($(".box_1 img:last"))//把最后一张图放在第一张图前面
+        $(".box_1").css("left", -545)//设置坐标值为-545
+        $(".box_1").stop().animate({ left: 0 }, 1000)//坐标从-545到0
+    })
+</script>
+ @}

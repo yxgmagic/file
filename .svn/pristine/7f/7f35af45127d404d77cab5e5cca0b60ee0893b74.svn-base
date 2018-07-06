@@ -1,0 +1,211 @@
+package com.zhichao.admin.controller.detectManage;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhichao.service.common.constant.factory.PageFactory;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.detecManage.IMeinfoService;
+import com.zhichao.beans.guns.Meinfo;
+import com.zhichao.core.base.controller.BaseController;
+
+import cn.hutool.core.util.StrUtil;
+
+/**
+ * 流动执法车数据管理控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-01-22 09:59:56
+ */
+@Controller
+@RequestMapping("/meinfo")
+public class MeinfoController extends BaseController {
+
+	private String PREFIX = "/detecManage/meinfo/";
+
+	@Autowired
+	private IMeinfoService meinfoService;
+
+	/**
+	 * 跳转到流动执法车数据管理首页
+	 */
+	@RequestMapping("")
+	public String index(@RequestParam(value = "stationid", required = false) String stationid, Model model) {
+    	model.addAttribute("stationid",stationid);
+    	return PREFIX + "meinfo.html";
+    }
+
+	/**
+	 * 跳转到添加流动执法车数据管理
+	 */
+	@RequestMapping("/meinfo_add")
+	public String meinfoAdd(Model model) {
+
+		PubUtil pub= new PubUtil();
+		Map<String,Object> map = pub.getSequence("caseno" , "" , 0 , "checkno" , "b_meinfo");
+
+
+		model.addAttribute("checkno", map.get("sequence").toString());
+
+		return PREFIX + "meinfo_add.html";
+	}
+
+	/**
+	 * 跳转到修改流动执法车数据管理
+	 */
+	@RequestMapping("/meinfo_update/{meinfoId}")
+	public String meinfoUpdate(@PathVariable Integer meinfoId, Model model) {
+		
+		Meinfo meinfo = meinfoService.selById(meinfoId);
+		meinfo.setFcTimeString(YUtil.DateToString(meinfo.getFctime(), null));
+		
+		model.addAttribute("item",meinfo);
+		LogObjectHolder.me().set(meinfo);
+		return PREFIX + "meinfo_edit.html";
+	}
+
+	/**
+	 * 获取流动执法车数据管理列表
+	 */
+	@RequestMapping(value = "/list")
+	@ResponseBody
+	public Object list(@RequestParam(value = "vehicleid", required = false) String vehicleid, 
+			@RequestParam(value = "fctime", required = false) String fctime, 
+			@RequestParam(value = "depts", required = false) String depts) {
+
+		if(StrUtil.isBlank(depts)) {
+			return null;
+		}
+
+		Page<Meinfo> page = new PageFactory<Meinfo>().defaultPage();
+		List<Meinfo> result = meinfoService.selList(page, depts, vehicleid, fctime);
+		page.setRecords(result);
+		return super.packForBT(page);
+	}
+
+	/**
+	 * 获取大屏数据
+	 * @param depts 部门数组
+	 * @return
+	 */
+	@RequestMapping(value = "/getStatistics")
+	@ResponseBody
+	public Object getStatistics (@RequestParam(value = "depts", required = false) String depts) {
+
+		List<Double> list = meinfoService.statistics(depts);
+
+		return list;
+	}
+
+	/**
+	 * 跳转到修改不停车预检数据管理后查询图片信息
+	 * @param stat
+	 * @param va
+	 * @return
+	 */
+	@RequestMapping(value = "/getVehicleImages/{id}")
+	@ResponseBody
+	public Object getVehicleImages (@PathVariable(value = "id") Integer id) {
+
+		return meinfoService.getVehicleImages(id);
+	}
+
+
+	/**
+	 * 新增流动执法车数据管理
+	 */
+	@RequestMapping(value = "/add")
+	@ResponseBody
+	public Object add(Meinfo meinfo) {
+		meinfo.setFctime(YUtil.StringToDate(meinfo.getFcTimeString()));
+
+		PubUtil pub= new PubUtil();
+		Map<String,Object> map=pub.getSequence("checkno",meinfo.getVehicleno(), 0,"checkno","b_meinfo");
+
+		if(map.containsKey("ERROR")){
+			return map;
+		}else if(map.containsKey("sequence")){
+
+			meinfo.setCheckno(map.get("sequence").toString());
+
+			if(pub.isExistsSeqFromTableForUpdate("b_meinfo", "checkno", map.get("sequence").toString(),meinfo.getId())){
+
+				return "系统中已经存在相同编码的记录，编码为："+ map.get("sequence").toString() +",请检查编码生成规则";
+			}
+		}else {
+			return super.ERROR;
+		}
+
+		meinfoService.insert(meinfo);
+		return super.SUCCESS_TIP;
+	}
+
+
+	/**
+	 * 修改流动执法车数据管理
+	 */
+	@RequestMapping(value = "/update")
+	@ResponseBody
+	public Object update(Meinfo meinfo) {
+
+		meinfo.setFctime(YUtil.StringToDate(meinfo.getFcTimeString()));
+		
+		meinfoService.updateById(meinfo);
+		return super.SUCCESS_TIP;
+	}
+
+
+	@RequestMapping("/meinfo_preview/{meinfoId}")
+    public String lscinfoPreview(@PathVariable(value = "meinfoId") Integer meinfoId, Model model) {
+		
+    	Meinfo meinfo = meinfoService.selectById(meinfoId);
+    	meinfo.setFcTimeString(YUtil.DateToString(meinfo.getFctime(), null));
+        model.addAttribute("item",meinfo);
+        
+        LogObjectHolder.me().set(meinfo);
+        return PREFIX + "meinfo_preview.html";
+    }
+
+
+
+
+
+	/**
+	 * 删除流动执法车数据管理
+	 */
+	@RequestMapping(value = "/delete")
+	@ResponseBody
+	public Object delete(@RequestParam Integer meinfoId) {
+		meinfoService.deleteById(meinfoId);
+		return SUCCESS_TIP;
+	}
+
+	/**
+	 * 流动执法车数据管理详情
+	 */
+	@RequestMapping(value = "/detail/{meinfoId}")
+	@ResponseBody
+	public Object detail(@PathVariable("meinfoId") Integer meinfoId) {
+		return meinfoService.selectById(meinfoId);
+	}
+	
+	/**
+	 * 选择流动执法车
+	 * @return
+	 */
+	@RequestMapping("/openLawEnforcecar")
+	public String openLawEnforcecar() {
+		return PREFIX + "lawEnforcecar.html";
+	}
+}

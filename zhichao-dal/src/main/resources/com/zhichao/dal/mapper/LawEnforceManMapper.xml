@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.LawEnforceManMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.LawEnforceMan">
+		<id column="id" property="id" />
+		<result column="lem_name" property="lemName" />
+		<result column="lem_sex" property="lemSex" />
+		<result column="lem_birthday" property="lemBirthday" />
+		<result column="lem_edu_bg" property="lemEduBg" />
+		<result column="lem_politics_status" property="lemPoliticsStatus" />
+		<result column="lem_id_card_num" property="lemIdCardNum" />
+		<result column="law_enforcement_agencies" property="lawEnforcementAgencies" />
+		<result column="lem_contact" property="lemContact" />
+		<result column="lem_duty" property="lemDuty" />
+		<result column="lem_grade" property="lemGrade" />
+		<result column="lem_num" property="lemNum" />
+		<result column="areacode" property="areacode" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, lem_name AS lemName, lem_sex AS lemSex, lem_birthday AS lemBirthday, lem_edu_bg AS lemEduBg, lem_politics_status AS lemPoliticsStatus, lem_id_card_num AS lemIdCardNum, law_enforcement_agencies AS lawEnforcementAgencies, lem_contact AS lemContact, lem_duty AS lemDuty, lem_grade AS lemGrade, lem_num AS lemNum, areacode
+    </sql>
+
+</mapper>

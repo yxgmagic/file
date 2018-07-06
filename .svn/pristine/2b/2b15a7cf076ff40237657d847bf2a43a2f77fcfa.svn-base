@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.CargoHandlingMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.CargoHandling">
+		<id column="id" property="id" />
+		<result column="withholdno" property="withholdno" />
+		<result column="unloadno" property="unloadno" />
+		<result column="stationid" property="stationid" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="unloadtime" property="unloadtime" />
+		<result column="ulloadcode" property="ulloadcode" />
+		<result column="caseno" property="caseno" />
+		<result column="carowner" property="carowner" />
+		<result column="carownertel" property="carownertel" />
+		<result column="unloadweight" property="unloadweight" />
+		<result column="cargotype" property="cargotype" />
+		<result column="rtnumber" property="rtnumber" />
+		<result column="cpqnumber" property="cpqnumber" />
+		<result column="corpname" property="corpname" />
+		<result column="weightlimited" property="weightlimited" />
+		<result column="fctotalweight" property="fctotalweight" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, withholdno, unloadno, stationid, vehicleid, unloadtime, ulloadcode, caseno, carowner, carownertel, unloadweight, cargotype, rtnumber, cpqnumber, corpname, weightlimited, fctotalweight
+    </sql>
+    
+     <!-- 通用查询结果列2 -->
+    <sql id="Base_Column_List_2">
+        a.id as id,withholdno, unloadno, stationid, vehicleid, unloadtime, ulloadcode, caseno, carowner, carownertel, unloadweight, cargotype, rtnumber, cpqnumber, corpname, weightlimited, fctotalweight
+    	,b.sitename as fixedsitename, c.ulname as ulloadname
+    </sql>
+    
+    <!-- 根据条件查询数据 -->
+    <select id="selList" resultType="Map">
+		select
+		
+			a.id as id,unloadno,b.sitename as fixedsitename,vehicleid,unloadweight,unloadtime,c.ulname as ulloadname,withholdno
+		
+		from b_cargo_handling a, bs_fixedsite b, bs_unloading c 
+		where a.stationid = b.sitecode and a.ulloadcode = c.ulcode 
+		<if test="withholdno != null and withholdno != ''">
+			and withholdno like CONCAT('%',#{withholdno},'%')
+		</if>
+		<if test="unloadtime != null and unloadtime != ''">
+			and unloadtime between #{begin} AND #{end}
+		</if>
+		<if test="stationid != null and stationid != ''">
+			and stationid = #{stationid}
+		</if>
+		<if test="vehicleid != null and vehicleid != ''">			
+			and vehicleid LIKE CONCAT('%',#{vehicleid},'%')
+		</if>
+		
+		order by unloadtime DESC
+		
+	</select>
+	
+	<!-- 根据id查询数据 -->
+    <select id="selListById" resultType="Map">
+		select
+		<include refid="Base_Column_List_2"></include>
+		from b_cargo_handling a, bs_fixedsite b, bs_unloading c 
+		where a.stationid = b.sitecode and a.ulloadcode = c.ulcode
+		<if test="cargoHandlingId != null and cargoHandlingId != ''">
+			and a.id = #{cargoHandlingId}
+		</if>
+		
+	</select>
+	
+	<!-- 根据查询数据 -->
+    <select id="selListByWithholdno" resultType="Map">
+		select
+		<include refid="Base_Column_List_2"></include>
+		from b_cargo_handling a, bs_fixedsite b, bs_unloading c 
+		where a.stationid = b.sitecode and a.ulloadcode = c.ulcode
+		<if test="withholdno != null and withholdno != ''">
+			and a.withholdno = #{withholdno}
+		</if>
+		
+	</select>
+	
+	<select id="getInfoByStationid" resultType="Map">
+		
+		SELECT
+			DISTINCT c.ulcode,c.ulname,b.weightlimited,b.fctotalweight,a.sitecode,a.sitename,b.vehicleid
+		FROM
+			bs_fixedsite a,b_lscinfo b,bs_unloading c
+		WHERE
+			b.id = #{id} AND
+			b.stationid = a.sitecode AND
+			c.ulcode = a.unloadcode	
+		
+	</select>
+
+</mapper>

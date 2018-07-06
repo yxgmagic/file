@@ -1,0 +1,43 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="municipalForm">
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                	<#input id="areaname" name="行政区域名称" value="${item.areaname}" />
+	                <#select id="areatype" name="行政区域类别">
+					</#select>
+	                <#select id="pid" name="所属区域">
+	                	
+					</#select>       
+                </div>
+
+                <div class="col-sm-6">
+                	<#input id="areacode" name="行政区域代码" value="${item.areacode}" />
+               		<#input id="address" name="地理位置" value="${item.address}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="AreaInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="AreaInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+
+	//将拿到的值放到变量中，在后面再进行赋值到下拉菜单
+	var typeOptionValue = ${item.areatype};
+	var pidOptionValue = ${item.pid};
+
+
+</script>
+
+<script src="${ctxPath}/static/modular/platformConfig/municipal/municipal_info.js"></script>
+@}

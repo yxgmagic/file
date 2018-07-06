@@ -1,0 +1,109 @@
+﻿
+@layout("/common/_container.html"){
+    <title>首页</title>
+    <div class="body-nopadding">
+        <div class="layui-row">
+            <div class="layui-col-md3">
+                <div class="text-center box-top">
+                    <div class="height-20 titletext titlebg1">超载车数量</div>
+                    <div class="num num-bg1">
+                        <span class="numberShow">----</span>
+                        <span style="font-size:15px;">辆</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="text-center box-top">
+                    <div class="height-20 titletext titlebg2">当前车流数量</div>
+                    <div class="num num-bg2">
+                        <span class="numberShow">----</span>
+                        <span style="font-size:15px;">辆</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="text-center box-top">
+                    <div class="height-20 titletext titlebg3">处罚车数量</div>
+                    <div class="num num-bg3">
+                        <span class="numberShow">----</span>
+                        <span style="font-size:15px;">辆</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3">
+                <div class="text-center box-top">
+                    <div class="height-20 titletext titlebg4">卸货总量</div>
+                    <div class="num num-bg4">
+                        <span class="numberShow">----</span>
+                        <span style="font-size:15px;">吨</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right layui-col-md12" style="padding:10px 100px 10px 100px" id="noteBox">注:数据统计时间为本月第一天至今</div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-lg12" >
+                <div class="box-chart">
+                    <div class="chart height-20">
+                        <div class="shu shu1"></div>
+                        <span>流量统计</span>
+                        <div class="query">
+                       
+                            <input type="text" id="casetime1" class="layui-input date">
+                            
+                            <button class="layui-btn layui-btn-sm shu1" onclick="selTrafficFlow()">查询</button>
+                        </div>
+                    </div>
+                    <div id="time" style="width: 100%;height:400px;margin-top:30px;"></div>
+                </div>
+            </div>
+            <div class="layui-col-lg6 hidden">
+                <div class="box-chart">
+                    <div class="chart height-20">
+                        <div class="shu shu2"></div>
+                        <span>车轴数统计</span>
+                        <div class="query">
+                       
+                            <input type="text" id="casetime0" class="layui-input date">
+                            
+                            <button class="layui-btn layui-btn-sm shu1" onclick="getTrafficAxle()">查询</button>
+                        </div>
+                    </div>
+                    <div id="area" style="width: 100%;height:400px;margin-top:30px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-lg12">
+                <div class="box-chart">
+                    <div class="chart height-20">
+                        <div class="shu shu3"></div>
+                        <span>待办事项</span>
+                    </div>
+                    <div style="width: 100%;height:300px;overflow: scroll" id="noticeBox">
+                        <!--<div class="item">-->
+                            <!--<div class="tu"></div>-->
+                            <!--<span>待办事项信息待办事项信息待办事项信息</span>-->
+                            <!--<span class="new">new</span>-->
+                            <!--<span class="dt">2018.02.09</span>-->
+                        <!--</div>-->
+
+
+                        <!--<div class="more">-->
+                            <!--<button class="layui-btn layui-btn-sm shu3">查看更多 >></button>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/echarts.min.js"></script>
+    <script src="${ctxPath}/static/modular/index/index.js"></script>
+@}

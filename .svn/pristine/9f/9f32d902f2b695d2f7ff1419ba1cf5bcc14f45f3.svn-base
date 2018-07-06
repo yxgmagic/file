@@ -1,0 +1,92 @@
+﻿@layout("/common/_container.html"){
+
+<!--
+	树形选择框的样式
+-->
+<style>
+	#idStationStree {
+		position: absolute;
+		border:1px solid #ccc;
+		max-height: 280px;
+		width: 90%;
+		background-color: #FEFEFE;
+		z-index: 20;
+		border-radius: 5px;
+		display: none;
+	}
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>超载货物处理管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row form-horizontal">
+                        
+                        	<div class="col-sm-6 form-group">
+			                    <label for="withholdno" class="col-sm-4 control-label">暂扣单号</label>
+			                    <div class="col-sm-8">
+			                        <input id="withholdno" name="withholdno" type="text" class="form-control" />
+			                    </div>
+			                </div>
+			                <div class="col-sm-6 form-group">
+			                    <label for="stationidInput" class="col-sm-4 control-label">检测站点</label>
+			                    <div class="col-sm-8">
+			                        <input id="stationidInput" name="stationidInput" type="text" class="form-control" />
+			                        <input id="stationid" type="hidden"/>
+			                        <div id="idStationStree">
+			                        </div>
+			                    </div>
+			                </div>
+			                <div class="col-sm-6 form-group">
+			                    <label for="vehicleid" class="col-sm-4 control-label">车牌号码</label>
+			                    <div class="col-sm-8">
+			                        <input id="vehicleid" name="vehicleid" type="text" class="form-control" />
+			                    </div>
+			                </div>
+			                <div class="col-sm-6 form-group">
+			                    <label for="unloadtime" class="col-sm-4 control-label">卸货日期</label>
+			                    <div class="col-sm-8">
+			                        <input id="unloadtime" name="unloadtime" type="" class="form-control" onclick="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+			                    </div>
+			                </div>
+                            <div class="col-sm-12 text-center">
+                                <#button name="搜索" icon="fa-search" clickFun="CargoHandling.search()"/>
+                            </div>
+                        </div>
+                        
+                        <#table id="CargoHandlingTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/lawEnforcement/cargoHandling/cargoHandling.js"></script>
+<script type="text/javascript">
+		$("#CargoHandlingTable").on("click", function() {
+
+			var selected = $('#' + this.id).bootstrapTable('getSelections');
+		    if(selected.length == 0){
+		        Feng.info("请先选中表格中的某一记录！");
+		        return false;
+		    }else{
+				//console.log(selected[0].withholdno);
+				parent.$("#withholdno").val(selected[0].withholdno).change();
+		    	var index = parent.layer.getFrameIndex(window.name);//获取子窗口索引
+		        parent.layer.close(index); 
+		        
+		    }
+		
+		}); 
+		
+		function detailsFormatter() {
+			return "--";
+		}
+
+	</script>
+@}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BsOsesiteMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sitecode, sitename, longitude, latitude, address, areacode, roadcode, sitelevel, heightlimited, longlimited, widthlimited, weightlimited, precision, roadwidth, deptid, manager, managertel, checkmode, checkdirection, stake_number AS stakeNumber, certificate, certificate_url AS certificateUrl, certificate_validity_period AS certificateValidityPeriod
+    </sql>
+
+	<sql id="list">
+		o.*, d.fullname, r.roadname, a.areaname,d.simplename
+	</sql>
+
+	<select id="list" resultType="map">
+
+		SELECT
+			<include refid="list"/>
+		FROM
+			bs_osesite o,
+			sys_dept d,
+			bs_road r,
+			bs_area a
+		WHERE
+			o.deptid = d.id
+			AND o.areacode = a.areacode
+			AND o.roadcode = r.roadcode
+			AND o.deptid IN (
+				SELECT
+				id
+				FROM
+				sys_dept
+				WHERE
+				pids LIKE CONCAT('%[', #{userDeptid}, ']%')
+			)
+			<if test="sitename != null and sitename != ''">
+				and o.sitename like CONCAT('%',#{sitename},'%')
+			</if>
+			<if test="roadcode != null and roadcode != ''">
+				and o.roadcode = #{roadcode}
+			</if>
+			<if test="areacode != null and areacode != ''">
+				and o.areacode like CONCAT( #{areacode},'%')
+			</if>
+			<if test="id != null and id != ''">
+				and o.id = #{id}
+			</if>
+			order by o.buildTime desc
+		<!-- 日期:2018年6月7日 将此代码注释.使用上方的代码完成业务 -->
+		<!--select a.*,b.name as sitelevelname,c.areaname,d.roadname,e.simplename
+		,f.name as checkmodename
+		from bs_osesite a , sys_dict b,bs_area c,bs_road d ,sys_dept e ,sys_dict f
+		where a.sitelevel=b.num and b.pname='sitelevel'
+		and a.areacode=c.areacode
+		and a.roadcode=d.roadcode
+		and a.deptid=e.id
+		and a.checkmode=f.num and f.pname='checkmode'
+		and a.deptid in
+		(select id from sys_dept where pids LIKE CONCAT('%[', #{userDeptid}, ']%'))
+		<if test="id != null and id != ''">
+			and a.id = #{id}
+		</if>
+		<if test="sitename != null and sitename != ''">
+			and a.sitename like CONCAT('%',#{sitename},'%')
+		</if>
+		<if test="roadcode != null and roadcode != ''">
+			and a.roadcode like CONCAT( #{roadcode},'%')
+		</if>-->
+	</select>
+
+</mapper>

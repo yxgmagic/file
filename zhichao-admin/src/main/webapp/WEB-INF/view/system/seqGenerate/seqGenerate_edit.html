@@ -1,0 +1,54 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+
+			<input type="hidden" id="id" value="${item.id}">
+			<input id="id"   value="${item.id}" type="hidden"
+				  />
+			<input id="seqtype"   value="${item.seqtype}"
+				type="hidden"   />
+			<div class="row">
+				 
+
+			 
+
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">顺序号</label>
+						<div class="col-sm-9">
+							<#SelectDict id="seqnum" dictName="orderno" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+	 
+					<div class="form-group">
+						<label class="col-sm-3 control-label">检测方式</label>
+						<div class="col-sm-9">
+							<#SelectDict id="seqcol" dictName="seqcol" dataStyle="btn"
+							cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="form-group">
+						<#input id="seqlen" name="长度" value="${item.seqlen}" />
+					</div>
+				</div>
+
+				<div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure"
+						icon="fa-check" clickFun="SeqGenerateInfoDlg.editSubmit()" />
+                    <#button btnCss="danger" name="取消" id="cancel"
+						icon="fa-eraser" clickFun="SeqGenerateInfoDlg.close()" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/seqGenerate/seqGenerate_info.js"></script>
+<script>
+$("#seqnum").val("${item.seqnum}");
+$("#seqcol").val("${item.seqcol}");
+</script>
+@}

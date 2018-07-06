@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.compreAnalysis.CarAreaCountDao">
+
+	<!--<select id="calcStation" resultType="Integer">-->
+		<!--SELECT COUNT(id) AS calcStie FROM b_lscinfo WHERE prostatus <![CDATA[!=]]> 0-->
+	<!--</select>-->
+	<!---->
+
+    <!--<select id="selectListOverRun" resultType="map">-->
+			<!--select COUNT(vehicleid)  AS 'Number' ,LEFT(a.vehicleid, 1) AS 'SJC'-->
+			<!--FROM (-->
+			<!--select-->
+			<!--vehicleid,hsptime as timme,overlimited as ove-->
+			<!--FROM-->
+			<!--b_hspinfo-->
+			<!--UNION ALL-->
+			<!--select-->
+			<!--vehicleid,fctime as timme,overlimited as ove-->
+			<!--FROM-->
+			<!--b_lscinfo-->
+		<!--) AS a-->
+		<!--WHERE-->
+		<!--1=1 AND-->
+		<!--<if test="timme != null and timme != ''">-->
+			<!--timme BETWEEN #{start} AND #{end}-->
+		<!--</if>-->
+		<!--<if test="ove != null and ove != ''">-->
+			<!--and b.ove =#{ove}-->
+		<!--</if>-->
+			<!--GROUP BY LEFT(a.vehicleid,1) -->
+	<!--</select>-->
+	<!---->
+	<!--&lt;!&ndash; 案件区域统计 &ndash;&gt;-->
+	<!--<sql id="Base_OverRun_Area">-->
+		<!--b.sitename as 'sitename', COUNT(a.id) as 'number'-->
+	<!--</sql>-->
+	<!--<select id="selectAreaOverRun" resultType="map">-->
+		<!--select-->
+		<!--<include refid="Base_OverRun_Area" />-->
+			<!--FROM b_lscinfo a, bs_fixedsite b , b_oefullinfo c-->
+			<!--WHERE a.stationid = b.sitecode-->
+			<!---->
+		<!--<if test="fctime != null and fctime != ''">-->
+			<!--and a.fctime BETWEEN #{start} AND #{end}-->
+		<!--</if>-->
+		<!--<if test="violationlevel != null and violationlevel != ''">-->
+			<!--and c.violationlevel =#{violationlevel}-->
+		<!--</if>-->
+		<!--GROUP BY b.sitename-->
+	<!--</select>-->
+
+	<select id="selOverRunArea" resultType="map">
+		SELECT
+		LEFT(vehicleid, 1) AS 'sjc',
+		COUNT(id) AS 'number'
+		FROM b_oefullinfo
+		WHERE 1=1
+		<!--<if test="violationlevel != null and violationlevel != ''">-->
+			 <!--AND violationlevel =#{violationlevel}-->
+		<!--</if>-->
+		<if test="fctime != null and fctime != ''">
+			 AND casetime BETWEEN #{start} AND #{end}
+		</if>
+        <if test="level1 != null and level1 != ''">
+            AND ROUND( (overlimited/ratedloading*10000)/100 ) BETWEEN #{level1} AND #{level2}
+        </if>
+        <if test="stationid != null and stationid != ''">
+            AND stationid = #{stationid}
+        </if>
+		GROUP BY LEFT(vehicleid, 1)
+        ORDER BY COUNT(id)
+	</select>
+
+    <select id="selOverRunSite" resultType="map">
+        SELECT
+        c1.sitename, COUNT(a.id) AS 'Number'
+        FROM
+        b_oefullinfo a,
+        (select sitename from bs_fixedsite
+        UNION ALL
+        SELECT sitename from bs_osesite
+        ) as c1
+        WHERE a.sitename = c1.sitename
+        <if test="level1 != 0 and level2 != 0">
+            AND ROUND( (overlimited/ratedloading*10000)/100 ) BETWEEN #{level1} AND #{level2}
+        </if>
+        <if test="fctime != null and fctime != ''">
+            AND casetime BETWEEN #{start} AND #{end}
+        </if>
+
+        <if test="stationidArr != null and stationidArr.length > 0">
+            and a.sitename in
+            <foreach collection="stationidArr" item="item" separator="," open="(" close=")" index="index">
+                #{item}
+            </foreach>
+        </if>
+
+        GROUP BY c1.sitename
+        ORDER BY COUNT(a.id)
+    </select>
+	
+</mapper>

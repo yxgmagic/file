@@ -1,0 +1,118 @@
+package com.zhichao.generator.action.config;
+
+import java.io.File;
+
+import com.baomidou.mybatisplus.generator.config.rules.DbType;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
+/**
+ * 默认的代码生成的配置 - 拆分模块改动 yanjiangjie 2018-05-31
+ *
+ * @author fengshuonan
+ * @date 2017-10-28-下午8:27
+ */
+public class GunsGeneratorConfig2 extends AbstractGeneratorConfig {
+
+	public GunsGeneratorConfig2() {
+		setModels(new String[] { "zhichao-service", "zhichao-dal-java", "zhichao-dal-xml", "zhichao-beans" });
+	}
+
+	protected void globalConfig(String model) {
+		File file = new File(model);
+		String path = file.getAbsolutePath();
+		path = path.replace("\\zhichao-generator", "");
+		if("zhichao-dal-xml".equals(model)){
+			globalConfig.setOutputDir(path.replace("-xml", "") + "\\src\\main\\resources");
+		}else if("zhichao-dal-java".equals(model)){
+			globalConfig.setOutputDir(path.replace("-java", "") + "\\src\\main\\java");
+		}else{
+			globalConfig.setOutputDir(path + "\\src\\main\\java");
+		}
+		globalConfig.setFileOverride(true);// 是否覆盖
+		globalConfig.setEnableCache(false);// 二级缓存
+		globalConfig.setBaseResultMap(true);
+		globalConfig.setBaseColumnList(true);
+		globalConfig.setOpen(false);
+		globalConfig.setAuthor("yanxingui");// 需要配置 开发人员
+	}
+
+	protected void dataSourceConfig() {
+		dataSourceConfig.setDbType(DbType.MYSQL);// 数据库类型
+		dataSourceConfig.setDriverName("com.mysql.jdbc.Driver");// 驱动
+		dataSourceConfig.setUsername("root");// 用户名
+		dataSourceConfig.setPassword("Sa123654!");// 密码
+		dataSourceConfig.setUrl("jdbc:mysql://192.168.20.12/guns?characterEncoding=utf8");// 数据库连接路径
+	}
+
+	protected void strategyConfig() {
+		strategyConfig.setNaming(NamingStrategy.underline_to_camel);// 命名策略-下划线转驼峰命名
+		strategyConfig.setInclude(new String[] { "test_file" });// 需要配置 需要包含的表名
+	}
+
+	protected void packageConfig(String model) {
+		packageConfig.setParent("com.zhichao");
+		packageConfig.setController("admin.controller.testFile");//需要配置
+		packageConfig.setMapper("dal.testFile");//需要配置
+		packageConfig.setEntity("beans.testFile");//需要配置
+		packageConfig.setService("service.testFile");//需要配置
+		packageConfig.setServiceImpl("service.testFile.impl");//需要配置
+		packageConfig.setXml("dal.testFile");
+	}
+
+	protected void contextConfig(String model) {
+		File file = new File(model);
+		String path = file.getAbsolutePath();
+		path = path.replace("\\zhichao-generator\\" + model, "");
+		contextConfig.setProPackage("com.zhichao");
+		contextConfig.setCoreBasePackage("com.zhichao.core");
+		contextConfig.setBizChName("测试CRUD");//需要配置
+		contextConfig.setBizEnName("testFile");//需要配置
+		contextConfig.setModuleName("testFile");//需要配置
+		contextConfig.setProjectPath(path);// 写自己项目的绝对路径 模块拆分之后写父级项目
+		contextConfig.setEntityName("TestFile");//需要配置
+		sqlConfig.setParentMenuName(null);// 这里写已有菜单的名称,当做父节点
+
+		/**
+		 * mybatis-plus 生成器开关 contextConfig.setJsSwitch用来控制xml生成
+		 */
+        if ("zhichao-dal-java".equals(model)) {//dal-java
+    		contextConfig.setServiceSwitch(true);
+    		contextConfig.setEntitySwitch(true);
+    		contextConfig.setDaoSwitch(false);
+    		contextConfig.setJsSwitch(true);
+        } else if ("zhichao-dal-xml".equals(model)) {//dal-xml
+    		contextConfig.setServiceSwitch(true);
+    		contextConfig.setEntitySwitch(true);
+    		contextConfig.setDaoSwitch(true);
+    		contextConfig.setJsSwitch(false);
+        } else if ("zhichao-beans".equals(model)) {//beans
+    		contextConfig.setServiceSwitch(true);
+    		contextConfig.setEntitySwitch(false);
+    		contextConfig.setDaoSwitch(true);
+    		contextConfig.setJsSwitch(true);
+        }  else if ("zhichao-service".equals(model)) {//service
+    		contextConfig.setServiceSwitch(false);
+    		contextConfig.setEntitySwitch(true);
+    		contextConfig.setDaoSwitch(true);
+    		contextConfig.setJsSwitch(true);
+        } 
+		/**
+		 * adi 生成器开关
+		 */
+		contextConfig.setControllerSwitch(true);
+		contextConfig.setIndexPageSwitch(true);
+		contextConfig.setAddPageSwitch(true);
+		contextConfig.setEditPageSwitch(true);
+		contextConfig.setInfoJsSwitch(true);
+		contextConfig.setSqlSwitch(true);
+	}
+
+	@Override
+	protected void config(String model) {
+		globalConfig(model);
+		dataSourceConfig();
+		strategyConfig();
+		packageConfig(model);
+		contextConfig(model);
+	}
+}

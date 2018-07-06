@@ -1,0 +1,116 @@
+@layout("/common/_container.html"){
+<style>
+    #coorDiv {
+        width: 100%;
+        height: 318px;
+    }
+    #coorFrom{
+        margin-top: 20px;
+        text-align: right;
+    }
+    .coorLat, .coorLng{
+        width: 100px;
+        height: 30px;
+        padding-left: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .coorBtn {
+        cursor: pointer;
+        margin-left: 18px;
+        font-size: 14px;
+        color: #f9f9f9;
+        background-color: #333;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .coorTitle{
+        font-size: 14px;
+        font-family: "微软雅黑";
+        margin-left: 18px;
+    }
+</style>
+<div>
+    <div id="coorDiv"></div>
+    <div id="coorFrom">
+        <span class="coorTitle">坐标：</span>
+        <input type="text" readonly class="coorLng">
+        <input type="text" readonly class="coorLat">
+        <span class="coorBtn">确认</span>
+    </div>
+</div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.4&key=07d90f1910cb06705d375b35a38f6155"></script>
+<script>
+    var map = new AMap.Map('coorDiv',{
+        resizeEnable: true,
+        zoom: 14,
+        center: [ 113.151737, 27.835806 ]
+    });
+    AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.OverView'], function(){
+        map.addControl(new AMap.ToolBar());
+        map.addControl(new AMap.Scale());
+    });
+    var lng = '${lng}' || '';
+    var lat = '${lat}' || '';
+    var src = '${src}' || '';
+    var inputs = '${inputId}' || '';
+    var lngID = '${lngId}' || '';
+    var latID = '${latId}' || '';
+    var lnglatId = '${lnglat}' || '';
+//    console.log(JSON.parse(lnglatId));
+    var a = lnglatId && lnglatId != '' ? JSON.parse(lnglatId) : '';
+    var marker;
+    if(lng && lat){
+        map.setZoomAndCenter(13, [lng, lat]);
+        marker = new AMap.Marker({
+            position: [lng, lat]
+        });
+        $('.coorLng').val(lng);
+        $('.coorLat').val(lat);
+    } else {
+        var _lng_ = map.getCenter().lng;
+        var _lat_ = map.getCenter().lat;
+        marker = new AMap.Marker({
+            position: [ _lng_, _lat_ ]
+        });
+        $('.coorLng').val(_lng_);
+        $('.coorLat').val(_lat_);
+    }
+    marker.setMap(map);
+    AMap.event.addListener(map, 'click', function (e) {
+        var lnglat = new AMap.LngLat(parseInt(e.lnglat.lng), parseInt(e.lnglat.lng));
+        map.remove(marker);
+        marker = new AMap.Marker({
+            position: [e.lnglat.lng, e.lnglat.lat]
+        });
+        marker.setMap(map);
+        $('.coorLng').val(e.lnglat.lng);
+        $('.coorLat').val(e.lnglat.lat);
+    });
+
+
+    $(".coorBtn").on("click", function () {
+        var ifr = Feng.GetFrame(src);
+        if (lngID != '' && latID != '') {
+            var lngId = "#" + lngID;
+            var latId = "#" + latID;
+            ifr.$(lngId).val($('.coorLng').val());
+            ifr.$(latId).val($('.coorLat').val());
+        } else if (inputs != ''){
+            var inputId = "#" + inputs;
+            var lnid = "#" + a.lng;
+            var laid = "#" + a.lat;
+            console.log(inputId);
+            console.log($('.coorLng').val() + "," + $('.coorLat').val());
+            ifr.$(inputId).val($('.coorLng').val() + "," + $('.coorLat').val());
+            ifr.$(lnid).val($('.coorLng').val())
+            ifr.$(laid).val($('.coorLat').val());
+        }
+
+
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    })
+</script>
+
+@}

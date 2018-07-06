@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BsImageEntityMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.BsImageEntity">
+		<id column="id" property="id" />
+		<result column="imageid" property="imageid" />
+		<result column="entityid" property="entityid" />
+		<result column="imagetype" property="imagetype" />
+		<result column="userid" property="userid" />
+		<result column="validflag" property="validflag" />
+		<result column="opdate" property="opdate" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, imageid, entityid, imagetype, userid, validflag, opdate
+    </sql>
+    
+    <select id="findImg" resultType="Image" parameterType="map">
+    	SELECT b.*
+		FROM bs_image_entity a, bs_image b
+		WHERE a.imageid = b.id
+		AND a.entityid = #{id}
+		AND a.imagetype = #{imagetype}
+		AND a.validflag = '1'
+    </select>
+    
+    <update id="updateByEntityIdAndImageType" parameterType="map">
+		UPDATE bs_image_entity 
+		SET validflag = '0'
+		WHERE entityid = #{id}
+		AND imagetype = #{imageType}    
+    </update>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.platformConfig.AreaDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, areacode, areaname, arealetter, areatype, address
+    </sql>
+    
+    <select id="selectMunicipalList" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+			from bs_area where 1=1 
+		<if test="areaname != null and areaname != ''">
+			and areaname like CONCAT('%',#{areaname},'%')
+		</if>
+		<if test="areacode != null and areacode != ''">
+			and areacode like CONCAT('%',#{areacode},'%')
+		</if>
+		<if test="areatype != null and areatype != ''">
+			and areatype=#{areatype}
+		</if>
+		
+	</select>
+	
+	<select id="tree" resultType="com.zhichao.beans.node.ZTreeNodeArea">
+		select a.id,a.pid as pId,a.areacode,a.areaname as name,a.areaname,b.isactive,
+		(
+		CASE
+		WHEN (a.pId = 0 OR a.pId IS NULL) THEN
+			'true'
+		ELSE
+			'false'
+		END
+		) as isOpen from bs_area a ,v_sys_dept_area  b where a.areacode=b.areacode  and b.userid=${userid}
+	</select>
+	
+	<select id="selectByAreaCode" resultType="com.zhichao.beans.guns.Area">
+		select * from bs_area where 1=1
+		<if test="areacode != null and areacode != ''">
+			and areacode=#{areacode}
+		</if>
+		limit 0,1
+	</select>
+	
+	<!-- 省级信息 -->
+	<select id="selectAreaS" resultType="map">
+		select areaname, arealetter, areacode
+		from bs_area
+		where id = 1
+	</select>
+</mapper>

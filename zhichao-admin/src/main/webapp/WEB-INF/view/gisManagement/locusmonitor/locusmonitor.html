@@ -1,0 +1,313 @@
+@layout("/common/_container.html"){
+<style type="text/css">
+	.loc-box{
+		height: 100%;
+		width: 100%;
+		background-color: #fff;
+		margin: 0;
+		padding-top: 36px;
+	}
+	#map{
+		width: 100%;
+		height: 500px;
+	}
+</style>
+<div class="row loc-box">
+	<div class="col-sm-12">
+		<form class="form-horizontal row" data-toggle="validator" role="form">
+			<div class="form-group col-sm-6 col-xs-12">
+				<label for="type1" class="col-sm-4 control-label">执法类型</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="type1" id="type1">
+						<option value="0">请选择类型</option>
+						<option value="1">移动执法车</option>
+						<option value="2">移动单兵人员</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6 col-xs-12">
+				<label for="item" class="col-sm-4 control-label">执法单位</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="item" id="item">
+						<option value="">请选择执法单位</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-6 col-xs-12">
+				<label for="times" class="col-sm-4 control-label">时间</label>
+				<div class="col-sm-8">
+					<input class="form-control" name="times" id="times"></input>
+				</div>
+			</div>
+			<div class="form-group col-sm-12 col-xs-12">
+				<div class="col-sm-12 text-center">
+					<#button name="查询" icon="fa-search" id="search-btn"/>
+				</div>
+			</div>
+		</form>
+
+	</div>
+	<div class="col-sm-12" style="margin-bottom: 30px;">
+		<div id="map"></div>
+	</div>
+</div>
+
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.4&key=07d90f1910cb06705d375b35a38f6155"></script>
+<script type="text/javascript" src="http://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script src="${ctxPath}/static/modular/gisManagement/locusmonitor/locusmonitor.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#map").css("height", ($(window).height()-258)+"px");
+    });
+    $(window).resize(function(){
+        $("#map").css("height", ($(window).height()-258)+"px");
+    });
+
+    $('select#type1').change(function () {
+        if ($('select#type1').val() == 1) {
+            var str = "<option value=''>请选择执法单位</option><option value='1'>湘A·6886A</option><option value='2'>湘A·6887C</option>";
+            $('select#item')[0].innerHTML = str;
+        } else if ($('select#type1').val() == 0){
+            var str = "<option value=''>请选择执法单位</option>";
+            $('select#item')[0].innerHTML = str;
+        } else if ($('select#type1').val() == 2){
+            var str = "<option value=''>请选择执法单位</option><option value='1'>张武</option><option value='2'>李国福</option>";
+            $('select#item')[0].innerHTML = str;
+        } else {
+            return;
+        }
+    });
+
+
+    Yang.Tools.date_interval('times','datetime');
+
+    $('#search-btn').bind('click', function() {
+//        alert(1);
+        var type = $('#type1').val() || '';
+        var item = $('#item').val() || '';
+        var times = $('#times').val() || '';
+        if (type == null || type == '') {
+            Feng.info('请选择执法单位类型');
+        } else if (item == null || item == '') {
+            Feng.info('请选择执法单位');
+        } else if (times == null || times == ''){
+            Feng.info('请选择时间');
+        } else if (type == 1 && item == 1 && times != null && times != ''){
+            setLine({lineName: 'line1.json', times: times});
+        } else if (type == 1 && item == 2 && times != null && times != ''){
+            setLine({lineName: 'line2.json', times: times});
+        } else if (type == 2 && item == 1 && times != null && times != ''){
+            setLine({lineName: 'line3.json', times: times});
+        } else if (type == 2 && item == 2 && times != null && times != ''){
+            setLine({lineName: 'line4.json', times: times});
+        }
+    });
+
+    var map = new AMap.Map('map', {
+        resizeEnable: true,
+        zoom:11,
+        center: [113.132633,27.828804]
+    });
+	try {
+        AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
+
+            if (!PathSimplifier.supportCanvas) {
+                alert('当前环境不支持 Canvas！');
+                return;
+            }
+
+            // 轨迹的默认样式
+            var defaultRenderOptions = {
+                renderAllPointsIfNumberBelow: -1, //绘制路线节点，如不需要可设置为-1
+                pathLineStyle: {
+                    strokeStyle: '#18a689',
+                    lineWidth: 6,
+                    borderStyle: '#ffffff',
+                    borderWidth: 1,
+                    dirArrowStyle: true
+                }
+            }
+
+            var pathSimplifierIns = new PathSimplifier({
+                zIndex: 100, // 绘制用图层的叠加顺序值 。如果需要叠加在地图的最上层，可以设置一个较大的值，比如300
+                //autoSetFitView:false,
+                map: map, //所属的地图实例
+
+                getPath: function(pathData, pathIndex) { //返回轨迹数据中的路径信息
+                    var points = pathData.points,
+                        lnglatList = [];
+                    for (var i = 0, len = points.length; i < len; i++) {
+                        lnglatList.push(points[i].lnglat);
+                    }
+                    return lnglatList;
+                },
+                getHoverTitle: function(pathData, pathIndex, pointIndex) { // 返回鼠标悬停时显示的Title内容
+                    if (pointIndex >= 0) {
+                        //point
+                        return pathData.name + '，' + pathData.points[pointIndex].name;
+                    }
+                    return pathData.name;
+                },
+                renderOptions: defaultRenderOptions
+            });
+
+            window.pathSimplifierIns = pathSimplifierIns;
+
+            setLine();
+            // 点击路线
+            pathSimplifierIns.on('pointClick', function(e, info) {
+                console.log('Click: ' + info.pathData.points[info.pointIndex].name);
+            });
+        });
+	} catch(e) {
+        Feng.GetFrame('/locusmonitor').frameElement.contentWindow.location.reload(true);
+	}
+
+
+
+
+    function setLine(lineOptions) {
+//        console.log('lineOptions', lineOptions);
+		map.clearMap();
+        if (lineOptions) {
+            $.ajax({
+                type: 'GET',
+                timeout: '3000',
+                url: '${ctxPath}/static/map/line/'+ lineOptions.lineName,
+                async: false,
+                success: function (data) {
+//                    console.log('data',data);
+                    var time = handleTime(lineOptions.times);
+                    var doc = [];
+                    if (data.line) {
+                        var doc0 = {
+                            name: '',
+                            points: []
+                        };
+                        var points = data.line[0].points;
+                        doc0.name = data.line[0].name;
+                        for (var i = 0; i < points.length; i++) {
+//                            console.log(points);
+                            if (quiteTime(points[i].name, time.start) && quiteTime(time.end, points[i].name)) {
+//
+                                var m = {
+                                    name: points[i].name,
+                                    lnglat: points[i].lnglat
+                                };
+                                doc0.points.push(m);
+//                                console.log('point', doc0.points);
+                            }
+
+                        }
+
+                        if (doc0.points.length>2){
+//                            console.log('doc0.length>2');
+                            var marker1 = new AMap.Marker({
+                                position: doc0.points[0].lnglat,
+                                content: '<div style="background-color: #145eb8;color: #e6e6e6;width: 36px;height: 26px;text-align: center;line-height: 26px;border-radius: 4px;">起点</div>',
+                                map: map
+                            });
+                            var rNum = parseInt(doc0.points.length - 1);
+                            var marker2 = new AMap.Marker({
+                                position: doc0.points[rNum].lnglat,
+                                content: '<div style="background-color: #ff330c;color: #e6e6e6;width: 36px;height: 26px;text-align: center;line-height: 26px;border-radius: 4px;">终点</div>',
+                                map: map
+                            });
+						} else {
+                            Feng.info('时间段内无数据点！');
+						}
+                        doc.push(doc0);
+                        pathSimplifierIns.setData(doc);
+                        pathSimplifierIns.render();
+                    }
+                }
+            })
+        }
+    }
+
+    // 分割时间
+    function handleTime (time) {
+        if (time) {
+            var start = time.split('~')[0].trim();
+            var end = time.split('~')[1].trim();
+            return {
+                start: start,
+                end: end
+            }
+        } else {
+            return '';
+        }
+    }
+
+    // -------------------------------------
+    // 如果 time1 > time2  return true
+    // 如果 time1 < time2  return false
+    // There is a better way
+    // -------------------------------------
+    function quiteTime(time1, time2) {
+//        console.log(time1)
+        var ymd1 = time1.split(" ")[0].trim();
+        var ymd2 = time2.split(" ")[0].trim();
+        var hms1 = time1.split(" ")[1].trim();
+        var hms2 = time2.split(" ")[1].trim();
+        // time1 年月日时分秒
+        var y1 = parseInt(ymd1.split("-")[0].trim());
+        var m1 = parseInt(ymd1.split("-")[1].trim());
+        var d1 = parseInt(ymd1.split("-")[2].trim());
+        var h1 = parseInt(hms1.split(":")[0].trim());
+        var mi1 = parseInt(hms1.split(":")[1].trim());
+        var s1 = parseInt(hms1.split(":")[2].trim());
+        // time2 年月日时分秒
+        var y2 = parseInt(ymd2.split("-")[0].trim());
+        var m2 = parseInt(ymd2.split("-")[1].trim());
+        var d2 = parseInt(ymd2.split("-")[2].trim());
+        var h2 = parseInt(hms2.split(":")[0].trim());
+        var mi2 = parseInt(hms2.split(":")[1].trim());
+        var s2 = parseInt(hms2.split(":")[2].trim());
+        // 比较年份
+        if (y1 > y2) {
+            return true;
+        } else if (y1 < y2){
+            return false;
+        } else {
+            if (m1 > m2) {
+                return true;
+            } else if (m1 < m2) {
+                return false;
+            } else {
+                if (d1 > d2){
+                    return true;
+                } else if (d1 < d2) {
+                    return false;
+                } else {
+                    if (h1 > h2) {
+                        return true;
+                    } else if (h1 < h2){
+                        return false;
+                    } else {
+                        if (mi1 > mi2) {
+                            return true;
+                        } else if (mi1 < mi2) {
+                            return false;
+                        } else {
+                            if (s1 > s2 || s1 == s2){
+                                return true;
+                            } else{
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+//    console.log(newQuiteTime('2017-01-05 22:22:22', '2018-01-10 22:22:22'));
+//    function newQuiteTime(time1, time2) {
+//		var startTime = new Date(Date.parse(time1));
+//		var endTime = new Date(Date.parse(time2));
+//		return (startTime>=endTime)
+//    }
+</script>
+@}

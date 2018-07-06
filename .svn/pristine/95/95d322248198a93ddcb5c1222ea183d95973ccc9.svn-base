@@ -1,0 +1,110 @@
+package com.zhichao.admin.controller.perforeValue;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.perforevalue.IPeSiteIndicService;
+import com.zhichao.beans.guns.PeSiteIndic;
+import com.zhichao.core.base.controller.BaseController;
+
+/**
+ * 考评指标数据查询控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-03-06 11:39:35
+ */
+@Controller
+@RequestMapping("/peSiteIndic")
+public class PeSiteIndicController extends BaseController {
+
+    private String PREFIX = "/perforevalue/peSiteIndic/";
+
+    @Autowired
+    private IPeSiteIndicService peSiteIndicService;
+
+    /**
+     * 跳转到考评指标数据查询首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "peSiteIndic.html";
+    }
+
+    /**
+     * 跳转到添加考评指标数据查询
+     */
+    @RequestMapping("/peSiteIndic_add")
+    public String peSiteIndicAdd() {
+        return PREFIX + "peSiteIndic_add.html";
+    }
+
+    /**
+     * 跳转到修改考评指标数据查询
+     */
+    @RequestMapping("/peSiteIndic_update/{peSiteIndicId}")
+    public String peSiteIndicUpdate(@PathVariable Integer peSiteIndicId, Model model) {
+        PeSiteIndic peSiteIndic = peSiteIndicService.selectById(peSiteIndicId);
+        model.addAttribute("item",peSiteIndic);
+        LogObjectHolder.me().set(peSiteIndic);
+        return PREFIX + "peSiteIndic_edit.html";
+    }
+
+    /**
+     * 获取考评指标数据查询列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(@RequestParam(value = "assessName", required = false) String assess_id,
+                       @RequestParam(value = "indicType", required = false) String indicType,
+                       @RequestParam(value = "indicName", required = false) String indic_id,
+                       @RequestParam(value = "sitecode", required = false) String sitecode) {
+
+
+        return peSiteIndicService.selList(assess_id,indic_id,indicType,sitecode);
+    }
+
+    /**
+     * 新增考评指标数据查询
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(PeSiteIndic peSiteIndic) {
+        peSiteIndicService.insert(peSiteIndic);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除考评指标数据查询
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam Integer peSiteIndicId) {
+        peSiteIndicService.deleteById(peSiteIndicId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改考评指标数据查询
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(PeSiteIndic peSiteIndic) {
+        peSiteIndicService.updateById(peSiteIndic);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 考评指标数据查询详情
+     */
+    @RequestMapping(value = "/detail/{peSiteIndicId}")
+    @ResponseBody
+    public Object detail(@PathVariable("peSiteIndicId") Integer peSiteIndicId) {
+        return peSiteIndicService.selectById(peSiteIndicId);
+    }
+}

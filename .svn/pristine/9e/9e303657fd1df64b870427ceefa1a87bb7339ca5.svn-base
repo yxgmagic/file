@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.VehicleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Vehicle">
+		<id column="id" property="id" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="vehicletype" property="vehicletype" />
+		<result column="corpcode" property="corpcode" />
+		<result column="owneridtype" property="owneridtype" />
+		<result column="ownerid" property="ownerid" />
+		<result column="owername" property="owername" />
+		<result column="owertel" property="owertel" />
+		<result column="model" property="model" />
+		<result column="engineid" property="engineid" />
+		<result column="vin" property="vin" />
+		<result column="bizcertid" property="bizcertid" />
+		<result column="ratedtotalweight" property="ratedtotalweight" />
+		<result column="ratedloading" property="ratedloading" />
+		<result column="length" property="length" />
+		<result column="width" property="width" />
+		<result column="height" property="height" />
+		<result column="axlesum" property="axlesum" />
+		<result column="markVehicle" property="markVehicle" />
+		<result column="curbQuality" property="curbQuality" />
+		<result column="corpname" property="corpname" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, vehicleid, vehicletype, corpcode, owneridtype, ownerid, owername, owertel, model, engineid, vin, bizcertid, ratedtotalweight, ratedloading, length, width, height, axlesum, curbQuality, markVehicle
+    </sql>
+    
+    <!-- 查询所有源头企业 -->
+    <select id="queryVehicleByCondition" resultMap="BaseResultMap" parameterType="Vehicle">
+    	SELECT 
+    	a.id, a.vehicleid, a.vehicletype, a.corpcode, a.owneridtype, a.ownerid, a.owername,
+    	 a.owertel, a.model, a.engineid, a.vin, a.bizcertid, a.ratedtotalweight, 
+    	a.ratedloading, a.length, a.width, a.height, a.axlesum, a.curbQuality, a.markVehicle,
+    	b.corpname AS corpname
+		FROM bs_vehicle a, bs_corp b
+		WHERE a.corpcode = b.corpcode
+   		<if test="vehicleid != null and vehicleid != ''">
+   			AND a.vehicleid LIKE concat(concat('%',#{vehicleid}),'%')
+   		</if>
+   		<if test="owername != null and owername != ''">
+   			AND a.owername LIKE concat(concat('%',#{owername}),'%')
+   		</if>
+   		<if test="bizcertid != null and bizcertid != ''">
+   			AND a.bizcertid = #{bizcertid}
+   		</if>
+   		<if test="corpname != null and corpname != ''">
+   			AND b.corpname LIKE concat(concat('%',#{corpname}),'%')
+   		</if>
+   		<if test="owertel != null and owertel != ''">
+   			AND a.owertel = #{owertel}
+   		</if>
+   		ORDER BY a.id DESC
+    </select>
+
+	<!-- 根据主键id查询源头企业车辆管理详情 -->
+    <select id="selById" resultType="Vehicle" parameterType="int">
+    	SELECT a.id, a.vehicleid, a.vehicletype, a.corpcode, a.owneridtype, a.ownerid, a.owername,
+    	 a.owertel, a.model, a.engineid, a.vin, a.bizcertid, a.ratedtotalweight, 
+    	a.ratedloading, a.length, a.width, a.height, a.axlesum, a.curbQuality, a.markVehicle,
+    	b.corpname AS corpname
+		FROM bs_vehicle a, bs_corp b
+		WHERE a.corpcode = b.corpcode
+		AND a.id =  #{value}
+    </select>
+    
+    <!-- 车牌号唯一性校验 -->
+	<select id="vehicleidIsExist" resultType="int" parameterType="Vehicle">
+		SELECT COUNT(*)
+		FROM bs_vehicle
+		WHERE 1=1
+		<if test="id != null and id != ''">
+			AND id <![CDATA[!= ]]> #{id}
+		</if>
+		<if test="vehicleid != null and vehicleid != ''">
+			AND vehicleid = #{vehicleid}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,67 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <!--图片组件-->
+            <div id="banner"></div>
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>预检序号</td>
+                        <td>${item.hspid}</td>
+                        <td>车牌号码</td>
+                        <td>${item.vehicleid}</td>
+                    </tr>
+                    <tr>
+                        <td>货车类型</td>
+                        <td>${item.vehicletypeString}</td>
+                        <td>轴数</td>
+                        <td>${item.axlesum}</td>
+                    </tr>
+                    <tr>
+                        <td>车速(km/h)</td>
+                        <td>${item.speed}</td>
+                        <td>车道</td>
+                        <td>${item.laneno}</td>
+                    </tr>
+                    <tr>
+                        <td>车货总重(kg)</td>
+                        <td>${item.totalweight}</td>
+                        <td>超限量(kg)</td>
+                        <td>${item.overlimited}</td>
+                    </tr>
+                    <tr>
+                        <td>检测站点</td>
+                        <td>${item.sitename}</td>
+                        <td>检测时间</td>
+                        <td>${item.strTime}</td>
+                    </tr>
+                    <tr>
+                        <td>视频</td>
+                        <td><img id="video_img" src="${ctxPath}/static/Resource/Images/shipin.jpg" alt="" class="img-responsive" style="cursor: pointer" onclick="HspinfoInfoDlg.openVideo('${item.video1}')"/></td>
+                    </tr>
+                </table>
+                <input type="hidden" id="id" value="${item.id}">
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button name="确定" id="cancel" icon="fa-eraser" clickFun="HspinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="${ctxPath}/static/modular/detecManage/hspinfo/hspinfo_info.js"></script>
+<script>
+    console.log('${item.id}')
+</script>
+@}

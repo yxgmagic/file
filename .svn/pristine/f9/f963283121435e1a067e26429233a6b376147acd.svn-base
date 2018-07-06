@@ -1,0 +1,229 @@
+package com.zhichao.service.perforevalue.impl;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.perforevalue.IPeAssessplanService;
+import com.zhichao.beans.guns.PeAssessplan;
+import com.zhichao.beans.guns.QueryAssessInfoBO;
+import com.zhichao.beans.guns.QuerySiteOrIndicBO;
+import com.zhichao.dal.mapper.PeAssessplanMapper;
+
+/**
+ * <p>
+ * 考核计划表 服务实现类
+ * </p>
+ *
+ * @author fengshuonan
+ * @since 2018-02-28
+ */
+@Service
+public class PeAssessplanServiceImpl extends ServiceImpl<PeAssessplanMapper, PeAssessplan> implements IPeAssessplanService {
+
+    @Autowired
+    private PeAssessplanMapper mapper;
+
+    @Override
+    public List<PeAssessplan> selList(String assessName, String assessTime) {
+
+        assessName = YUtil.isNullOrEmptyReturnString(assessName,true);
+        assessTime = YUtil.isNullOrEmptyReturnString(assessTime, true);
+
+        //构造查询条件
+        EntityWrapper<PeAssessplan> ew = new EntityWrapper<>();
+        ew.where("1=1");
+
+        //判断考核计划名称是否为空
+        if (!YUtil.isNullOrEmpty(assessName, true)){
+            //如果考核名称不为空
+            ew.and("assessName = {0}", assessName);
+        }
+        //判断考核时间区间是否为空
+        String[] result = YUtil.LayerDateTimeSplit(assessTime, "~");
+        if (result != null){
+            ew.and("{0} <= startTime", result[0]).and("{0} >= endTime", result[1]);
+        }
+        //倒序
+        ew.orderBy("id");
+
+        //执行查询
+        List<PeAssessplan> list = mapper.selectList(ew);
+
+        //将查询结果进行数据统计
+        if (list != null){
+            for (PeAssessplan assessplan : list){
+                assessplan.setObjNum(mapper.selCount(assessplan.getId(), "pe_assess_site"));
+                assessplan.setIndicNum(mapper.selCount(assessplan.getId(), "pe_assess_indic"));
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public void save(String assessName, String assessTime, String assessObj, String assessIndic, String notes) {
+
+        //将PeAssessplan打包
+        PeAssessplan peAssessplan =  setPeAssessplan(assessName,assessTime,notes);
+
+        //保存
+        mapper.insert(peAssessplan);
+
+        //考核表id
+        Integer assess_id = peAssessplan.getId();
+
+        saveRelaTable(assess_id,assessObj,assessIndic, false);
+
+    }
+
+    @Override
+    public void edit(Integer id, String assessName, String assessTime, String assessObj, String assessIndic, String notes) {
+
+        //将PeAssessplan打包
+        PeAssessplan peAssessplan =  setPeAssessplan(assessName,assessTime,notes);
+        peAssessplan.setId(id);
+
+        //保存
+        mapper.updateById(peAssessplan);
+
+        saveRelaTable(id,assessObj,assessIndic, true);
+    }
+
+    @Override
+    public Map<String, Object> selById(Integer peAssessplanId) {
+        return  mapper.selById(peAssessplanId);
+    }
+
+    @Override
+    public Map<String, Object> selSiteOrIndic(String tp, String page, String id) {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        resultMap.put("page", page);
+        resultMap.put("id", id);
+        resultMap.put("tp", "site".equals(tp) ? "site" : "indic");
+
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> getSelData(String tp, String id) {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        //新增页面id默认为-1,如果为-1将id置空.动态sql拼接时将不会带id查询.即为查询所有
+        id = Integer.parseInt(id) == -1 ? null : id;
+
+        //未选择,已选择
+        List<QuerySiteOrIndicBO> selNotSelect =  null, selChose = null;
+
+        //判断是站点还是指标
+        if ("site".equals(tp)){
+
+            selNotSelect = mapper.selSite(id,"not");
+            //id == null,页面为新增,不需要查询已选中的内容
+            if (id != null){
+                selChose = mapper.selSite(id,null);
+            }
+        }else if ("indic".equals(tp)){
+
+            selNotSelect = mapper.selIndic(id, "not");
+            if (id != null){
+                selChose = mapper.selIndic(id, null);
+            }
+        }
+
+        resultMap.put("selNotSelect", selNotSelect);
+        resultMap.put("selChose", selChose);
+
+        return resultMap;
+    }
+
+    /**
+     * 为 PeAssessplan 赋值
+     * @param assessName 考核名称
+     * @param assessTime 考核时间
+     * @param notes 备注
+     * @return
+     */
+    private PeAssessplan setPeAssessplan(String assessName, String assessTime, String notes){
+        PeAssessplan peAssessplan =  new PeAssessplan();
+        peAssessplan.setAssessName(assessName);
+        peAssessplan.setNotes(notes);
+
+        //分割时间区间
+        String[] time = YUtil.LayerDateTimeSplit(assessTime, "~");
+        if (null != time && time.length == 2){
+            peAssessplan.setStartTime(YUtil.StringToDate(time[0]));
+            peAssessplan.setEndTime(YUtil.StringToDate(time[1]));
+        }
+        return peAssessplan;
+    }
+
+    /**
+     * 维护关系表,将站点 & 指标表中的数据与考核表建立联系
+     * @param assess_id 考核表id
+     * @param site_id 站点id
+     * @param indic_id 指标id
+     */
+    private void saveRelaTable(Integer assess_id, String site_id, String indic_id, boolean isEdit){
+
+        //判断是否为空,为空并且isEidt == true,即为修改时未重新修改考核对象或者考核指标
+        if (!YUtil.isNullOrEmpty(site_id, true)) {
+
+            String site[] = site_id.split(",");
+            //isEdit == true ,修改时先将之前的关系全部清空
+            if (isEdit){
+                //清空所有站点和考核计划的关系
+                mapper.delAllSiteOrIndicRela(assess_id, "pe_assess_site");
+            }
+            for (String i : site){
+                mapper.insertSite(assess_id,i);
+            }
+        }
+
+        if (!YUtil.isNullOrEmpty(indic_id,true)){
+
+            String indic[] = indic_id.split(",");
+            if (isEdit){
+                //清空所有指标和考核计划的关系
+                mapper.delAllSiteOrIndicRela(assess_id, "pe_assess_indic");
+            }
+            for (String i : indic){
+                mapper.insertIndic(assess_id, i);
+            }
+        }
+    }
+
+    @Override
+    public List<QueryAssessInfoBO> selAssessInfoByAssessId(String assId, String start, String end) {
+
+
+        //查询考核详情
+        List<QueryAssessInfoBO> assessInfoList = mapper.queryAssessInfo(assId);
+
+        if (null != assessInfoList){
+            //查询站点总分
+            assessInfoList.forEach(assess -> {
+                //总分
+                Integer score = mapper.sumScoreBySiteIdAndAssessId(assId, assess.getSiteId(), start, end);
+                score = score == null ? 0 : score;
+                assess.setScore(score);
+            });
+//            assessInfoList.forEach(ass -> System.out.println(ass.toString()));
+            assessInfoList.stream().sorted(Comparator.comparingInt(QueryAssessInfoBO::getScore));
+        }
+
+        return assessInfoList;
+    }
+
+
+}

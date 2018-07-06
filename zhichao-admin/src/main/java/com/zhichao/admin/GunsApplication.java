@@ -1,0 +1,52 @@
+package com.zhichao.admin;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.zhichao.jobCenter.JobApplication;
+
+import com.zhichao.admin.config.properties.GunsProperties;
+import com.zhichao.common.CommonApplication;
+import com.zhichao.core.CoreApplication;
+import com.zhichao.service.ServiceApplication;
+
+/**
+ * SpringBoot方式启动类
+ *
+ * @author zhichao
+ * @Date 2017/5/21 12:06
+ */
+@SpringBootApplication
+public class GunsApplication extends WebMvcConfigurerAdapter {
+
+    protected final static Logger logger = LoggerFactory.getLogger(GunsApplication.class);
+
+    @Autowired
+    GunsProperties GunsProperties;
+
+    /**
+     * 增加swagger的支持
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        if (GunsProperties.getSwaggerOpen()) {
+            registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+            registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        }
+    }
+
+    public static void main(String[] args) {
+    	Object[] objs = new Object[5];
+    	objs[0] = CommonApplication.class;
+    	objs[1] = CoreApplication.class;
+    	objs[2] = GunsApplication.class;
+    	objs[3] = ServiceApplication.class;
+    	objs[4] = JobApplication.class;
+    	SpringApplication.run(objs, args);
+        logger.info("GunsApplication is success!");
+    }
+}

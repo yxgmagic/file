@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ServerChainMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.ServerChain">
+		<id column="id" property="id" />
+		<result column="chainid" property="chainid" />
+		<result column="serverid" property="serverid" />
+		<result column="type" property="type" />
+		<result column="nums" property="nums" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, chainid, serverid, type, nums
+    </sql>
+
+</mapper>

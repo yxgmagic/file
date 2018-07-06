@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.siteRegistration.FixedsiteDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        bs_fixedsite.id, sitecode, sitename, sitelevel, longitude, latitude, bs_fixedsite.address, planarea, unloadarea, bs_fixedsite.areacode, roadcode, deptid, lawperson, lawpersontel, setbegindate, unloadcode, unloadperson, unloadpersontel, manager, managertel, approves, actuals, checks, contracts
+    </sql>
+    
+    <select id="selList" resultType="map">
+		select
+		<include refid="Base_Column_List" />,certificate , bs_fixedsite.deptpid as deptpid,
+		certificate_url AS certificateUrl,certificate_validity_period AS certificateValidityPeriod
+		,  areaname, simplename from bs_fixedsite, bs_area, sys_dept where 
+		bs_area.areacode = bs_fixedsite.areacode 
+		and sys_dept.id = bs_fixedsite.deptpid
+		and bs_fixedsite.deptid in
+		(select id from sys_dept where pids LIKE CONCAT('%[', #{userDeptid}, ']%'))
+		<if test="areacode != null and areacode != ''">
+			and bs_area.areacode like CONCAT('%',#{areacode},'%')
+		</if>
+		<if test="sitename != null and sitename != ''">
+			and sitename like CONCAT('%',#{sitename},'%')
+		</if>
+		<if test="manager != null and manager != ''">
+			and manager like CONCAT('%',#{manager},'%')
+		</if>
+		<if test="managertel != null and managertel != ''">
+			and managertel like CONCAT('%',#{managertel},'%')
+		</if>
+		<if test="roadcode != null and roadcode != ''">
+			and bs_fixedsite.roadcode like CONCAT('%',#{roadcode},'%')
+		</if>
+		
+	</select>
+	
+	
+</mapper>

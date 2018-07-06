@@ -1,0 +1,134 @@
+package com.zhichao.admin.imyzt;
+
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.zhichao.admin.base.BaseJunit;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.detecManage.IBOseinfoService;
+import com.zhichao.service.detecManage.ICorpinfoService;
+import com.zhichao.service.detecManage.IHspinfoService;
+import com.zhichao.service.detecManage.ILscinfoService;
+import com.zhichao.service.detecManage.IMeinfoService;
+import com.zhichao.beans.guns.BOseinfo;
+import com.zhichao.beans.guns.Corpinfo;
+import com.zhichao.beans.guns.Hspinfo;
+import com.zhichao.beans.guns.Lscinfo;
+import com.zhichao.beans.guns.Meinfo;
+
+/**
+ * 生成序号
+ */
+public class createCheckno extends BaseJunit {
+
+    @Autowired
+    private ILscinfoService lscinfoService;
+    @Autowired
+    private IHspinfoService hspinfoService;
+    @Autowired
+    private IBOseinfoService oseinfoService;
+    @Autowired
+    private ICorpinfoService corpinfoService;
+    @Autowired
+    private IMeinfoService meinfoService;
+
+    @Test
+    public void createNumberTest() {
+
+        long start = System.currentTimeMillis();
+
+          lsc();
+        hsp();
+        corp();
+        me();
+        ose();
+
+        System.out.println("总耗时: " + (System.currentTimeMillis() - start) / 1000 / 60 + "分");
+    }
+
+    //精检站
+    private void lsc(){
+        PubUtil pub= new PubUtil();
+        EntityWrapper<Lscinfo> ew = new EntityWrapper<>();
+        ew.where("checkno IS NULL");
+        List<Lscinfo> lscinfoList = lscinfoService.selectList(ew);
+        lscinfoList.forEach(lscinfo -> {
+            Map<String,Object> map = pub.getSequence("checkno" , lscinfo.getStationid(), lscinfo.getFclaneno() , "checkno" , "b_lscinfo");
+            String sequence = map.get("sequence").toString();
+            Lscinfo lsc = new Lscinfo();
+            lsc.setId(lscinfo.getId());
+            lsc.setCheckno(sequence);
+            lscinfoService.updateById(lsc);
+        });
+    }
+
+    //源头企业
+    private void corp(){
+        PubUtil pub= new PubUtil();
+        EntityWrapper<Corpinfo> ew = new EntityWrapper<>();
+        ew.where("corpid IS NULL");
+        List<Corpinfo> corpinfos = corpinfoService.selectList(ew);
+        corpinfos.forEach(corpinfo -> {
+            Map<String,Object> map = pub.getSequence("checkno" , corpinfo.getCorpcode() , corpinfo.getLaneno() , "corpid" , "b_corpinfo");
+            String sequence = map.get("sequence").toString();
+            Corpinfo corp = new Corpinfo();
+            corp.setId(corpinfo.getId());
+            corp.setCorpid(sequence);
+            corpinfoService.updateById(corp);
+        });
+    }
+
+    //流动执法车
+    private void me(){
+        PubUtil pub= new PubUtil();
+        EntityWrapper<Meinfo> ew = new EntityWrapper<>();
+        ew.where("checkno IS NULL");
+        List<Meinfo> meinfos = meinfoService.selectList(ew);
+        meinfos.forEach(meinfo -> {
+            Map<String,Object> map = pub.getSequence("checkno" , meinfo.getVehicleno() , meinfo.getFclaneno() , "checkno" , "b_meinfo");
+            String sequence = map.get("sequence").toString();
+            Meinfo me = new Meinfo();
+            me.setId(meinfo.getId());
+            me.setCheckno(sequence);
+            meinfoService.updateById(me);
+        });
+    }
+
+
+    //不停车预检站
+    private void hsp(){
+        PubUtil pub= new PubUtil();
+        EntityWrapper<Hspinfo> ew = new EntityWrapper<>();
+        ew.where("hspid IS NULL");
+        List<Hspinfo> hspinfoList = hspinfoService.selectList(ew);
+        hspinfoList.forEach(hspinfo -> {
+            Map<String,Object> map = pub.getSequence("hspid" , hspinfo.getStationid(), hspinfo.getLaneno() , "hspid" , "b_hspinfo");
+            String sequence = map.get("sequence").toString();
+            Hspinfo hsp = new Hspinfo();
+            hsp.setId(hspinfo.getId());
+            hsp.setHspid(sequence);
+            hspinfoService.updateById(hsp);
+        });
+    }
+
+    //非现场执法
+    private void ose(){
+        PubUtil pub= new PubUtil();
+        EntityWrapper<BOseinfo> ew = new EntityWrapper<>();
+        ew.where("oseid IS NULL");
+        List<BOseinfo> oseinfos = oseinfoService.selectList(ew);
+        oseinfos.forEach(oseinfo -> {
+            Map<String,Object> map = pub.getSequence("hspid" , oseinfo.getStationid(), oseinfo.getLaneno(), "oseid" , "b_oseinfo");
+            String sequence = map.get("sequence").toString();
+            BOseinfo ose = new BOseinfo();
+            ose.setId(oseinfo.getId());
+            ose.setOseid(sequence);
+            oseinfoService.updateById(ose);
+        });
+    }
+
+}

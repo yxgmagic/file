@@ -1,0 +1,41 @@
+@layout("/common/_container.html"){
+<style>
+    .cockpit-box{
+        display: block;
+        margin: 80px auto;
+        text-align: center;
+    }
+    .cockpit-box div{
+        font-family: "Microsoft JhengHei UI Light";
+        color: #2E2D3C;
+        font-size: 20px;
+        text-align: center;
+    }
+    .fly-box{
+        color: #e6e6e6;
+        font-family: "Microsoft JhengHei UI Light";
+        font-size: 18px;
+        width: 200px;
+        height: 33px;
+        line-height: 33px;
+        background-color: #1ab394;
+        border-radius: 8px;
+        display: inline-block;
+        cursor: pointer;
+        margin-top: 100px;
+        color: #e6e6e6!important;
+        box-shadow: 1px 1px 8px #999;
+    }
+    .fly-box:hover{
+        box-shadow: 1px 1px 12px #999;
+    }
+</style>
+<div class="row" xmlns="">
+    <div class="cockpit-box">
+        <img src="${ctxPath}/static/img/bin/loading.gif" alt="">
+        <div>驾驶舱模式加载中...</div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/bigdata/cockpit/cockpit.js"></script>
+@}
+

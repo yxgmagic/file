@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.TemplatesMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Templates">
+		<id column="id" property="id" />
+		<result column="rfcode" property="rfcode" />
+		<result column="rfname" property="rfname" />
+		<result column="rfdesc" property="rfdesc" />
+		<result column="rfsrc" property="rfsrc" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, rfcode, rfname, rfdesc, rfsrc
+    </sql>
+
+</mapper>

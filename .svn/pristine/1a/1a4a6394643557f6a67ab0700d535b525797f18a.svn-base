@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.compreAnalysis.CarVolumeCountDao">
+
+
+
+    <select id="getFlowChartData" resultType="map">
+    SELECT
+	    count(a.id) AS countFlow,
+        sum(
+            CASE
+            WHEN prostatus > 0 THEN
+                1
+            ELSE
+                0
+            END
+        ) AS countOver
+
+        <if test="dateType == 'year'" >
+            , YEAR (a.fctime) AS year1
+            , MONTH(a.fctime) AS month1
+        </if>
+        <if test="dateType == 'quarter'" >
+            , YEAR (a.fctime) AS year1
+            , QUARTER (fctime) AS quarter1
+        </if>
+        <if test="dateType == 'month'" >
+            , YEAR (a.fctime) AS year1
+            , MONTH(a.fctime) AS month1
+            , DAY(a.fctime) AS day1
+        </if>
+        <if test="dateType == 'date'" >
+            , HOUR(a.fctime) AS hour1
+        </if>
+
+    FROM
+        b_lscinfo a,
+        bs_fixedsite b
+    WHERE
+        b.sitecode = a.stationid
+    AND b.deptid IN (
+        SELECT
+            id
+        FROM
+            sys_dept
+        WHERE
+            pids LIKE CONCAT('%[', #{deptId}, ']%')
+    )
+    <if test="dateType == 'year'" >
+        AND YEAR(a.fctime) = #{dateString}
+        GROUP BY
+        YEAR(a.fctime),
+        MONTH(a.fctime)
+    </if>
+    <if test="dateType == 'quarter'" >
+        AND YEAR(a.fctime) = #{dateString}
+        GROUP BY
+        YEAR(a.fctime),
+        QUARTER(a.fctime)
+    </if>
+    <if test="dateType == 'month'" >
+        AND date_format(a.fctime, '%Y-%m') = #{dateString}
+        GROUP BY
+        DAY(a.fctime)
+    </if>
+    <if test="dateType == 'date'" >
+        AND date_format(a.fctime, '%Y-%m-%d') = #{dateString}
+        GROUP BY
+        HOUR(a.fctime);
+    </if>
+
+    </select>
+
+    <select id="getAxleChartData" resultType="map">
+
+        SELECT
+            count(a.id) AS countFlow,
+            sum(
+                CASE
+                WHEN prostatus > 0 THEN
+                    1
+                ELSE
+                    0
+                END
+            ) AS countOver,
+            axlesum
+        <if test="dateType == 'year' or dateType == 'quarter' " >
+            , YEAR(a.fctime) AS year1
+        </if>
+        <if test="dateType == 'month'" >
+            , YEAR(a.fctime) AS year1
+            , MONTH(a.fctime) AS month1
+        </if>
+
+        FROM
+            b_lscinfo a,
+            bs_fixedsite b
+        WHERE
+            b.sitecode = a.stationid
+        AND b.deptid IN (
+            SELECT
+                id
+            FROM
+                sys_dept
+            WHERE
+                pids LIKE CONCAT('%[', #{deptId}, ']%')
+        )
+
+        <if test="dateType == 'year' or dateType == 'quarter' " >
+        AND YEAR(a.fctime) = #{dateString}
+        </if>
+
+        <if test="dateType == 'month'" >
+        AND date_format(a.fctime, '%Y-%m') = #{dateString}
+        </if>
+
+        <if test="dateType == 'date'" >
+        AND date_format(a.fctime, '%Y-%m-%d') = #{dateString}
+        </if>
+        GROUP BY
+        a.axlesum
+
+
+    </select>
+
+    <select id="getAreaChartData" resultType="map" >
+        SELECT
+        count(a.id) AS countFlow,
+
+        sum(
+        CASE
+        WHEN prostatus > 0 THEN
+        1
+        ELSE
+        0
+        END
+        ) AS countOver,
+        substr(a.vehicleid, 1, 1) AS areaName1
+        <if test="dateType == 'year' or dateType == 'quarter' " >
+            , YEAR(a.fctime) AS year1
+        </if>
+        <if test="dateType == 'month'" >
+            , YEAR(a.fctime) AS year1
+            , MONTH(a.fctime) AS month1
+        </if>
+
+        FROM
+        b_lscinfo a,
+        bs_fixedsite b
+        WHERE
+        b.sitecode = a.stationid
+        AND b.deptid IN (
+        SELECT
+        id
+        FROM
+        sys_dept
+        WHERE
+        pids LIKE CONCAT('%[', #{deptId}, ']%')
+        )
+
+        <if test="dateType == 'year' or dateType == 'quarter' " >
+            AND YEAR(a.fctime) = #{dateString}
+        </if>
+
+        <if test="dateType == 'month'" >
+            AND date_format(a.fctime, '%Y-%m') = #{dateString}
+        </if>
+
+        <if test="dateType == 'date'" >
+            AND date_format(a.fctime, '%Y-%m-%d') = #{dateString}
+        </if>
+        GROUP BY
+        substr(a.vehicleid, 1, 1)
+
+    </select>
+
+
+
+</mapper>

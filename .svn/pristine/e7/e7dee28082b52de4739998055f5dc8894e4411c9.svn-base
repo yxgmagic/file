@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.OefullinfoMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, checkno, oeid, vehicleid, axlesum, weightlimited, ratedtotalweight, ratedloading, overlimited, overload, fctime, fclaneno, fctotalweight, fcoper, fclength, fcwidth, fcheight, overlength, overwidth, overheight, rctime, rclaneno, rctotalweight, rcoper, rclength, rcwidth, rcheight, offload, fcvehicleimage, rcvehicleimage, stationid, bizcertid, crarriename, carrieraddr, carrierpost, lawpersonname, lawpersonidtype, lawpersonid, drivername, driverid, qualificationid, drivergender, driverres, cargoname, cargotype, cargoownername, cargolawperson, departure, destination, loadingaddr, punishno, punishtime, punishamount, damageamount, enforcername1, enforcerid1, enforcername2, enforcerid2, ismodified, modifydesc, isnonstandard, nonstandarddesc, isgreen, accordance, casegist, notes, prostatus, result, message
+    </sql>
+    
+    <sql id="sel_list">
+        a.id,a.caseno, a.checkno, a.sitename, a.vehicletype, a.fctime, a.vehicleid, a.axlesum, a.fctotalweight, a.ratedloading, a.overload, a.prostatus,a.caseSource,a.overlimited,a.weightlimited
+    </sql>
+
+	<!--时间为String格式的b_oefullinfo所有列-->
+	<sql id="oefull_column">
+		id,
+		caseno,
+		casegist,
+		casetype,
+		LawType,
+		withholdno,
+		accordance,
+		DATE_FORMAT(casetime,'%Y-%m-%d %H:%i:%s') casetime,
+		prostatus,
+		checkno,
+		oeid,
+		vehicleid,
+		axlesum,
+		weightlimited,
+		ratedtotalweight,
+		ratedloading,
+		overlimited,
+		overload,
+		DATE_FORMAT(fctime,'%Y-%m-%d %H:%i:%s') fctime,
+		fclaneno,
+		fctotalweight,
+		fcoper,
+		fclength,
+		fcwidth,
+		fcheight,
+		overlength,
+		overwidth,
+		overheight,
+		DATE_FORMAT(rctime,'%Y-%m-%d %H:%i:%s') rctime,
+		rclaneno,
+		rctotalweight,
+		rcoper,
+		rclength,
+		rcwidth,
+		rcheight,
+		offload,
+		fcvehicleimage,
+		rcvehicleimage,
+		stationid,
+		bizcertid,
+		crarriename,
+		carrieraddr,
+		carrierpost,
+		lawpersonname,
+		lawpersonidtype,
+		lawpersonid,
+		drivername,
+		driveridcard,
+		driverage,
+		driverphone,
+		drivergender,
+		driverpostcode,
+		driverid,
+		qualificationid,
+		driverres,
+		drivinglicense,
+		vinnum,
+		bcnum,
+		vehicletype,
+		vehiclebrand,
+		ENGINE,
+		cargoname,
+		cargotype,
+		cargoownername,
+		cargolawperson,
+		departure,
+		destination,
+		loadingaddr,
+		punishno,
+		punishtime,
+		violationlevel,
+		shouldpay,
+		punishamount,
+		damageamount,
+		enforcername1,
+		enforcerid1,
+		enforcername2,
+		enforcerid2,
+		ismodified,
+		modifydesc,
+		isnonstandard,
+		nonstandarddesc,
+		isgreen,
+		notes,
+		result,
+		message,
+		caseSource,
+		t_violation,
+		illegalWay,
+		correct,
+		incidentRoute,
+		sitename
+	</sql>
+    
+     <!-- 条件查询结果列 -->
+    <sql id="Column_List_1">
+        c.id, c.checkno, fctime, b.sitename AS stationid, IFNULL(c.weightlimited, 0) weightlimited, prostatus,vehicleid, axlesum, IFNULL(fctotalweight, 0) fctotalweight, IFNULL(ratedloading, 0) ratedloading, IFNULL(overload, 0) overload ,IFNULL(overlimited, 0) overlimited, IFNULL(ratedtotalweight, 0) ratedtotalweight,IFNULL(ratedloading, 0)  ratedloading
+    </sql>
+	<delete id="delAnnex">
+		DELETE FROM `b_oefullinfo_annex` WHERE id = #{id};
+	</delete>
+
+	<!-- 获取案件处理列表数据和案件处理查询功能 ，案件处理-->
+    <select id="selList" resultType="com.zhichao.beans.guns.Oefullinfo">
+    	SELECT 
+			<include refid="sel_list"/>
+		FROM
+			b_oefullinfo a
+		WHERE
+			1=1
+			AND prostatus IN (2,3,4)
+		<if test="casetime != null and casetime != ''">
+			AND a.casetime BETWEEN #{start} AND #{end}
+		</if>
+		<if test="vehicleid != null and vehicleid != ''">
+			AND a.vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="caseno != null and caseno != ''">
+			AND a.caseno = #{caseno}
+		</if>
+		<if test="prostatus != null">
+			AND a.prostatus = #{prostatus}
+		</if>
+		ORDER BY a.fctime DESC
+    </select>
+    
+    <!-- 获取精检站、非现场执法列表,立案办理(所有状态) -->
+    <select id="selOefullList" resultType="map">
+		select * from oefull_list
+		where prostatus <![CDATA[ > ]]> 0
+		<if test="vehicleid != null and vehicleid != ''">
+			AND vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="fctime != null and fctime != ''">
+			AND time between #{start} AND #{end}
+		</if>
+		<if test="prostatus != null and prostatus != ''">
+			AND prostatus = #{prostatus}
+		</if>
+		order by time desc
+	</select>
+    
+    <!-- 获取还未上传的文书列表 -->
+    <select id="sel_lawdoc_list" resultType="com.zhichao.beans.guns.Dict">
+		SELECT 
+		  * 
+		FROM
+		  sys_dict 
+		WHERE pname = 'ldtype'
+		  AND pid != 0 
+		  AND num NOT IN 
+		  (SELECT 
+		    ldtype 
+		  FROM
+		    bs_oefull_lawdoc 
+		  WHERE oefullid = #{oefullid})
+    </select>
+
+	<!-- 根据违法数据表主键获取已生成文书list -->
+	<select id="getOefullLawdocList" resultType="map" parameterType="int">
+		  SELECT 
+		    a.id AS  id,a.fileurl AS url, b.ldname AS name
+		  FROM
+		    bs_oefull_lawdoc a,
+		    bs_law_doc b 
+		  WHERE a.lawdocid  = b.id
+		  AND a.oefullid = #{oeid}
+	</select>
+
+	<!-- 
+	    修改违章信息表中的数据状态从
+		1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.已驳回
+     -->
+    <update id="updateProstatus">
+    	UPDATE b_oefullinfo 
+    	SET prostatus = #{newstatus} WHERE 1 = 1
+ 		<if test="id != null and id != ''">
+ 			 AND id = #{id}
+ 		</if>
+ 		<if test="oldstatus != null and oldstatus != ''">
+ 			 AND prostatus = #{oldstatus}
+ 		</if>
+    </update>
+
+	<!--根据checkno查询出违章表的主键id-->
+	<select id="getOefullinfoIdByCheckno" resultType="int">
+		SELECT id FROM b_oefullinfo WHERE checkno = #{checkno}
+	</select>
+
+	<!--获取所有执法文书列表-->
+	<select id="getAllLawdocTypeList" resultType="map">
+		SELECT
+			num AS ldtype,
+			NAME ldname,
+			CASE
+			WHEN ld.ldtype > 0 THEN
+				1
+			ELSE
+				0
+			END AS exist
+		FROM
+			sys_dict d
+			LEFT JOIN (
+						  -- 所有最新模板
+						  SELECT
+							  ldtype
+						  FROM
+							  bs_law_doc
+						  WHERE
+							  ldstatus = 1
+					  ) ld ON num = ldtype
+		WHERE
+			-- 模板的字典类型
+			pname = 'ldtype'
+			-- 模板字典的顶级父目录
+			AND pid != 0
+			-- 去除封面和目录
+			AND d.num NOT IN (1, 2);
+	</select>
+
+	<!--将附件关系存入数据库-->
+	<insert id="saveAnnex">
+		INSERT INTO b_oefullinfo_annex VALUES(NULL, #{oeid}, #{fileName}, #{url})
+	</insert>
+
+	<!--根据违章表主键找到所有的附件-->
+	<select id="getAllAnnexByOeid" resultType="java.util.Map">
+		SELECT * FROM b_oefullinfo_annex WHERE oeid = #{oeid};
+	</select>
+
+	<!-- 公共方法 获取执法人员列表-->
+    <select id="getLawEnforceMan" resultType="java.util.Map">
+		SELECT id, lem_name AS name FROM `bs_law_enforce_man`
+	</select>
+
+	<!--根据执法文书类型查询执法文书名称-->
+	<select id="getLdNameByLdType" resultType="java.lang.String">
+		SELECT ldname FROM bs_law_doc
+			WHERE ldtype IN
+			<foreach collection="ldtypes" item="ldtype" open="(" close=")" separator="," index="index">
+				#{ldtype}
+			</foreach>
+		and ldstatus = 1
+	</select>
+
+	<!--根据非现场业务表中的id 查询出业务id(oseid),然后通过oseid(checkno)查询b_oefullinfo是否存在.如果存在表示是驳回案件,将所有违章表所有数据返回-->
+	<select id="findOefullInfoByOseId" resultType="com.zhichao.beans.guns.Oefullinfo">
+		SELECT
+			<include refid="oefull_column"/>
+		FROM
+			b_oefullinfo
+		WHERE
+			checkno = (
+				SELECT
+					oseid
+				FROM
+					b_oseinfo
+				WHERE
+					id = #{id}
+				AND prostatus = 5
+		)
+	</select>
+
+	<!--根据精检站业务表中的id 查询出业务id(oseid),然后通过checkno查询b_oefullinfo是否存在.如果存在表示是驳回案件,将所有违章表所有数据返回-->
+	<select id="findOefullInfoByLscId" resultType="com.zhichao.beans.guns.Oefullinfo">
+		SELECT
+			<include refid="oefull_column"/>
+		FROM
+			b_oefullinfo
+		WHERE
+			checkno = (
+				SELECT
+					checkno
+				FROM
+					b_lscinfo
+				WHERE
+					id = #{id}
+				AND prostatus = 5
+		)
+	</select>
+
+
+	<select id="getAnnexPathById" resultType="java.util.Map">
+		select fileName, url from b_oefullinfo_annex where id = #{id};
+	</select>
+
+	<select id="findById" resultType="com.zhichao.beans.guns.Oefullinfo">
+		select
+		<include refid="oefull_column"/>
+		from b_oefullinfo
+        where id = #{id}
+	</select>
+</mapper>

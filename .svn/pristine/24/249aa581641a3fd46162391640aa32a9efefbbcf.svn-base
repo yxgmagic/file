@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ReportserviceMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Reportservice">
+		<id column="id" property="id" />
+		<result column="reportName" property="reportName" />
+		<result column="reportAddress" property="reportAddress" />
+		<result column="reportPort" property="reportPort" />
+		<result column="remarks" property="remarks" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, reportName, reportAddress, reportPort, remarks
+    </sql>
+
+	<select id="findList" resultType="map">
+		select * from bs_reportservice where 1=1
+		<if test="reportName != null and reportName != ''">
+			and reportName like CONCAT('%',#{reportName},'%')
+		</if>
+	</select>
+</mapper>

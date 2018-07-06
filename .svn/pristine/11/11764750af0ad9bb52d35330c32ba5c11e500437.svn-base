@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>抄告对象管理</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+<div class="body-nopadding">
+    <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />抄告对象列表</h2>
+    <div class="ibox-content margin-bottom-30">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">对象编号</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="object_number">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">对象名称</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="object_name">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center margin-top-30">
+            <button class="layui-btn" id="btn_search">查询</button>
+        </div>
+    </div>
+    <div class="ibox-content margin-top-30">
+        <div class="text-right">
+            <button class="layui-btn  layui-btn-sm" id="btn_insert_show">新增</button>
+        </div>
+        <div class="layui-form">
+            <table class="layui-table text-center" id="data-table">
+                <thead>
+                <tr>
+                    <th class="text-center">序号</th>
+                    <th>对象编号</th>
+                    <th>对象名称</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="text-center" id="demo7"></div>
+        </div>
+    </div>
+</div>
+<div style="height: 0px;overflow: hidden">
+
+    <div class="body-nopadding" id="info">
+        <h2 class="margin-left-30">
+            <img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />
+            <span id="popup_title"></span>
+        </h2>
+        <div class="ibox-content margin-bottom-30">
+            <div class="layui-row margin-bottom-10">
+                <input type="hidden" id="id">
+                <div class="layui-col-md12 margin-bottom-10">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1" >对象编号：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input" id="objectNumber">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12 margin-bottom-10">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">对象名称：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input" id="objectName">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">备注：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input" id="comment">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center margin-top-30">
+                <button class="layui-btn" id="btn_update">确定</button>
+                <button class="layui-btn" id="btn_insert">确定</button>
+                <button class="layui-btn layui-btn-primary cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script src="${ctxPath}/static/js/common/Ning.js"></script>
+<script>
+    //用来记录打开的弹窗的index
+    var index = 0;
+    //本页面的数据对象
+    var baseObject = {id:'',objectName:'',objectNumber:'',comment:''};
+
+    //下面的分页栏
+    layui.laypage.render({
+        elem: 'demo7'
+        , count: 1
+        , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+        , jump: function (obj) {
+
+        }
+    });
+
+    //绑定编辑弹出框
+    $("#data-table tbody").on("click",".editor",function(){
+        //获取到需要展示的对象的id(index)
+        var objId = $(this).attr("objId");
+        //将弹出层的页面元素设置成编辑页面模式
+        $("#popup_title").text("修改抄告对象");
+        $("#btn_insert").hide();
+        $("#btn_update").show();
+        //给页面填写好值
+
+        //从数据中获取到需要展示的obj
+        var tempArr = Ning.Tools.selectArray(chaoguData,{id:objId});
+        var tempObj = tempArr[0];
+        for(var i in tempObj) {
+            $("#" + i).val(tempObj[i]);
+        }
+        index = showChaoguObjectInfo();
+    });
+
+    //绑定删除事件
+    $("#data-table tbody").on("click",".del",function(){
+        var dataIndex = $(this).attr("objId");
+
+        layer.confirm('是否删除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            Ning.Tools.deleteArrayById(chaoguData, dataIndex);
+            dataToTable(chaoguData);
+            layer.msg("删除成功",{time:500});
+        });
+
+    });
+
+    //绑定搜索按钮
+    $("#btn_search").click(function() {
+        //生成一个用于查询的对象
+        var tempObj = {};
+        //用于接收查询之后的结果
+        var tmepArr = [];
+        //给临时变量属性一一赋值
+        tempObj.objectName = $("#object_name").val();
+        tempObj.objectNumber = $("#object_number").val();
+        //查询
+        tmepArr = Ning.Tools.selectArray(chaoguData, tempObj);
+        //展示数据
+        dataToTable(tmepArr);
+    });
+
+    //展示添加页面(页面添加按钮)
+    $("#btn_insert_show").click(function() {
+        $("#popup_title").text("添加抄告对象");
+        $("#btn_insert").show();
+        $("#btn_update").hide();
+        //清空编辑框的内容,等待添加
+        for(var i in baseObject) {
+            $("#" + i).val('');
+        }
+        index = showChaoguObjectInfo();
+    });
+
+    //绑定关闭事件
+    $('.cancel').on('click', function () {
+        Module.Box.Close(index);
+    });
+
+    //绑定添加按钮(将按钮添加到数据)
+    $('#btn_insert').click(function () {
+        var timestamp = new Date().getTime();
+        $("#id").val(timestamp);
+        //用来存储的对象
+        var tempObj = {id:'',objectName:'',objectNumber:'',comment:''};
+        for(var i in tempObj) {
+            tempObj[i] = $("#" + i).val();
+        }
+        //将对象存进去
+        Ning.Tools.insertArray(chaoguData,tempObj);
+        //刷新页面数据展示
+        dataToTable(chaoguData);
+        //弹出提示并关闭
+        layer.msg("添加成功",{time:500});
+        Module.Box.Close(index);
+    });
+
+    //绑定修改事件
+    $('#btn_update').click(function() {
+        //用来存储的对象
+        var tempObj = {id:'',objectName:'',objectNumber:'',comment:''};
+        for(var i in tempObj) {
+            tempObj[i] = $("#" + i).val();
+        }
+        //利用对象进行修改
+        Ning.Tools.updateArray(chaoguData, tempObj);
+        //刷新页面数据展示
+        dataToTable(chaoguData);
+        //弹出提示并关闭
+        layer.msg("修改成功",{time:500});
+        Module.Box.Close(index);
+    });
+
+    //显示添加/修改 弹框
+    function showChaoguObjectInfo() {
+        var index = layer.open({
+            type: 1,
+            area: ['1000px', '400px'], //宽高
+            content: $("#info")
+        });
+        return index;
+    }
+    //数据
+    var chaoguData = [
+        {id:0,objectName:'公路管理局',objectNumber:'00001',comment:''},
+        {id:1,objectName:'运政管理部门',objectNumber:'00002',comment:''},
+        {id:2,objectName:'交警部门',objectNumber:'00003',comment:''}
+    ];
+    $(function() {
+        //初始化表格
+        dataToTable(chaoguData);
+    })
+    //将数据展示到页面
+    function dataToTable(tempData) {
+        $("#data-table tbody").empty();
+        var length = tempData.length;
+        for(var i = 0; i < length; i++) {
+            var temp = tempData[i];
+            $("#data-table tbody").append($('<tr id="tr'+temp.id+'" >' +
+                '<td class="text-center">' + (i+1) + '</td>' +
+                '<td>'+temp.objectNumber+'</td>' +
+                '<td>'+temp.objectName+'</td>' +
+                '<td>'+temp.comment+'</td>' +
+                '<td>' +
+                '<button class="layui-btn  layui-btn-sm editor" objId="'+temp.id+'">编辑</button>' +
+                '<button class="layui-btn  layui-btn-sm del" objId="'+temp.id+'">删除</button>' +
+                '</td>' +
+                '</tr>'));
+        }
+    }
+
+</script>
+</body>
+</html>

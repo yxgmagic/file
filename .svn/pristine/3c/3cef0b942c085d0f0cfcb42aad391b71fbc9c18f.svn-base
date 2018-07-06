@@ -1,0 +1,110 @@
+﻿@layout("/common/_container.html"){
+<form id="meinfoForm" class="form-horizontal" data-toggle="validator">
+<div class="ibox float-e-margins">
+	<div class="ibox-content" style="margin-bottom: 50px">
+        <div class="form-horizontal">
+        	<input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="checkno" name="检测单号" value="${item.checkno}" underline="true" readonly="readonly" />
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="vehicleno_name" class="col-sm-3 control-label">流动执法车车牌号</label>
+                            <input id="vehicleno" type="hidden" value="${item.vehicleno}"/>
+                            <div class="col-sm-9">
+                                <input id="vehicleno_name" name="vehicleno_name" class="form-control" readonly="readonly" value="${item.enforcecar}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="vehicleid" name="车牌号" underline="true" value="${item.vehicleid}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="drivername" name="驾驶人姓名" underline="true" value="${item.drivername}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="axlesum" name="轴数" underline="true" value="${item.axlesum}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="ratedloading" name="核定载质量(kg)" underline="true" value="${item.ratedloading}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="ratedtotalweight" name="车总质量(kg)" underline="true" value="${item.ratedtotalweight}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="fctotalweight" name="检测总质量(kg)" underline="true" value="${item.fctotalweight}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="overlimited" name="超限量(kg):" underline="true" value="${item.overlimited}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="overload" name="超载量(kg)" underline="true" value="${item.overload}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="weightlimited" name="车货限重(kg):" underline="true" value="${item.weightlimited}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="fctime" name="检测时间" underline="true" value="${item.fctime}" clickFun="laydate({istime: false, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="fcwidth" name="车货总宽(mm):" underline="true" value="${item.fcwidth}" />
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="overwidth" name="超宽量(mm)" underline="true" value="${item.overwidth}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="overheight" name="超高量(mm):" underline="true" value="${item.overheight}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="fcheight" name="车货总高(mm)" underline="true" value="${item.fcheight}"/>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <#input id="overlength" name="超长量(mm):" underline="true" value="${item.overlength}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <#input id="fclength" name="车货总长(mm)" underline="true" value="${item.fclength}"/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--图片组件-->
+    <div id="banner"></div>
+    
+    <div class="row btn-group-m-t">
+        <div class="col-sm-12 text-center">
+        	<button class="layui-btn" >从地磅获取数据</button>
+        	<button class="layui-btn" onclick="MeinfoInfoDlg.preview()">打印磅单</button>
+            <button class="layui-btn" onclick="MeinfoInfoDlg.editSubmit()">保存</button>
+            <button class="layui-btn layui-btn-primary cancel" onclick="MeinfoInfoDlg.close()">取消</button>
+        </div>
+    </div>
+</div>
+</form>
+<script src="${ctxPath}/static/modular/detecManage/meinfo/meinfo_info.js"></script>
+<script>
+    //初始化图片轮播
+    Yang.Tools.banner('/meinfo/getVehicleImages',$("#id").val())
+</script>
+@}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.CartypeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Cartype">
+		<id column="id" property="id" />
+		<result column="carTypeCode" property="carTypeCode" />
+		<result column="carTypeName" property="carTypeName" />
+		<result column="memo" property="memo" />
+		<result column="class1" property="class1" />
+		<result column="class2" property="class2" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, carTypeCode, carTypeName, memo, class1, class2
+    </sql>
+    
+	<select id="tree" resultType="com.zhichao.beans.node.ZTreeNode">
+		select tab.*,(
+		CASE
+		WHEN (tab.pId = 0 OR tab.pId IS NULL) THEN
+			'true'
+		ELSE
+			'false'
+		END
+		) as isOpen from (select carTypeCode as id,-1 as pId,carTypeName as name from bs_cartype) as tab
+	</select>
+	
+	<select id="selectByCarTypeCode" resultType="com.zhichao.beans.guns.Cartype">
+		select * from bs_cartype where 1=1
+		<if test="cartypecode != null and cartypecode != ''">
+			and cartypecode=#{cartypecode}
+		</if>
+		limit 0,1
+	</select>
+</mapper>

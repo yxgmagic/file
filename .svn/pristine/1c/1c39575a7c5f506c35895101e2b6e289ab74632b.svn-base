@@ -1,0 +1,62 @@
+﻿@layout("/common/_container.html"){
+	<style>
+        p {
+            margin: 10px;
+        }
+    </style>
+    <div style="margin: 10px auto;width: 400px;">
+            <div class="layui-row" >
+                <div id="idPrintText" class="layui-col-xs12"
+                     style="border: 1px #cccccc solid; margin:10px 0px 10px 0px; padding-top: 10px;">
+                    <h2 align="center">称重单</h2>
+                    <p align="right">（编号: ${item.checkno}）</p>
+                    <p>车牌号：${item.vehicleid}</p>
+                    <p>车辆最大允许总质量：${item.weightlimited} kg</p>
+                    <p>初检车货总质量：${item.fctotalweight} kg</p>
+                    <p>复检车货总质量：${item.rctotalweight} kg</p>
+                    <p>超限超载比例：<i id="rate"></i>  %</p>
+                    
+                    <p style="font-size: xx-small;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                       	超限超载比例＝（卸载前车货总质量－车辆最大允许总质量）/车辆最大允许总质量×100%
+                    </p>
+                    <p>驾驶员签名:              </p>
+                    <p align="right">（超限检测站盖章）</p>
+                    <p align="right"> ${timeMap.rtimeString}</p>
+                    <p>（公路管理机构留存联）</p>
+
+                </div>
+                <div class="text-center col-sm-12">
+                    <button class="layui-btn layui-btn-lg" id="idPrintButoon">打印</button>
+                    <button class="layui-btn layui-btn-danger layui-btn-lg" id="idClose">关闭</button>
+                </div>
+            </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jQuery.print.js"></script>
+    <script>
+
+		$("#idPrintButoon").click(function() {
+		    $("#idPrintText").print();
+		});
+		
+		$("#idClose").click(function() {
+			window.opener=null;
+			window.open('','_self');
+			window.close();
+		})
+		
+		$(function() {
+			var weightlimited = "${item.weightlimited}";
+			var overlimited = "${item.overlimited}";
+			if(overlimited <= 0 || weightlimited <=0) {
+				$("#rate")[0].innerHTML = "0"
+			} else {
+				$("#rate")[0].innerHTML = (Math.round(overlimited / weightlimited * 10000) / 100);
+			}
+			
+		
+		});
+
+    </script>	
+
+@}

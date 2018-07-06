@@ -1,0 +1,74 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="checkno" name="检测单号" underline="true"/>
+                            <#input id="vehicleid" name="车牌号" underline="true"/>
+                            <#input id="axlesum" name="轴数" underline="true"/>
+                            <#input id="weightlimited" name="车货限重" underline="true"/>
+                            <#input id="ratedtotalweight" name="车辆标记总质量" underline="true"/>
+                            <#input id="ratedloading" name="核定载质量" underline="true"/>
+                            <#input id="overlimited" name="超限量" underline="true"/>
+                            <#input id="overload" name="超载量" underline="true"/>
+                            <#input id="fctime" name="初检时间" underline="true"/>
+                            <#input id="fclaneno" name="初检车道号" underline="true"/>
+                            <#input id="fctotalweight" name="初检总重量" underline="true"/>
+                            <#input id="fcoper" name="初检操作员" underline="true"/>
+                            <#input id="fcaxle1" name="初检轴重1" underline="true"/>
+                            <#input id="fcaxle2" name="初检轴重2" underline="true"/>
+                            <#input id="fcaxle3" name="初检轴重3" underline="true"/>
+                            <#input id="fcaxle4" name="初检轴重4" underline="true"/>
+                            <#input id="fcaxle5" name="初检轴重5" underline="true"/>
+                            <#input id="fcaxle6" name="初检轴重6" underline="true"/>
+                            <#input id="fcaxle7" name="初检轴重7" underline="true"/>
+                            <#input id="fcaxle8" name="初检轴重8" underline="true"/>
+                            <#input id="fclength" name="初检车货总长" underline="true"/>
+                            <#input id="fcwidth" name="初检车货总宽" underline="true"/>
+                            <#input id="fcheight" name="初检车货总高"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="overlength" name="超长量" underline="true"/>
+                            <#input id="overwidth" name="超宽量" underline="true"/>
+                            <#input id="overheight" name="超高量" underline="true"/>
+                            <#input id="rctime" name="复检时间" underline="true"/>
+                            <#input id="rclaneno" name="复检车道号" underline="true"/>
+                            <#input id="rctotalweight" name="复检总重量" underline="true"/>
+                            <#input id="rcoper" name="复检操作员" underline="true"/>
+                            <#input id="rcaxle1" name="复检轴重1" underline="true"/>
+                            <#input id="rcaxle2" name="复检轴重2" underline="true"/>
+                            <#input id="rcaxle3" name="复检轴重3" underline="true"/>
+                            <#input id="rcaxle4" name="复检轴重4" underline="true"/>
+                            <#input id="rcaxle5" name="复检轴重5" underline="true"/>
+                            <#input id="rcaxle6" name="复检轴重6" underline="true"/>
+                            <#input id="rcaxle7" name="复检轴重7" underline="true"/>
+                            <#input id="rcaxle8" name="复检轴重8" underline="true"/>
+                            <#input id="rclength" name="复检车货总长" underline="true"/>
+                            <#input id="rcwidth" name="复检车货总宽" underline="true"/>
+                            <#input id="rcheight" name="复检车货总高" underline="true"/>
+                            <#input id="offload" name="已卸载量" underline="true"/>
+                            <#input id="fcvehicleimage" name="初检车头图片" underline="true"/>
+                            <#input id="rcvehicleimage" name="复检车头图片" underline="true"/>
+                            <#input id="stationid" name="检测站号" underline="true"/>
+                            <#input id="prostatus" name="处理状态,0未违规,1以上为违规状态" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="LscinfoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="LscinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo_info.js"></script>
+@}

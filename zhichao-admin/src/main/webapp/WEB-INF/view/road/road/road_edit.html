@@ -1,0 +1,44 @@
+﻿@layout("/common/_container.html"){
+<script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="roadInfoForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" type="hidden" value="${item.id}" underline="true"/>
+                            <#input id="roadcode" name="道路编码" readonly="true"  value="${item.roadcode}" underline="true"/>
+                            <#input id="roadname" name="道路名称" value="${item.roadname}" underline="true"/>
+                            <script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+                </div>
+
+                <div class="col-sm-6">
+                 <#input id="nullid" name="" type="hidden" value="${item.id}" underline="true"/>
+                            <#input id="address" name="道路位置" value="${item.address}" underline="true"/>
+				       <label class="col-sm-3 control-label">所属区域</label>
+				    <div class="col-sm-8">
+				      <input id="areacode" name="所属区域" type="hidden" value="${item.areacode}"  />
+				      <div class="layui-col-md12">
+				       <select id="Select1" name="Select1"  class="layui-input" onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'1');" ></select>  
+				       <select id="Select2" name="Select2"  class="layui-input" onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'1');"></select>  
+				    </div>
+                           
+ </div>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="RoadInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="RoadInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/road/road/road_info.js"></script>
+
+@}

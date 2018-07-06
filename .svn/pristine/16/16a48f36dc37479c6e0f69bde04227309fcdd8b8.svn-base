@@ -1,0 +1,200 @@
+package com.zhichao.admin.controller.siteRegistration;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.core.util.FileCopy;
+import com.zhichao.service.core.util.ParaUtil;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.common.IBsImageEntityService;
+import com.zhichao.service.siteRegistration.IBsOsesiteService;
+import com.zhichao.beans.guns.BsOsesite;
+import com.zhichao.core.base.controller.BaseController;
+import com.zhichao.common.util.ToolUtil;
+
+/**
+ * 非现场执法检测站控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-03-29 15:38:07
+ */
+@Controller
+@RequestMapping("/bsOsesite")
+public class BsOsesiteController extends BaseController {
+
+    private String PREFIX = "/siteRegistration/bsOsesite/";
+
+    @Autowired
+    private IBsOsesiteService bsOsesiteService;
+    @Autowired
+    private IBsImageEntityService imageEntityService;
+
+    /**
+     * 跳转到非现场执法检测站首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "bsOsesite.html";
+    }
+
+    /**
+     * 跳转到添加非现场执法检测站
+     */
+    @RequestMapping("/bsOsesite_add")
+    public String bsOsesiteAdd() {
+        return PREFIX + "bsOsesite_add.html";
+    }
+
+    /**
+     * 跳转到修改非现场执法检测站
+     */
+    @RequestMapping("/bsOsesite_update/{bsOsesiteId}")
+    public String bsOsesiteUpdate(@PathVariable Integer bsOsesiteId, Model model) {
+
+        List<Map<String, Object>> oseList = bsOsesiteService.list(null, null, null, bsOsesiteId);
+
+        if (oseList.size() == 1) {
+            model.addAttribute("item",oseList.get(0));
+        }else {
+            BsOsesite osesite = bsOsesiteService.selectById(bsOsesiteId);
+            model.addAttribute("item",osesite);
+            LogObjectHolder.me().set(osesite);
+            return PREFIX + "bsOsesite_edit.html";
+        }
+        return PREFIX + "bsOsesite_edit.html";
+    }
+
+    /**
+     * 获取非现场执法检测站列表
+     * @date 2018年6月7日
+     * @param sitename  搜索条件站点名称
+     * @param roadcode  搜索条件路网编码
+     * @param areacode  搜索条件行政区编码
+     * @return
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public List<Map<String, Object>> list(@RequestParam(required = false) String sitename,
+                                          @RequestParam(required = false) String roadcode,
+                                          @RequestParam(required = false) String areacode) {
+        return bsOsesiteService.list(sitename, roadcode, areacode, null);
+    }
+
+    /**
+     * 新增非现场执法检测站
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(BsOsesite bsOsesite ,
+                      @RequestParam(value = "img_id", required = false) Integer imgId,
+                      @RequestParam(value = "buildTimeString") String buildTimeString,
+                      @RequestParam(value = "imagetype") String imageType,
+                      @RequestParam(value = "file") MultipartFile file) throws IOException {
+
+        bsOsesite.setBuildTime(YUtil.StringToDate(buildTimeString,"yyyy-MM-dd"));
+        //获取到存储路径
+        String fileSavePath = ParaUtil.getParaValue("certificate_url");
+        //将文件存储到指定路径
+        String certificateUrl = FileCopy.SaveFileFromInputStream(file.getInputStream(), fileSavePath, file.getOriginalFilename());
+        //将文件路径存入对象
+        bsOsesite.setCertificateUrl(certificateUrl);
+
+        PubUtil pub= new PubUtil();
+        Map<String,Object> map=pub.getSequence("sitecode","","0","sitecode","bs_presite");
+
+
+        if(map.containsKey("ERROR")){
+            return map;
+        }else if(map.containsKey("sequence")){
+            bsOsesite.setSitecode(map.get("sequence").toString());
+            if(pub.isExistsSeqFromTableForUpdate("bs_presite", "sitecode", map.get("sequence").toString(),bsOsesite.getId())){
+
+                return "系统中已经存在相同编码的记录，编码为："+map.get("sequence").toString()+",请检查编码生成规则";
+            }
+        }else {
+            return super.ERROR;
+        }
+
+        boolean falg =  bsOsesiteService.insert(bsOsesite);
+        //存储成功
+        if (falg) {
+            imageEntityService.insertImageEntity(imgId, bsOsesite.getId(), imageType);
+        }
+
+        //同步检定证书
+        FileCopy.synchronizationCertificate();
+
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 删除非现场执法检测站
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam Integer bsOsesiteId) {
+        bsOsesiteService.deleteById(bsOsesiteId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改非现场执法检测站
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(BsOsesite bsOsesite,
+                         @RequestParam(value = "img_id", required = false) Integer imgId,
+                         @RequestParam(value = "buildTimeString") String buildTimeString,
+                         @RequestParam(value = "imagetype", required = true) String imageType,
+                         @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+
+        bsOsesite.setBuildTime(YUtil.StringToDate(buildTimeString,"yyyy-MM-dd"));
+
+        if(ToolUtil.isNotEmpty(file)) {
+            //获取到存储路径
+            String fileSavePath = ParaUtil.getParaValue("certificate_url");
+            //将文件存储到指定路径
+            String certificateUrl = FileCopy.SaveFileFromInputStream(file.getInputStream(), fileSavePath, file.getOriginalFilename());
+            //将文件路径存入对象
+            bsOsesite.setCertificateUrl(certificateUrl);
+        }
+        if (bsOsesite != null) {
+
+            String sitecode=bsOsesite.getSitecode();
+            if((new PubUtil()).isExistsSeqFromTableForUpdate("bs_presite", "sitecode", sitecode,bsOsesite.getId())){
+
+                return "系统中已经存在相同编码的记录，编码为："+bsOsesite.getRoadcode();
+            }
+            boolean flag =  bsOsesiteService.updateById(bsOsesite);
+
+            if (flag) {
+                imageEntityService.updateEntityImage(imgId, bsOsesite.getId(), imageType);
+            }
+        }
+
+        //同步检定证书
+        FileCopy.synchronizationCertificate();
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 非现场执法检测站详情
+     */
+    @RequestMapping(value = "/detail/{bsOsesiteId}")
+    @ResponseBody
+    public Object detail(@PathVariable("bsOsesiteId") Integer bsOsesiteId) {
+        return bsOsesiteService.selectById(bsOsesiteId);
+    }
+}

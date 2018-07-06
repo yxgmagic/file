@@ -1,0 +1,35 @@
+安装aspose-words-16.8.0-jdk16.jar 到本地 maven repository：
+
+mvn install:install-file -Dfile=aspose-words-16.8.0-jdk16.jar -DgroupId=com.aspose -DartifactId=aspose-words -Dversion=16.8.0 -Dpackaging=jar
+
+ 
+
+pom.xml 文件中依赖：
+
+<dependency>
+    <groupId>com.aspose</groupId>
+    <artifactId>aspose-words</artifactId>
+    <version>16.8.0</version>
+</dependency>
+
+
+license.xml 文件置于 Resource 目录下：
+
+<License>
+    <Data>
+        <Products>
+            <Product>Aspose.Total for Java</Product>
+            <Product>Aspose.Words for Java</Product>
+        </Products>
+        <EditionType>Enterprise</EditionType>
+        <SubscriptionExpiry>20991231</SubscriptionExpiry>
+        <LicenseExpiry>20991231</LicenseExpiry>
+        <SerialNumber>23dcc79f-44ec-4a23-be3a-03c1632404e9</SerialNumber>
+    </Data>
+    <Signature>
+        sNLLKGMUdF0r8O1kKilWAGdgfs2BvJb/2Xp8p5iuDVfZXmhppo+d0Ran1P9TKdjV4ABwAgKXxJ3jcQTqE/2IRfqwnPf8itN8aFZlV3TJPYeD3yWE7IT55Gz6EijUpC7aKeoohTb4w2fpox58wWoF3SNp6sK6jDfiAUGEHYJ9pjU=
+    </Signature>
+</License>
+
+
+测试用例在com.zhichao.common.asposeword下的TestWord.java

@@ -1,0 +1,66 @@
+﻿@layout("/common/_container.html"){
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+
+		<div class="layui-row">
+	
+			<div class="layui-col-md4 ibox-content margin-right-20"  >
+	          	
+	          	<!-- 树形菜单组件  -->
+	          	<div>
+	                <div class="" id="iNickTree" id="iNickTree" style="height:350px;" ></div>
+	            </div>
+	            <!-- 树形菜单组件  -->
+
+				<div>
+					<input id="iNickSelect" />
+				</div>
+
+			</div>
+			
+			
+		</div>
+	            <script>
+				$(function(){
+			    	/**
+			    	* 目前可以显示的有 不停车预检（presite）、源头企业（corp），固定治超站（fixedsite）
+			    	*/
+			    	/**
+					 * 设置树形菜单显示的元素和需要显示的数据
+					 * element: 显示元素的ID
+					 * select: 需要显示的的数据选择，（presite， corp，fixedsite）
+					 */
+					//Ning.Tree.setStree("#iNickTree", "fixedsite");
+			    	//Ning.Tree.setStree("#iNickTree", "presite");
+                    // Ning.Tree.setStree("#iNickTree", "ose");
+			    	//Ning.Tree.setOneTree("#iNickTree", "ose", "HN0011");
+                    Ning.Tree.setStree("#iNickTree", "oaf");
+                    var ss = document.getElementById("iNickSelect");
+					Ning.Tree.createTreeSelectt(ss,"corp",function(node) {
+					    console.log(node);
+					});
+					//Ning.Tree.getOneTree("#iNickTree", "fixedsite", "ZZ00001", true);
+
+					/**
+					 * 树形菜单的回调函数，当选中节点时会执行该方法
+					 * func： 你的方法
+					 * 可以用参数接收节点信息
+					 */
+					// Ning.Tree.bindOnClick(
+			     	// 	function(node) {
+			     	// 		//输出节点数据
+			     	// 		// console.log(node);
+			     	// 		// console.log(Ning.Tree.getzNodes(node.id));
+			     	// 	}
+			     	// );
+			     	
+					
+	
+				}); 
+				
+				     
+			    </script> 
+
+
+    
+<script src="${ctxPath}/static/modular/platformConfig/punishmentRules/punishmentRules.js"></script>
+@}

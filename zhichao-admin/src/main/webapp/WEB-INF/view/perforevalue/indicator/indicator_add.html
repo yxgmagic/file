@@ -1,0 +1,78 @@
+﻿@layout("/common/_container.html"){
+<form id="indic">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="form-horizontal">
+                <input type="hidden" id="id" value="">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                <label for="indicatorName">指标名称</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input id="indicatorName" name="indicatorName" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                <label for="judgeRules">评分规则</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <#SelectDict id="judgeRules" name="judgeRules" dictName="judgeRules" dataStyle="btn" cssName="form-control"></#SelectDict>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                <label for="indicatorCategory">指标类别</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <#SelectDict id="indicatorCategory" name="indicatorCategory" dictName="indicType" dataStyle="btn" cssName="form-control"></#SelectDict>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                <label for="indicatorDescription">指标要素</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input id="indicatorDescription" name="indicatorDescription" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 control-label">
+                                <label for="score">分值</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input id="score" name="score" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label">
+                                <label for="scoreMethod">指标评分方法</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <textarea id="scoreMethod" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row btn-group-m-t">
+                    <div class="col-sm-12 text-center">
+                        <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="IndicatorInfoDlg.addSubmit()"/>
+                        <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="IndicatorInfoDlg.close()"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<script src="${ctxPath}/static/modular/perforevalue/indicator/indicator_info.js"></script>
+@}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>发送情况统计</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+<div class="body-nopadding">
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />发送情况统计</h2>
+        </div>
+    </div>
+    <div class="ibox-content margin-bottom-30">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">手机号</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="telphone">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">发送日期</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="sendDateArea">
+                </div>
+            </div>
+        </div>
+        <div class="layui-row margin-top-10">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">内容</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="mmsContent">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center margin-top-30">
+            <button class="layui-btn" id="btn_search">查询</button>
+        </div>
+    </div>
+    <div class="ibox-content margin-top-30">
+        <div class="layui-form">
+            <table class="layui-table text-center" id="data-table">
+                <thead>
+                <tr>
+                    <th class="text-center">序号</th>
+                    <th class="text-center">手机号</th>
+                    <th class="text-center">成功标志</th>
+                    <th class="text-center">短信内容</th>
+                    <th class="text-center">发送时间</th>
+                    <th class="text-center">失败原因</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="text-center" id="demo7"></div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script src="${ctxPath}/static/js/common/Ning.js"></script>
+<script>
+
+    //用来记录打开的弹窗的index
+    var index = 0;
+    //本页面的基本数据对象
+    var baseObject = {
+        id:'',
+        telphone:'',
+        successStatus:'',
+        mmsContent:'',
+        sendDate:'',
+        failReasons:''
+    };
+    //本页基本数据
+    var mmsSendData = [
+        {
+            id:'0',
+            telphone:'18570346303',
+            successStatus:'发送成功',
+            mmsContent:'您好，您的车牌号为湘A354220...',
+            sendDate:'2018-03-23',
+            failReasons:''
+        },
+        {
+            id:'1',
+            telphone:'15616130524',
+            successStatus:'发送失败',
+            mmsContent:'您好，您的车牌号为湘A56F220...',
+            sendDate:'2018-03-21',
+            failReasons:'手机号码不存在'
+        },
+        {
+            id:'2',
+            telphone:'18574708090',
+            successStatus:'发送失败',
+            mmsContent:'您好，您的车牌号为湘A56F220...',
+            sendDate:'2018-03-21',
+            failReasons:'手机号码欠费'
+        },
+    ];
+    //设置分页栏
+    layui.laypage.render({
+        elem: 'demo7'
+        , count: 1
+        , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+        , jump: function (obj) {
+
+        }
+    });
+    //将数据展示到页面
+    function dataToTable(tempData) {
+        $("#data-table tbody").empty();
+        var length = tempData.length;
+
+        for(var i = 0; i < length; i++) {
+            var temp = tempData[i];
+            $("#data-table tbody").append($('<tr>' +
+                '<td>' + (i+1) + '</td>' +
+                '<td>' + temp.telphone + '</td>' +
+                '<td>'+temp.successStatus+'</td>' +
+                '<td>'+temp.mmsContent+'</td>' +
+                '<td>'+temp.sendDate+'</td>' +
+                '<td>'+temp.failReasons+'</td>' +
+                '</tr>'));
+        }
+    }
+
+    //绑定搜索按钮
+    $("#btn_search").click(function() {
+        //生成一个用于查询的对象
+        var tempObj = {};
+        //用于接收查询之后的结果
+        var tmepArr = [];
+        //给临时变量属性一一赋值
+        for(var i in baseObject) {
+            tempObj[i] = $("#" + i).val();
+        }
+        //查询
+        tmepArr = Ning.Tools.selectArray(mmsSendData, tempObj);
+
+        var sendDateArea = $("#sendDateArea").val();
+        if(sendDateArea.length > 0) {
+            //分割时间区间的日期为两个日期字符串
+            var dateArr = sendDateArea.split("~");
+            console.log(dateArr[0]);
+            console.log(dateArr[1]);
+            var timestamp1 = new Date(dateArr[0]).getTime();
+            var timestamp2 = new Date(dateArr[1]).getTime();
+            var length = tmepArr.length;
+            var removedId = [];
+            for(var i = 0; i < length; i++) {
+                var temp = tmepArr[i];
+                var tempTimestamp = new Date(temp.sendDate).getTime();
+                if(tempTimestamp > timestamp2 || tempTimestamp < timestamp1) {
+                    removedId.push(temp.id);
+                    //Ning.Tools.deleteArrayById(tmepArr, temp.id);
+                }
+            }
+            length = removedId.length;
+            for(var i = 0; i < length; i++) {
+                Ning.Tools.deleteArrayById(tmepArr, removedId[i]);
+            }
+        }
+
+        //展示数据
+        dataToTable(tmepArr);
+    });
+
+
+    //绑定日期选择框
+    //时间范围选择
+    layui.laydate.render({
+        elem: '#sendDateArea'
+        ,range: '~' //或 range: '~' 来自定义分割字符
+    });
+
+
+
+    //初始化
+    $(function() {
+        dataToTable(mmsSendData);
+    });
+
+
+</script>
+</body>
+</html>

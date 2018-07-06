@@ -1,0 +1,120 @@
+﻿@layout("/common/_container.html"){
+
+<!--
+	树形选择框的样式
+-->
+
+<div class="ibox float-e-margins">
+    <div class="ibox-content" id="idBlackListForm">
+        <div class="form-horizontal">
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6">
+                            <#input id="vehicleid" name="车牌号"  />
+                            <#input id="drivername" name="驾驶人姓名"  />
+                            <#input id="corpname" name="企业名称"  />
+                            
+                            <div class="form-group">
+			                    <label for="stationidInput" class="col-sm-3 control-label">检测站点</label>
+			                    <div class="col-sm-9">
+			                        <input id="stationidInput" name="stationidInput" type="text" class="form-control" 
+			                        readonly="readonly" placeholder="点击选择站点"
+                                           onclick="Ning.Tree.createFixedsiteSelect(this)"/>
+			                        <!--<input id="stationid" type="hidden"/>
+			                        <div id="idStationStree"></div>-->
+			                    </div>
+			                </div>
+                            
+                            
+                            <div class="form-group">
+                                <label for="cargotype" class="col-sm-3 control-label">车辆类型</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="cartype" enabled="false" name="cartype" dictName="trucksType" dataStyle="btn" cssName="form-control"></#SelectDict>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="form-group">
+                                <label for="caraxles" class="col-sm-3 control-label">车轴数</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="caraxles" enabled="false" name="caraxles" dictName="trucksAxles" dataStyle="btn" cssName="form-control"></#SelectDict>
+                                </div>
+                            </div>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="ratedloading" name="核定载重量(kg)"  />
+                            <#input id="overload" name="超重数(kg)"  />
+                            <#input id="fine" name="罚金"  />
+                            
+                            <div class="form-group">
+                                <label for="ispunitive" class="col-sm-3 control-label">是否完成惩罚</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="ispunitive" enabled="false" name="ispunitive" dictName="yes_no" dataStyle="btn" cssName="form-control"></#SelectDict>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="isblack" class="col-sm-3 control-label">是否进入黑名单</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="isblack" enabled="false" name="isblack" dictName="yes_no" dataStyle="btn" cssName="form-control"></#SelectDict>
+                                </div>
+                            </div>
+                            
+                            <#input id="remarks" name="备注"   value="手动添加"/>
+                </div>
+
+
+
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="text-center">
+                            <label for="file_hidden" class="btn btn-primary">
+                                <i class="glyphicon glyphicon-upload"></i>&nbsp;上传图片
+                            </label>
+                            <input type="file" id="file_hidden" style="display: none" multiple="multiple" />
+                            <span style="color:grey">请不超过三张图,大小不要超过5M</span>
+
+                            <input type="file" id="image0" style="display: none" />
+                            <input type="file" id="image1" style="display: none"/>
+                            <input type="file" id="image2" style="display: none"/>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row row-bottom-20">
+                        <div class="layui-carousel" id="photo" style="margin: auto">
+                            <div carousel-item="" id="img_box">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="BlacklistInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BlacklistInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var isAdd = 1;
+    $("#file_hidden").change(function() {
+        BlacklistInfoDlg.uploadImgs(this.files);
+    });
+
+
+</script>
+
+<script src="${ctxPath}/static/modular/lawEnforcement/blacklist/blacklist_info.js"></script>
+@}

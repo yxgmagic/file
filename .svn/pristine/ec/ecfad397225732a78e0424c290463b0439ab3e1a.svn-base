@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.OefullLawdocMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.OefullLawdoc">
+		<id column="id" property="id" />
+		<result column="oefullid" property="oefullid" />
+		<result column="lawdocid" property="lawdocid" />
+		<result column="lawdocjson" property="lawdocjson" />
+		<result column="inputjson" property="inputjson" />
+		<result column="procstatus" property="procstatus" />
+		<result column="ldtype" property="ldtype" />
+		<result column="fileurl" property="fileurl" />
+		<result column="unfilled" property="unfilled" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, oefullid, lawdocid, lawdocjson,inputjson,procstatus,fileurl,ldtype,unfilled
+    </sql>
+
+	<select id="getOefullLawdoc"
+		resultType="com.zhichao.beans.guns.OefullLawdoc">
+		select * from bs_oefull_lawdoc where oefullId=#{oefullId} and
+		ldtype=#{ldtype} and procstatus!="0"
+	</select>
+    <select id="getoefullinfo" resultType="map">
+      select  * from b_oefullinfo where id=#{oefullId}
+    </select>
+	<select id="selectOefullInfo" resultType="map">
+		select a.*,b.name as ldtypename,c.name as procstatusname from bs_oefull_lawdoc a,sys_dict b
+		,sys_dict c where   a.ldtype=b.num and b.pname="ldtype" and
+		a.procstatus=c.num and c.pname="lawstatus"
+		<if test="id != null and id != ''">
+			and a.id = #{id}
+		</if>
+		<if test="ldtype != null and ldtype != ''">
+			and a.ldtype = #{ldtype}
+		</if>
+		<if test="procstatus != null and procstatus != ''">
+			and a.ldtype = #{procstatus}
+		</if>
+	</select>
+</mapper>

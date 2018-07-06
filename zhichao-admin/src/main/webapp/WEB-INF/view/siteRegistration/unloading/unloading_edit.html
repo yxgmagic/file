@@ -1,0 +1,37 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+	            <form class="form-horizontal classUnloadingEditor" data-toggle="validator" role="form">
+	                <div class="col-sm-6 b-r">
+	                	<div style="display:none;">
+	                		<#input id="id" name="" value="${item.id}" underline="true"/>
+	                	</div>
+	                    <#input id="ulcode" name="编码" value="${item.ulcode}" underline="true"  readonly="readonly"/>
+	                    <#input id="address" name="位置" value="${item.address}" />
+	                    <#input id="managertel" name="联系电话" value="${item.managertel}" />
+	                </div>
+	
+	                <div class="col-sm-6">
+	                	<#input id="ulname" name="名称" value="${item.ulname}" underline="true"/>
+	                    <#input id="manager" name="负责人" value="${item.manager}" underline="true"/>
+	                </div>
+                </form>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="UnloadingInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="UnloadingInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/unloading/unloading_info.js"></script>
+@}

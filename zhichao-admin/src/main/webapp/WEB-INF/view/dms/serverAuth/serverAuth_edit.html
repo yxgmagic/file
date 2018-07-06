@@ -1,0 +1,38 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                 
+                             
+                            <#input id="aliasName" name="服务别名" value="${item.aliasName}" underline="true"/>
+                            <#input id="begindt" name="开始时间" value="${item.begindt}" underline="true"/>
+                            <#input id="enddt" name="结束时间" value="${item.enddt}" underline="true"/>
+                            <#input id="license" name="注册码" value="${item.license}" underline="true"/>
+                           
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="status" name="有效状态" value="${item.status}" underline="true"/>
+                            <#input id="auditStatus" name="" value="${item.auditStatus}" underline="true"/>
+                            <#input id="deptid" name="所属部门" value="${item.deptid}" underline="true"/>
+                          
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ServerAuthInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ServerAuthInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/serverAuth/serverAuth_info.js"></script>
+@}

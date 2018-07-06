@@ -1,0 +1,133 @@
+package com.zhichao.dal.mapper;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhichao.beans.guns.Dict;
+import com.zhichao.beans.guns.Lscinfo;
+import com.zhichao.beans.guns.Oefullinfo;
+
+/**
+ * <p>
+  * 违章详细信息 Mapper 接口
+ * </p>
+ *
+ * @author imyzt
+ * @since 2018-01-24
+ */
+@Resource
+public interface OefullinfoMapper extends BaseMapper<Oefullinfo> {
+
+	/**
+	 * 获取立案办理列表数据和立案办理查询功能
+	 * @param casetime 立案时间
+	 * @param vehicleid 车牌号
+	 * @param caseno 案件号
+	 * @param prostatus 
+	 * @return
+	 */
+	List<Oefullinfo> selList(@Param("casetime") String casetime, @Param("start") String start, @Param("end") String end, 
+			@Param("vehicleid") String vehicleid, @Param("caseno") String caseno, @Param("prostatus") Integer prostatus);
+
+	/**
+	 * 获取还未上传的文书列表
+	 * @param oefullid 违法表唯一键
+	 * @return
+	 */
+	List<Dict> sel_lawdoc_list(@Param("oefullid") Integer oefullid);
+
+	/**
+	 * 根据违法数据表主键获取已生成文书list
+	 * @param oeid
+	 * @return
+	 */
+	List<Map<String, Object>> getOefullLawdocList(@Param("oeid") Integer oeid);
+
+	/**
+	 * 获取精检站、非现场执法数据列表
+	 * @param fctime
+	 * @param start
+	 * @param end
+	 * @param vehicleid
+	 * @param caseno
+	 * @param prostatus
+	 * @return
+	 */
+	List<Map<String, Object>> selOefullList(@Param("page") Page<Map<String, Object>> page, @Param("fctime") String fctime, @Param("start") String start, @Param("end") String end,
+											@Param("vehicleid") String vehicleid, @Param("caseno") String caseno, @Param("prostatus") Integer prostatus);
+
+	
+	/**
+	 * 修改违章信息表中的状态
+	 * @param id
+	 * @param oldstatus
+	 * @param newstatus
+	 */
+	Integer updateProstatus(@Param(value="id") Integer id,
+			@Param(value="oldstatus") Integer oldstatus, @Param(value="newstatus") Integer newstatus);
+
+
+	/**
+	 * 根据checkno查询出违章表的主键id
+	 * @param checkno
+	 * @return
+	 */
+	Integer getOefullinfoIdByCheckno(@Param("checkno") String checkno);
+
+	/**
+	 * 获取所有执法文书列表
+	 * @return
+	 */
+    List<Map<String, Object>> getAllLawdocTypeList();
+
+	/**
+	 * 将附件关系存入数据库
+	 * @param oeid 违章表主键
+	 * @param url 文件路径[实体路径+UUIDName]
+     * @param fileName 文件真实名称
+	 */
+	void saveAnnex(@Param("oeid") Integer oeid, @Param("url") String url, @Param("fileName") String fileName);
+
+    /**
+     * 根据违章表主键找到所有的附件
+     * @param oeid 违章表主键
+     * @return
+     */
+    List<Map<String,Object>> getAllAnnexByOeid(@Param("oeid") Integer oeid);
+
+	/**
+	 *公共方法
+	 * 获取执法人员列表
+	 * @return
+	 */
+	List<Map<String,Object>> getLawEnforceMan();
+
+	/**
+	 * 根据执法文书类型查询执法文书名称
+	 * @param ldtypes 执法文书类型
+	 * @return
+	 */
+	List<String> getLdNameByLdType(@Param("ldtypes") Integer[] ldtypes);
+
+    void delAnnex(Integer id);
+
+	/**
+	 * 根据检测单号查找是否有该案件,如果有,并且状态==5,则是驳回案件.返回整个信息
+	 * @param checkno 检测单号
+	 * @return
+	 */
+	Oefullinfo getOefullByCheckno(@Param("checkno") String checkno);
+
+	/**
+	 * 根据id获取附件存储路径
+	 * @param id
+	 * @return
+	 */
+    Map<String, Object> getAnnexPathById(@Param("id") Integer id);
+}

@@ -1,0 +1,54 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                           
+                           <input type="hidden" id="seqname2" value="${item.seqname}">
+                            <#input id="seqname" name="名称" value="${item.seqname}" underline="true"/>
+                            <#input id="seqtype" name="编码序列类型" value="${item.seqtype}"   underline="true"/>
+                            <#input id="seqcol" name="取数列" value="${item.seqcol}"   underline="true"/>
+                            <#input id="seqstr" name="字符串" value="${item.seqstr}" underline="true"/>
+                            <#input id="seqdate" name="流水生成日期" value="${item.seqdate}" underline="true"/>
+                          <div class="form-group">
+						<label class="col-sm-3 control-label">流水号是否连续</label>
+						<div class="col-sm-9">
+							<#SelectDict id="isseries" dictName="yes_no" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+                            
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="seqmax" name="当前最大流水号" value="${item.seqmax}" underline="true"/>
+                            <#input id="seqlen" name="流水号长度" value="${item.seqlen}" underline="true"/>
+                            <#input id="seqtab" name="取数表" value="${item.seqtab}"   underline="true"/>
+                            <#input id="seqdept" name="站点/部门" value="${item.seqdept}"   underline="true"/>
+                            <#input id="roadnum" name="车道" value="${item.roadnum}" underline="true"/>
+                            <#input id="sequence" name="编码单号"  readonly ="true" value="${item.sequence}" underline="true" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="testinfo" name="试算" id="ensure" icon="fa-check" clickFun="SequenceInfoDlg.getseq()"/>
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="SequenceInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SequenceInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/sequence/sequence_info.js"></script>
+<script> 
+$("#isseries").val("${item.isseries}");
+//$("#seqname").val("${item.seqname}"+'_'+"${item.seqdept}"+'_'+"${item.roadnum}");
+</script>
+
+@}

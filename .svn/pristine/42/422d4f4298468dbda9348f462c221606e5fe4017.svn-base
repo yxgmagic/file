@@ -1,0 +1,33 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                            <#input id="siteId" name="站点编号" value="${item.siteId}" underline="true"/>
+                            <#input id="indicId" name="指标编号" value="${item.indicId}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="startTime" name="开始时间" value="${item.startTime}" underline="true"/>
+                            <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
+                            <#input id="notes" name="备注" value="${item.notes}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PeSiteIndicInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PeSiteIndicInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/perforevalue/peSiteIndic/peSiteIndic_info.js"></script>
+@}

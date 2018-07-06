@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BsCorpMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.BsCorp">
+		<id column="id" property="id" />
+		<result column="corpcode" property="corpcode" />
+		<result column="corpname" property="corpname" />
+		<result column="areacode" property="areacode" />
+		<result column="roadcode" property="roadcode" />
+		<result column="manager" property="manager" />
+		<result column="managerid" property="managerid" />
+		<result column="managertel" property="managertel" />
+		<result column="address" property="address" />
+		<result column="longitude" property="longitude" />
+		<result column="latitude" property="latitude" />
+		<result column="vans" property="vans" />
+		<result column="turnvolumes" property="turnvolumes" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, corpcode, corpname, areacode, roadcode, manager, managerid, managertel, address, longitude, latitude, vans, turnvolumes
+    </sql>
+
+	<sql id="selById">
+		a.id, a.corpcode, b.areaname, a.corpname, a.areacode, a.roadcode, a.manager, a.managerid, a.managertel, a.address,
+		a.longitude, a.latitude, a.vans, a.turnvolumes, a.certificate, a.certificate_url AS certificateUrl,
+		a.certificate_validity_period AS certificateValidityPeriod, a.due_bank AS dueBank, a.bank_address AS bankAddress,
+		a.bank_account AS bankAccount, a.bank_account_name AS bankAccountName, a.judicial_organ AS judicialOrgan
+	</sql>
+    
+    <!-- 查询所有源头企业 -->
+    <select id="queryCorpByCondition" resultMap="BaseResultMap" parameterType="com.zhichao.beans.guns.BsCorp">
+    	SELECT 
+    	a.id, a.corpcode, b.areaname AS areacode, a.corpname, a.areacode, a.roadcode, a.manager, a.managerid, a.managertel, a.address,
+    	a.longitude, a.latitude, a.vans, a.turnvolumes
+		FROM bs_corp a, bs_area b
+		WHERE a.areacode = b.areacode
+   		<if test="corpname != null and corpname != ''">
+   			AND a.corpname LIKE concat(concat('%',#{corpname}),'%')
+   		</if>
+   		<if test="areacode != null and areacode != ''">
+   			AND b.areacode LIKE concat(concat(#{areacode}),'%')
+   		</if>
+   		ORDER BY a.id DESC
+    </select>
+
+	<!-- 查询企业是否已存在 -->
+	<select id="corpIsExist" resultType="int" parameterType="com.zhichao.beans.guns.BsCorp">
+		SELECT COUNT(*)
+		FROM bs_corp
+		WHERE 1=1
+		<if test="id != null and id != ''">
+			AND id <![CDATA[!= ]]> #{id}
+		</if>
+		<if test="corpcode != null and corpcode != ''">
+			AND corpcode = #{corpcode}
+		</if>
+		<if test="managerid != null and managerid != ''">
+			AND managerid = #{managerid}
+		</if>
+	</select>
+
+	<!-- 根据主键id查询源头企业 -->
+	<select id="selById" resultType="com.zhichao.beans.guns.BsCorp">
+		SELECT
+			<include refid="selById"/>
+		FROM bs_corp a, bs_area b
+		WHERE a.areacode = b.areacode
+			  AND a.id = #{value}
+	</select>
+
+</mapper>

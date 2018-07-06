@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.PeSiteIndicMapper">
+
+	<!--list页面查询结果-->
+	<sql id="list_sql">
+		b.`id` AS indic_id, c.`sitename` AS sitename, b.`indicatorName` AS indicatorName, a.`time` AS time, b.`score` AS scores, a.url AS url, a.`notes` AS notes
+	</sql>
+
+	<select id="selList" resultType="java.util.Map">
+		SELECT
+			<include refid="list_sql"/>
+		FROM
+			pe_site_indic a,
+			pe_indicator b,
+			bs_fixedsite c
+		WHERE a.`site_id` = c.`id`
+		AND b.`id` = a.`indic_id`
+		<if test="indicType != null and indicType != ''">
+			AND b.`indicatorCategory` = #{indicType}
+		</if>
+		<if test="indic_id != null and indic_id != ''">
+			AND b.`id` = #{indic_id}
+		</if>
+		<if test="sitecode != null and sitecode != ''">
+			AND c.`sitecode`  = #{sitecode}
+		</if>
+		<if test="assess_id != null and assess_id != ''">
+			AND b.`id` IN
+			(SELECT
+			indic_id
+			FROM
+			pe_assess_indic
+			WHERE assess_id = #{assess_id})
+		</if>
+	</select>
+
+</mapper>

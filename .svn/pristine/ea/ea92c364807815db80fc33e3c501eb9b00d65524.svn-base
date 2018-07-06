@@ -1,0 +1,503 @@
+﻿<html>
+<head>
+<title>${title} --- 视频监控管理</title>   
+    <!-- 全局css -->
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link href="${ctxPath}/static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="${ctxPath}/static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/validate/bootstrapValidator.min.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/animate.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="${ctxPath}/static/css/video/video.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/_fstyle.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/webuploader/webuploader.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/ztree/zTreeStyle.css" rel="stylesheet">
+    <link href="${ctxPath}/static/css/plugins/jquery-treegrid/css/jquery.treegrid.css" rel="stylesheet"/>
+    <link href="${ctxPath}/static/js/plugins/bootstrap-select-1.12.4/dist/css/bootstrap-select.css" rel="stylesheet"/>
+    <link href="${ctxPath}/static/css/plugins/jsTree/style.min.css" rel="stylesheet">
+
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+    <!-- 全局js -->
+    <script src="${ctxPath}/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="${ctxPath}/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="${ctxPath}/static/js/plugins/jsTree/jstree.min.js"></script>
+    
+    <style>
+    .jstree-open > .jstree-anchor > .fa-folder:before {
+        content: "\f07c"
+    }
+
+    .jstree-default .jstree-icon.none {
+        width: 0
+    }
+</style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight height100">
+    <div class="row">
+	    <div class="col-sm-12">
+	        <div class="ibox float-e-margins">
+	            <div class="ibox-content">
+	                <div class="row">
+	                @if(isNotEmpty(ptz) && ptz==0){
+	                    <div class="col-sm-10" id="right" style="width:600px;height:80%">
+	                @}else{
+	                	<div class="col-sm-12" id="right" style="height:80%">
+	                @}
+	                        <object
+							  classid="clsid:D7CBB81A-1A2C-4FA7-AB12-DDC381FC7570"
+							  codebase="WebOCX.cab#version=1,0,0,307"	
+							  id="OCXTest"
+							  width=100%
+							  height=100%
+							  align=center
+							  hspace=0
+							  vspace=0>
+							  	<param name="SkinSelectIdx" value="32">			<!--功能索引号 -->
+							    <param name="ServerIP" value="192.168.20.12">    <!--视频监控平台服务器IP地址 -->
+							    <param name="ServerPort" value="3000">			<!--视频监控平台服务器端口号 -->
+							    <param name="UserName" value="admin">			<!--如果bMustWebServers=1表示WebServers用户名 反之表示视频监控平台登录用户名 -->
+							    <param name="UserPassword" value="12345">		<!--视频监控平台登录密码 -->
+								<!--当bMustWebServers=1是有效，表示WebServers服务器地址 -->
+							    <param name="WebServers_Get_Org" value="http://43.1.34.80:8080/csjj/services1/synOrgForDevice?wsdl">	
+								<!--value=1 设备从WebServers加载 反之从视频监控平台加载 -->
+							    <param name="bMustWebServers" value=0>	
+							<!--	value =1 应用终端通过代理服务器访问 反之直接登录 -->
+								<param name="ProxyStartup" value=0>	
+							<!--	代理服务器IP地址 -->
+								<param name="ProxyServerIP" value="43.1.34.85">	
+							<!--	代理服务器端口 -->
+								<param name="ProxyServerPort" value=3030>		
+							  </object>
+	                	</div>
+	                	@if(isNotEmpty(ptz) && ptz==0){
+	                	<div class="col-sm-2" style="width:300px;">
+	                        <div class="tabs-container">
+				                <ul class="nav nav-tabs">
+				                    <li class="active">
+				                        <a data-toggle="tab" href="#tab-1" aria-expanded="true">云台控制</a>
+				                    </li>
+				                </ul>
+				                <div class="tab-content">
+				                    <div id="tab-1" class="tab-pane active">
+				                        <div class="panel-body">
+												<div class="main">
+													<div class="circular">
+														<div class="point rotating1">
+															<button type="button" class="btn btn-w-m btn-link" id="btnUp">
+																<i class="glyphicon glyphicon-menu-up font-size"></i>
+															</button>
+														</div>
+														<div class="point rotating2">
+															<button type="button" class="btn btn-w-m btn-link" id="btnRight">
+																<i class="glyphicon glyphicon-menu-up font-size"></i>
+															</button>
+														</div>
+														<div class="point rotating3">
+															<button type="button" class="btn btn-w-m btn-link" id="btnDown">
+																<i class="glyphicon glyphicon-menu-up font-size"></i>
+															</button>
+														</div>
+														<div class="point rotating4">
+															<button type="button" class="btn btn-w-m btn-link" id="btnLeft">
+																<i class="glyphicon glyphicon-menu-up font-size"></i>
+															</button>
+														</div>
+														<div class="circular1">
+															<button type="button" class="btn btn-w-m btn-link cir" id="btnRefresh">
+																<i class="glyphicon glyphicon-refresh font"></i>
+															</button>
+														</div>
+													</div>
+												</div>
+												<div class="row text-center">
+													<div class="btn-group margin-top-10">
+														<button class="btn btn-primary btn-lg" id="btnBsMax">
+															<i class="glyphicon glyphicon-menu-left"></i>
+														</button>
+														<button
+															class="btn btn-primary btn-lg border-radius font-size-14">倍数</button>
+														<button class="btn btn-primary btn-lg" id="btnBsMin">
+															<i class="glyphicon glyphicon-menu-right"></i>
+														</button>
+													</div>
+												</div>
+												<div class="row text-center">
+													<div class="btn-group margin-top-10">
+														<button class="btn btn-primary btn-lg" id="btnJjMax">
+															<i class="glyphicon glyphicon-menu-left"></i>
+														</button>
+														<button
+															class="btn btn-primary btn-lg border-radius font-size-14">焦距</button>
+														<button class="btn btn-primary btn-lg" id="btnJjMin">
+															<i class="glyphicon glyphicon-menu-right"></i>
+														</button>
+													</div>
+												</div>
+												<div class="row text-center">
+													<div class="btn-group margin-top-10">
+														<button class="btn btn-primary btn-lg" id="btnGqMax">
+															<i class="glyphicon glyphicon-menu-left"></i>
+														</button>
+														<button
+															class="btn btn-primary btn-lg border-radius font-size-14">光圈</button>
+														<button class="btn btn-primary btn-lg" id="btnGqMin">
+															<i class="glyphicon glyphicon-menu-right"></i>
+														</button>
+													</div>
+												</div>
+											</div>
+				                    </div>
+				                </div>
+            				</div>
+	                    </div>
+		                @}
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<script language="javascript" event="OnPreviewMouse(iEvent, iChannel)" for="OCXTest">
+  /* if(2 == iEvent){
+    alert(iEvent + '/' + iChannel);
+  }
+  if(1024 == iEvent){	
+	alert(iChannel);
+  }
+  if(1025 == iEvent){
+	alert(iChannel);
+  } */
+</script>
+<script language="javascript" event="OnBmpStream(bmpfile)" for="OCXTest">
+  //alert(bmpfile);
+</script>
+<script language="javascript" event="OnBmpStreamEx(captureType, cameraID, sBmpFileName, sBmpData)" for="OCXTest">
+  //alert("类型:" + captureType.toString() + " 摄像机ID:" + cameraID + " 图片文件名:" + sBmpFileName + " 编码后数据:" + sBmpData);
+</script>
+
+    
+	<script type="text/javascript"> 
+	function init() { 
+		//alert('${flag}'+","+'${ptz}'+','+'${site}'+','+'${code}');
+	
+		var uname='${uname}';
+		var upass='${upass}';
+		var address='${address}';
+		var port='${port}';
+		var index='${index}';
+	
+		if(uname!=''){
+			var err = OCXTest.InitUI(index*1, address, port, uname, upass,"",0);
+			if(0 != err){
+				alert("登录服务器失败，错误代码为: " + err);
+				doClose();
+			}else{
+				var count='${count}'*1;
+				var list='${code}';
+				
+				list=list.replace('[', "").replace(']', "").replace(' ', "");
+			
+				var code=list.split(',');
+			
+				// toSplitter(count);
+				// for(var i=0;i<count;i++){
+				// 	toOpenChannel(i,code[i],0);
+				// }
+                toSplitter(1);
+                toOpenChannel(0,"{6F5A6D35-C354-492B-823D-6848BCA4AC48}_0001",0);
+				//toOpenChannel(1,"{D8FCE281-4B6B-4C5D-9FA3-3052136D297A}_0001",0);
+					
+			}
+		}else{
+			alert("打开服务错误!");
+			doClose();
+		}
+	} 
+	
+	window.onload=function(){
+		setTimeout(function(){init();},1000);
+	}
+	
+	$().ready(function(){
+		/* $("#jstree1").jstree({
+            "core": {"check_callback": true,"multiple": false},
+            "plugins": ["types", "dnd"],
+            "types": {
+                "default": {"icon": "fa fa-folder"},
+                "html": {"icon": "fa fa-file-code-o"},
+                "svg": {"icon": "fa fa-file-picture-o"},
+                "css": {"icon": "fa fa-file-code-o"},
+                "img": {"icon": "fa fa-file-image-o"},
+                "js": {"icon": "fa fa-file-text-o"}
+            }
+        }).on('changed.jstree', function (e, data) {
+        	console.log(e);
+        	console.log(data.selected);
+        }); */
+        var isIE = /msie/.test(navigator.userAgent.toLowerCase());
+		 
+		  if(!isIE){
+		  	Feng.info("请使用IE浏览器9.0以上版本进行访问!");
+		  }
+        
+        $('#jstree1').jstree({ 
+	        'core' : {
+	        	"check_callback": true,"multiple": false,
+			    'data' : [
+			       { "id" : "430000", "parent" : "#", "text" : "湖南省","state":{"opened":true} },
+			       { "id" : "430100", "parent" : "430000", "text" : "长沙市","state":{"opened":true} },
+			       { "id" : "430111", "parent" : "430100", "text" : "雨花区" ,"state":{"opened":true}},
+			       { "id" : "GQJCZ", "parent" : "430111", "text" : "高桥检测站","state":{"opened":true} ,"icon":"none"},
+			    ]
+			}
+		}).on('changed.jstree', function (e, data) {
+        	console.log(e);
+        	console.log(data.selected);
+        	alert(data.selected);
+        });
+        
+        
+        $('#btnUp').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 21, 0, 8);
+		});
+		
+		$('#btnDown').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 22, 0, 8);
+		});
+		
+		$('#btnLeft').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 23, 0, 8);
+		});
+		
+		$('#btnRight').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 24, 0, 8);
+		});
+		
+		$('#btnBsMax').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 11, 0, 8);
+		});
+		
+		$('#btnBsMin').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 12, 0, 8);
+		});
+		
+		$('#btnJjMax').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 13, 0, 8);
+		});
+		
+		$('#btnJjMin').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 14, 0, 8);
+		});
+		
+		$('#btnGqMax').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 15, 0, 8);
+		});
+		
+		$('#btnGqMin').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 16, 0, 8);
+		});
+		
+		$('#btnRefresh').click(function(){
+        	var ChannelIdx = OCXTest.getSelectedChanelIndex();
+	    	toPTZControl(ChannelIdx, 39, 0, 8);
+        	//toOpenChannel(1,"{D8FCE281-4B6B-4C5D-9FA3-3052136D297A}_0001",0);
+		});
+	});
+	
+	
+		function doClose() {
+			if (window.parent.tabClose != undefined)
+				window.parent.tabClose();
+			else {
+				window.opener = null;
+				window.open('', '_self');
+				window.close();
+			}
+		}
+		
+		function toShowUI(skinIdx, ServerIP, ServerPort, UserName, UserPwd){
+			var skinIdx = skinIdx;
+			var ServerIP = ServerIP;
+			var ServerPort = ServerPort;
+			var UserName = UserName;
+			var UserPwd = UserPwd;
+			OCXTest.InitUI(skinIdx, ServerIP, ServerPort, UserName, UserPwd, "", 0);
+		}
+		
+		<!--当前功能索引号为23时，设置实时预览面板画面分割数 -->		
+		function toSplitter(nSplitter){
+			var nSplitter = nSplitter;
+			OCXTest.Splitter = nSplitter;
+		}
+		<!-- -->
+		function toCaptureVisible(nVisible){
+			var nVisible = nVisible
+			OCXTest.CaptureVisible = nVisible;
+		}
+		<!--当前功能索引号为23时,在指定预览面板打开指定摄像头视频 -->
+		<!--ChannelIdx 面板索引号0~63 -->
+		<!--CameraID 摄像机ID -->
+		<!--wLinkMode 0： 主码流　1: 子码流 -->
+		function toOpenChannel(ChannelIdx, CameraID, wLinkMode){
+			var ChannelIdxIdx = ChannelIdx;
+			var CameraID = CameraID;
+			var wLinkMode = wLinkMode;
+			var errNo = OCXTest.OpenChannel(ChannelIdx, CameraID, wLinkMode);
+			if (errNo != 0){
+				alert("打开通道失败,errNo = " + errNo.toString());
+			}else{
+				toPTZControl(ChannelIdx, 8, 0, 8);
+			}
+		}
+		<!--当前功能索引号为23时，关闭指定预览面板实时视频画面 -->
+		function toCloseChannel(ChannelIdx){
+			var ChannelIdxIdx = ChannelIdx;
+			var errNo = OCXTest.CloseChannel(ChannelIdx);
+			if (errNo != 0){
+			}
+		}
+		<!--当前功能索引号为5时，在指定预览面板播放指定时间段的摄像机历史视频 -->
+		<!--ChannelIdx 面板索引号0~3 -->
+		<!--CameraID 摄像机ID号 -->
+		<!--startTime 开始时间 时间格式: 2000-01-01 01:01:01-->
+		<!--endTime 结束时间 -->
+		<!--startTime和endTime时间必须在同一天内 -->
+        function toPlayVideo(ChannelIdx, CameraID, startTime, endTime){
+			var ChannelIdx = ChannelIdx;
+            var CameraID = CameraID;
+  			var startTime = startTime;
+			var endTime = endTime;
+			var errNo = OCXTest.PlayVideo(ChannelIdx, CameraID, startTime, endTime, 1);
+			if(errNo != 0){
+				errNo = OCXTest.PlayVideo(ChannelIdx, CameraID, startTime, endTime, 0);
+			}
+			if(errNo != 0){
+				alert("播放历史视频失败，errNo = " + errNo.toString());
+			}
+		}
+		<!--当前功能索引号为5时，关闭指定预览面板历史视频 -->
+		function toStopVideo(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StopVideo(ChannelIdx);
+			if(errNo != 0){
+				alert("停止历史视频失败，errNo = " + errNo.toString());
+			}
+		}
+
+		function toCaptureBmp(ChannelIdx, sSaveBmpFileName){
+			var ChannelIdx = ChannelIdx;
+			var sSaveBmpFileName = sSaveBmpFileName;
+			var errNo = OCXTest.CaptureBMP(ChannelIdx, sSaveBmpFileName);
+			if (errNo != 0){
+				alert("capturebmp errno = " + errNo.toString());
+			}else{
+				alert("抓图成功");
+			}
+		}
+		<!--当前功能更索引号为23时，对当前实时视频画面进行抓拍，并保存到sSaveBmpFileName指定文件 -->
+		function toCaptureBmpEx(ChannelIdx, sSaveBmpFileName){
+			var ChannelIdx = ChannelIdx;
+			var sSaveBmpFileName = sSaveBmpFileName;
+			var errNo = OCXTest.CaptureBMPEx(ChannelIdx, sSaveBmpFileName);
+			if (errNo != 0){
+				alert("capturebmpex errno = " + errNo.toString());
+				///重新编码
+				if (errNo == 11 || errNo == 31){
+					var errNo1 = OCXTest.EncodeBase64ForBMP(sSaveBmpFileName);
+					if (errNo1 != 0){
+						alert("EncodeBase64ForBMP errno = " + errNo1.toString());	
+					}else{
+						alert("编码文件成功");	
+					}
+				}
+			}else{
+				alert("抓图并上传图片成功");
+			}
+		}
+		
+		function toPTZControl(ChannelIdx, wCommand, bytStop, bytSpeed){
+			var ChannelIdx = ChannelIdx;
+			var wCommand = wCommand;
+			var bytStop = bytStop;
+			var bytSpeed = bytSpeed;
+			
+			var errNo = OCXTest.PTZControl(ChannelIdx, wCommand, bytStop, bytSpeed);
+			if (errNo != 0){
+				errNo = OCXTest.PTZControl(ChannelIdx, wCommand, 1, bytSpeed);
+				//alert("PTZControl errno = " + errNo.toString());
+			}else{
+				errNo = OCXTest.PTZControl(ChannelIdx, wCommand, 1, bytSpeed);
+				//alert("Command = " +  wCommand.toString() + " " + bytStop.toString + " " + bytSpeed.toString());
+			}
+		}
+		
+		function toRefresh(){
+			//alert("test");
+			OCXTest.RefreshUI;	
+		}
+		<!--判断当前摄像机在线状态 -->
+		function toIsOnline(CameraID){
+			var CameraID = CameraID;
+            		var errNo = OCXTest.IsOnline(CameraID);
+            		if (errNo == 0){
+				alert("设备不在线");
+			}else if (errNo == 1){
+				alert("设备在线");
+   			}else{
+				alert("参数不正确");
+            		}        
+		}
+		
+		function toStartAudioTalk(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StartAudioTalk(ChannelIdx);
+			if(0 != errNo){
+				alert("failed:" + errNo.toString());
+			}
+		}
+		
+		function toStopAudioTalk(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StopAudioTalk(ChannelIdx);
+			if(0 != errNo){
+				alert("failed:" + errNo.toString());
+			}
+		}
+		<!--当当前功能索引号为22时，根据设备ID及类型在ocx上显示当前设备详细信息 -->
+		<!--DeviceID 设备ID byDeviceType 设备类型 由设备管理增加修改时提交到WebServers -->
+		function toShowDetailInfo(DeviceID, byDeviceType){
+			var DeviceID = DeviceID;
+			var byDeviceType = byDeviceType;
+			var errNo = OCXTest.ShowDeviceDetailInfo(DeviceID, byDeviceType);
+			if (errNo != 0){
+				alert("ShowDeviceDetailInfo errno = " + errNo.toString());
+			}
+		}
+		
+		function toSendChannelData(sData, iSize){
+			var sData = sData;
+			var iSize = iSize;
+			var errNo = OCXTest.SendChannelData(sData, iSize);
+			if (errNo != 0){
+				alert("toSendChannelData errNo = " + errNo.toString());
+			} else {
+				alert("透传数据成功");
+			}
+		}
+	</script>
+</body>
+</HTML>

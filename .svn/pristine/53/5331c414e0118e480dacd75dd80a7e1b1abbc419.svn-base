@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.lawEnforcement.OverrunGbsLicDAO">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       id, licid, carid, sourcename, drivername, driverphone, wayid
+    </sql>
+    
+    <select id="selectOverrunGbsLicList" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+			from bs_overrun_gbs_lic where 1=1
+		<if test="licid != null and licid != ''">
+			and licid like CONCAT('%',#{licid},'%')
+		</if>
+		<if test="carid != null and carid != ''">
+			and carid like CONCAT('%',#{carid},'%')
+		</if>
+		<if test="sourcename != null and sourcename != ''">
+			and sourcename like CONCAT('%',#{sourcename},'%')
+		</if>
+		<if test="drivername != null and drivername != ''">
+			and drivername like CONCAT('%',#{drivername},'%')
+		</if>
+		<if test="driverphone != null and driverphone != ''">
+			and driverphone like CONCAT('%',#{driverphone},'%')
+		</if>
+		<if test="wayid != null and wayid != ''">
+			and wayid like CONCAT('%',#{wayid},'%')
+		</if>
+		
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,74 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+			
+			<div style="display:none;">
+           		<#input id="id" name="编号" value="${item.id}" underline="true"/>
+           	</div>
+			
+            <div class="row">
+            	<form data-toggle="validator" role="form" class="vehicleDriverEditor">
+            	
+            		<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="drivername" class="col-sm-4 control-label">姓名</label>
+				    	<div class="col-sm-8">
+				      		<input type="text" id="drivername" name="drivername" class="form-control" value="${item.drivername}">
+				    	</div>
+				  	</div>
+				  	
+				  	<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="idcard" class="col-sm-4 control-label">身份证号</label>
+				    	<div class="col-sm-8">
+				      		<input type="text" id="idcard" name="idcard" class="form-control" value="${item.idcard}">
+				    	</div>
+				  	</div>
+				  	
+				  	<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="qualificationid" class="col-sm-4 control-label">从业资格证</label>
+				    	<div class="col-sm-8">
+				      		<input type="text" id="qualificationid" name="qualificationid" class="form-control" value="${item.qualificationid}">
+				    	</div>
+				  	</div>
+				  	
+				  	<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="corpcode" class="col-sm-4 control-label">企业名称</label>
+				    	<div class="col-sm-8">
+				      		<input type="text" id="corpcode" name="corpcode" class="form-control" value="${item.corpcode}">
+				    	</div>
+				  	</div>
+				  	
+				  	<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="driverid" class="col-sm-4 control-label">驾驶证号</label>
+				    	<div class="col-sm-8">
+				      		<input type="text" id="driverid" name="driverid" class="form-control" value="${item.driverid}">
+				    	</div>
+				  	</div>
+            	
+            		<div class="form-group col-sm-6 col-xs-12">
+				    	<label for="sex" class="col-sm-4 control-label">性别</label>
+				    	<div class="col-sm-8">
+							<#SelectDict id="sex" name="sex" dictName="sex" defaultSelected="${item.sex}" dataStyle="btn" cssName="form-control"></#SelectDict>
+				    	</div>
+				  	</div>
+	                
+                </form>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="VehicleDriverInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="VehicleDriverInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+$("#sex").val("${item.sex}");
+</script>
+<script src="${ctxPath}/static/modular/siteRegistration/vehicleDriver/vehicleDriver_info.js"></script>
+@}

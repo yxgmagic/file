@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.PunishmentRulesMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.PunishmentRules">
+		<id column="id" property="id" />
+		<result column="rule_name" property="ruleName" />
+		<result column="trucks_type" property="trucksType" />
+		<result column="trucks_axles" property="trucksAxles" />
+		<result column="weight_limit" property="weightLimit" />
+		<result column="img_id" property="imgId" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, rule_name AS ruleName, trucks_type AS trucksType, trucks_axles AS trucksAxles, weight_limit AS weightLimit, img_id AS imgId
+    </sql>
+
+</mapper>

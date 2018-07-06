@@ -1,0 +1,94 @@
+﻿@layout("/common/_container.html"){
+
+<form class="form-horizontal" data-toggle="validator" id="idMakeCargoForm">
+
+	<h2 style="margin: 10px;">卸货信息</h2>
+	<div class="ibox-content">
+
+          <div class="row">
+              <div class="col-sm-6 b-r">
+                          <#input id="withholdno" name="暂扣单号" placeholder="单击选择暂扣单号" />
+                          
+                          
+					<div class="form-group">
+                              <label for="fixedsitename" class="col-sm-3 control-label">检测站点</label>
+                              <div class="col-sm-9">
+                                  <input id="fixedsitename" name="fixedsitename" class="form-control" 
+                                  	readonly="readonly">
+                              </div>
+                          </div> 
+
+                          <#input id="vehicleid" name="车牌号" readonly="readonly" />
+                          <#input id="unloadtimeString" name="卸货日期" readonly="readonly"/>
+                          
+					<div class="form-group">
+                              <label for="ulloadname" class="col-sm-3 control-label">卸货场</label>
+                              <div class="col-sm-9">
+                                  <input id="ulloadname" name="ulloadname" class="form-control" 
+                                  	readonly="readonly" >
+                              </div>
+                          </div> 
+
+                          <#input id="carowner" name="车辆联系人" readonly="readonly"/>
+                          <#input id="carownertel" name="车辆联系方式"  readonly="readonly" />
+              </div>
+
+              <div class="col-sm-6">
+                          <#input id="weightlimited" name="车货限重(kg)" readonly="readonly" />
+                          <#input id="fctotalweight" name="卸货前总质量(kg)"  readonly="readonly" />
+                          <#input id="unloadweight" name="卸货重量(kg)" readonly="readonly" />
+                          
+                          <div class="form-group">
+                                <label for="cargotype" class="col-sm-3 control-label">货物种类</label>
+                                <div class="col-sm-9">
+                                    <#SelectDict id="cargotype" name="cargotype" dictName="itemName" dataStyle="btn" cssName="form-control" defaultSelected=""></#SelectDict>
+                                </div>
+                            </div>
+                          
+                          <#input id="rtnumber" name="道路运输证号" readonly="readonly" />
+                          <#input id="cpqnumber" name="从业资格证号" readonly="readonly" />
+                          <#input id="corpname" name="车辆所属企业" readonly="readonly" />
+              </div>
+              
+          </div>
+
+  	</div>
+    	
+	
+	<h2 style="margin: 10px;">接货信息</h2>
+    <div class="ibox-content">
+
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="makecargono" name="接货单号" 
+                            value="${sequenceMap.sequence}" readonly="readonly"/>
+                            <#input id="makevehicleid" name="车牌号"  />
+                            <#input id="makevehicleman" name="接货车辆联系人"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="makevehicletel" name="接货车辆联系方式"  />
+                            <#input id="makecargoweight" name="接货重量(kg)"  />
+                            <div class="form-group">
+                                <label for="makecargodateString" class="col-sm-3 control-label">接货日期</label>
+                                <div class="col-sm-9">
+                                    <input id="makecargodateString" name="makecargodateString" class="form-control"
+                                      type="text" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="MakeCargoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="MakeCargoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+  
+</form>
+<script src="${ctxPath}/static/modular/lawEnforcement/makeCargo/makeCargo_info.js"></script>
+@}

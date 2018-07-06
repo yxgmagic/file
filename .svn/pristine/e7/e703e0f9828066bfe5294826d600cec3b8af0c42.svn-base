@@ -1,0 +1,172 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <form id="oseform">
+        <p class="min-title-desc">
+            站点信息
+        </p>
+        <div class="ibox-content">
+            <div class="form-horizontal">
+                <input type="hidden" id="id" value="${item.id}">
+
+                <div class="row">
+                    <div class="col-sm-2 b-r">
+                        <div class="panel-body">
+                            <img alt="photo" src="${ctxPath}/static/img/notfoundbl.png" class="img-responsive center-block" id="img_show">
+                        </div>
+                        <div class="panel-body text-center">
+                            营业执照图片
+                            <label for="img_hidden" class="btn btn-primary"> <i class="glyphicon glyphicon-upload"></i>&nbsp;上传图片</label>
+                            <input type="file" id="img_hidden" style="display: none" />
+                            <input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+                            <input type="hidden" value="ose" id="imagetype">
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                    </div>
+                    <div class="col-sm-5 b-r">
+                        <#input id="sitename" name="站点名称" value="${item.sitename}" underline="true" />
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">地理坐标</label>
+                            <div class="col-sm-9">
+                                经度：<input class="form-control getcoor" id="longitude" name="longitude" readonly="readonly" value="${item.longitude}" style="width: 110px; display: inline-block" /> &nbsp;
+                                纬度： <input class="form-control getcoor" id="latitude" name="latitude" readonly="readonly" value="${item.latitude}" style="width: 110px; display: inline-block" />
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <#input id="buildTimeString" name="建站时间" value="${item.buildTime}" underline="true" />
+                        <#input id="manager" name="负责人" value="${item.manager}" underline="true" />
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">管理部门</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" id="deptName" name="deptName" type="text" readonly="readonly" value="${item.simplename}" onclick="BsOsesiteInfoDlg.showDeptSelectTree(); return false;" style="background-color: #ffffff !important;">
+                                <input class="form-control" type="hidden" id="deptid" value="">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">检测站等级</label>
+                            <div class="col-sm-9">
+                                <#SelectDict id="sitelevel" dictName="sitelevel" defaultSelected="${item.sitelevel}" dataStyle="btn" cssName="form-control"></#SelectDict>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 父级部门的选择框 -->
+                    <div id="parentDeptMenu" class="menuContent"
+                         style="display: none; position: absolute; z-index: 200;">
+                        <ul id="parentDeptMenuTree" class="ztree tree-box"
+                            style="width: 188px !important;"></ul>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <#input id="sitecode2" readonly="true" name="站点顺序号" underline="true" />
+                        <#input id="sitecode" readonly="true"  name="唯一标识" value="${item.sitecode}" underline="true" />
+                        <#input id="stakeNumber" name="桩号" value="${item.stake_number}" underline="true" />
+                        <#input id="managertel" name="联系方式" value="${item.managertel}" underline="true" />
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">管理路段</label>
+                            <input id="areacode" name="所属行政区" type="hidden" value="${item.areacode}" />
+                            <input id="roadcode" name="道路编码" type="hidden" value="${item.roadcode}" />
+                            <div class="col-sm-9">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <select id="Select1" name="Select1" class="form-control"
+                                                onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <select id="Select2" name="Select2" class="form-control"
+                                                onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <select id="Select3" name="Select3" class="form-control"
+                                                onchange="selectRoad(document.getElementById('roadcode'));"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <#input id="precision" name="精度" value="${item.precision}" underline="false" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="min-title-desc">
+            检测信息
+        </p>
+        <div class="ibox-content form-horizontal">
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-3 control-label">检定证书:</label>
+                    <div class="col-sm-6">
+                        <a id="certificateA" href="javascript:showCertificate();"
+                           style="line-height: 34px;color: #00B83F;">暂无</a>
+                        <input type="text" id="certificate" name="certificate" class="form-control"
+                               value="${item.certificate}"
+                               placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="file_input" class="btn btn-primary">
+                            <i class="glyphicon glyphicon-upload"></i>&nbsp;重新上传
+                        </label>
+                        <input type="file" id="file_input" style="display: none"/>
+                    </div>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">检定证书有效期</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="certificateValidityPeriod" class="form-control text-center"
+                               value="${item.certificate_validity_period}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-3 control-label">检测方式</label>
+                    <div class="col-sm-9">
+                        <#SelectDict id="checkmode" dictName="checkmode" defaultSelected="${item.checkmode}" dataStyle="btn" cssName="form-control"></#SelectDict>
+                    </div>
+                </div>
+            </div>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="BsOsesiteInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BsOsesiteInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<script src="${ctxPath}/static/modular/siteRegistration/bsOsesite/bsOsesite_info.js"></script>
+<script>
+    $("#certificate").val("${item.certificate}");
+    $("#sitecode2").val($('#sitecode').val().substring(2, 6));
+
+    var certificateUrl = "${item.certificate_url}";
+    var certificateValue = "${item.certificate}";
+
+    //显示证书
+    if(certificateValue.length > 0) {
+        $("#certificateA").text(certificateValue);
+    } else {
+        $("#certificateA").text("暂无");
+    }
+
+    //地图选点
+    $(".getcoor").on("click", function () {
+        // lng, lat, src, lngId, latId
+        var lng = $("#longitude").val() || "";
+        var lat = $("#latitude").val() || "";
+        var src = "/bsOsesite/bsOsesite_update";
+        var lngId = "longitude";
+        var latId = "latitude";
+        var options = {
+            lng: lng,
+            lat: lat,
+            src: src,
+            lngId: lngId,
+            latId: latId
+        };
+        Yi.components.setMapMarker(options);
+    });
+</script>
+@}

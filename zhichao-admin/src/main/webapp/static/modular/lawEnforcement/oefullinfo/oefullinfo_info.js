@@ -1,0 +1,546 @@
+﻿/**
+ * 初始化立案办理详情对话框
+ */
+var OefullinfoInfoDlg = {
+    oefullinfoInfoData : {}
+};
+
+/**
+ * 清除数据
+ */
+OefullinfoInfoDlg.clearData = function() {
+    this.oefullinfoInfoData = {};
+}
+
+/**
+ * 设置对话框中的数据
+ *
+ * @param key 数据的名称
+ * @param val 数据的具体值
+ */
+OefullinfoInfoDlg.set = function(key, val) {
+    this.oefullinfoInfoData[key] = (typeof val === "undefined") ? $("#" + key).val() : val;
+    return this;
+}
+
+/**
+ * 设置对话框中的数据
+ *
+ * @param key 数据的名称
+ * @param val 数据的具体值
+ */
+OefullinfoInfoDlg.get = function(key) {
+    return $("#" + key).val();
+}
+
+/**
+ * 关闭此对话框
+ */
+OefullinfoInfoDlg.close = function() {
+
+    refushtable();
+}
+
+/**
+ * 收集数据
+ */
+OefullinfoInfoDlg.collectData = function() {
+    this
+        .set('id')
+        .set('caseno')
+        .set('casetype')
+        .set('caseSource')
+        .set('casegist')
+        .set('casetime')
+        .set('LawType')
+        .set('withholdno')
+        .set('notes')
+        .set('accordance')
+        .set('drivername')
+        .set('driveridcard')
+        .set('driverphone')
+        //.set('overload')
+        .set('driverage')
+        .set('drivergender')
+        .set('qualificationid')
+        .set('driverres')
+        .set('vehicleid')
+        .set('driverid')
+        .set('drivinglicense')
+        .set('bizcertid')
+        .set('lawpersonname')
+        .set('lawpersonidtype')
+        .set('lawpersonid')
+        // .set('driverpostcode')
+        .set('departure')
+        .set('destination')
+        .set('bcnum')
+        // .set('vinnum')
+        .set('vehicletype')
+        .set('cargoname')
+        .set('axlesum')
+        // .set('engine')
+        // .set('vehiclebrand')
+        .set('checkno')
+        .set('fctime')
+        .set('fcoper')
+        .set('weightlimited')
+        .set('ratedtotalweight')
+
+        .set('totalweight')
+        .set('approvedLoad')
+        .set('approvedLoad')
+
+        .set('fclaneno')
+        .set('rctime')
+        .set('rclaneno')
+        .set('ratedloading')
+        .set('rctotalweight')
+        .set('rcoper')
+        .set('rclength')
+        .set('rcwidth')
+        .set('rcheight')
+        .set('offload')
+        .set('fcvehicleimage')
+        .set('rcvehicleimage')
+        .set('enforcername1')
+        .set('enforcername2')
+        .set('overlimited')
+        // .set('incidentRoute')
+        .set('fctotalweight')
+        // .set('fcheight')
+        .set('overheight')
+        // .set('fclength')
+        .set('overlength')
+        // .set('fcwidth')
+        .set('overwidth')
+        .set('shouldpay')
+        .set('damageamount')
+        .set('punishamount')
+        .set('stationid')
+        .set('sitename')
+        // .set('violationlevel')
+        .set('t_violation')
+        .set('illegalWay')
+        .set('correct');
+}
+
+//案卷编号
+var oeid = typeof $("#id") === "undefined" ? 0 : $("#id").val();
+
+/**
+ * 提交添加
+ */
+OefullinfoInfoDlg.addSubmit = function() {
+
+    this.clearData();
+    this.collectData();
+
+    if(Yang.Tools.bsValidator('oefullinfoform')){
+
+        //询问是否提交
+        var oper = function () {
+            var ajax = new $ax(Feng.ctxPath + "/oefullinfo/add", function(data){
+                Feng.success('提交成功')
+
+                //data = 业务唯一id值
+                $("#id").val(data);
+                oeid = data;
+
+                refushtable();
+
+            },function(data){
+                Feng.error("添加失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set(OefullinfoInfoDlg.oefullinfoInfoData);
+            ajax.start();
+        };
+        Feng.confirm('确定提交吗?',oper)
+    }
+};
+
+/**
+ * 计算应收罚款
+ * @returns
+ */
+function calcFined() {
+    //超限量
+    var overlimited = OefullinfoInfoDlg.get('overlimited');
+
+    var axlesum = OefullinfoInfoDlg.get('axlesum');
+
+    var weightlimited = OefullinfoInfoDlg.get('weightlimited')
+
+    //车货总质量
+    var fuc = parseInt(overlimited) + parseInt(weightlimited);
+
+    var money = 0, n = 0;
+    if (fuc > 1000){
+        n = parseInt(fuc / 1000);
+    }else if (fuc == 1000){
+        n = 1;
+    }
+    money = n * 500;
+    money = money > 30000 ? 30000 : money;
+
+    $("#shouldpay").val(''+money);
+}
+
+/**
+ * 计算付费
+ */
+function js(aa,bb) {
+    var cc = Math.round((aa - bb) / 1000) * 500;
+    return aa > bb ? (cc > 30000 ? 30000 : cc) : -1;
+}
+
+/**
+ * 点击添加暂扣单号
+ */
+$("#withholdno").click(function () {
+    var index = layer.open({
+        type: 2,
+        title: '选择暂扣单号',
+        area: ['1200px', '800px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/oefullinfo/selwithholdno'
+    });
+    this.layerIndex = index;
+});
+
+$("#t_violation").change(function () {
+    var isDisabled = $("#t_violation").val() !== '2';
+    $("#illegalWay").attr('disabled',isDisabled)
+    $("#correct").attr('disabled',isDisabled)
+    if (isDisabled){
+        $("#illegalWay").val('');
+        $("#correct").val('');
+    }
+})
+
+$(function() {
+    //设置时间控件,设置时间为当前时间
+    Yang.Tools.date('casetime').setNowDate('casetime',null);
+
+    Yang.Tools.createSelElement('enforcername1','oefullinfo/getLawEnforceMan',null)
+    Yang.Tools.createSelElement('enforcername2','oefullinfo/getLawEnforceMan',null)
+
+    //计算应收罚款
+    calcFined();
+
+    if ($('#prostatus').val() > Yang.Const.UNREGISTERED){
+        $('.row-margin-tb30').remove();
+    }
+
+    //表单验证
+    $('#oefullinfoform').bootstrapValidator({
+        message: '这个值没有被验证',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            caseno: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //案号
+                    }
+                }
+            },
+            casegist: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //案由
+                    }
+                }
+            },
+            LawType: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //执法类型
+                    }
+                }
+            },
+            /*withholdno: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //暂扣单号
+                    }
+                }
+            },*/
+            casetype: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //案件类型
+                    }
+                }
+            },
+            casetime: {
+                trigger: 'change',
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项' //立案时间
+                    }
+                }
+            },
+            accordance: {
+                validators: {
+                    notEmpty: {
+                        message: '该项为必填项'  //执法依据
+                    }
+                }
+            },
+            drivername: {
+                validators: {
+                    notEmpty: {
+                        message: '司机姓名项为必填项' //司机姓名
+                    }
+                }
+            },
+            driveridcard: {
+                validators: {
+                    notEmpty: {
+                        message: '身份证号不能为空'
+                    },
+                    regexp: {
+                        regexp: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/,
+                        message: '身份证不合法'
+                    }
+                }
+            },
+            /*drivergender: {
+                validators: {
+                    regexp: {
+                        regexp: /(^[1-2]$)/,
+                        message: '性别为必选项'
+                    }
+                }
+            },*/
+            qualificationid: {
+                validators: {
+                    notEmpty: {
+                        message: '从业资格证号项为必填项'
+                    }
+                }
+            },
+            driverage: {
+                validators: {
+                    regexp: {
+                        regexp: /^(1[89]|[2-8][0-9]|90)$/,
+                        message: '年龄格式不合法'
+                    }
+                }
+            },
+            driverphone: {
+                validators: {
+                    notEmpty: {
+                        message: '电话号码为必填项'
+                    },
+                    regexp: {
+                        regexp: /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/,
+                        message: '电话号码格式不合法'
+                    }
+                }
+            },
+            /*driverpostcode: {
+                validators: {
+                    regexp: {
+                        regexp: /[1-9]\d{5}(?!\d)$/,
+                        message: '邮编格式不正确'
+                    }
+                }
+            },*/
+            vehicleid: {
+                validators: {
+                    notEmpty: {
+                        message: '车牌号码为必填项'
+                    }
+                }
+            },
+            lawpersonid: {
+                validators: {
+                    notEmpty: {
+                        message: '身份证号不能为空'
+                    },
+                    regexp: {
+                        regexp: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/,
+                        message: '身份证不合法'
+                    }
+                }
+            },
+            lawpersonname: {
+                validators: {
+                    notEmpty: {
+                        message: '法人代表姓名为必填项'
+                    }
+                }
+            },
+            departure: {
+                validators: {
+                    notEmpty: {
+                        message: '*出发地点为必填项'
+                    }
+                }
+            },
+            destination: {
+                validators: {
+                    notEmpty: {
+                        message: '目的地区为必填项'
+                    }
+                }
+            } ,
+            /*bcnum: {
+                validators: {
+                    notEmpty: {
+                        message: '营运证号为必填项'
+                    }
+                }
+            },*/
+            drivinglicense: {
+                validators: {
+                    notEmpty: {
+                        message: '行驶证号为必填项'
+                    }
+                }
+            },
+            axlesum: {
+                validators: {
+                    regexp: {
+                        regexp: /(^[1-9]\d*$)|(^\d+\.\d+$)/,
+                        message: '轴数格式不正确'
+                    }
+                }
+            },
+            cargoname: {
+                validators: {
+                    notEmpty: {
+                        message: '货物名称为必填项'
+                    }
+                }
+            },
+            fctotalweight: {
+                validators: {
+                    notEmpty: {
+                        message: '初检总量为必填项'
+                    },
+                    regexp: {
+                        regexp: /^[1-9]\d*$/,
+                        message: '复检总重量格式不正确'
+                    }
+                }
+            },
+            /*overload: {
+                validators: {
+                    notEmpty: {
+                        message: '超载量为必填项'
+                    },
+                    regexp: {
+                        regexp: /^[1-9]\d*$/,
+                        message: '超载量格式不正确'
+                    }
+                }
+            },*/
+            /*fclength: {
+                validators: {
+                    regexp: {
+                        regexp: /^[1-9]\d*$/,
+                        message: '实长格式不正确'
+                    }
+                }
+            },*/
+            overlength: {
+                validators: {
+                    regexp: {
+                        regexp: /^[0-9]\d*$/,
+                        message: '超长格式不正确'
+                    }
+                }
+            },
+            /*fcwidth: {
+                validators: {
+                    regexp: {
+                        regexp: /^[1-9]\d*$/,
+                        message: '实宽格式不正确'
+                    }
+                }
+            },*/
+            overwidth: {
+                validators: {
+                    regexp: {
+                        regexp: /^[0-9]\d*$/,
+                        message: '超宽格式不正确'
+                    }
+                }
+            },
+            /*fcheight: {
+                validators: {
+                    regexp: {
+                        regexp: /^[1-9]\d*$/,
+                        message: '实高格式不正确'
+                    }
+                }
+            },*/
+            overheight: {
+                validators: {
+                    regexp: {
+                        regexp: /^[0-9]\d*$/,
+                        message: '超高格式不正确'
+                    }
+                }
+            },
+            shouldpay: {
+                validators: {
+                    notEmpty: {
+                        message: '应收罚款为必填项'
+                    },
+                    regexp: {
+                        regexp: /(^[0-9]\d*$)|(^\d+\.\d+$)/,
+                        message: '该项格式不正确'
+                    }
+                }
+            },
+            punishamount: {
+                validators: {
+                    notEmpty: {
+                        message: '罚没收入为必填项'
+                    },
+                    regexp: {
+                        regexp: /(^[0-9]\d*$)|(^\d+\.\d+$)/,
+                        message: '该项格式不正确'
+                    }
+                }
+            },
+            damageamount: {
+                validators: {
+                    regexp: {
+                        regexp: /(^[0-9]\d*$)|(^\d+\.\d+$)/,
+                        message: '该项格式不正确'
+                    }
+                }
+            },
+            t_violation: {
+                validators: {
+                    notEmpty: {
+                        message: '违法类型必填'
+                    }
+                }
+            },
+            illegalWay: {
+                validators: {
+                    notEmpty: {
+                        message: '请选择违法方式'
+                    }
+                }
+            },
+            correct: {
+                validators: {
+                    notEmpty: {
+                        message: '请选择是否已修正'
+                    }
+                }
+            }
+        }
+    });
+
+});

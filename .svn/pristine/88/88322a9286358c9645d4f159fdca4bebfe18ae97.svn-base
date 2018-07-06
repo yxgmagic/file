@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.MakeCargoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.MakeCargo">
+		<id column="id" property="id" />
+		<result column="makecargono" property="makecargono" />
+		<result column="makevehicleid" property="makevehicleid" />
+		<result column="makevehicleman" property="makevehicleman" />
+		<result column="makevehicletel" property="makevehicletel" />
+		<result column="makecargoweight" property="makecargoweight" />
+		<result column="makecargodate" property="makecargodate" />
+		<result column="withholdno" property="withholdno" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id, makecargono, makevehicleid, makevehicleman, makevehicletel, makecargoweight, makecargodate, a.withholdno
+    </sql>
+    
+    <!-- 通用查询结果列2 -->
+    <sql id="Base_Column_List_2">
+        , unloadno, stationid, vehicleid, unloadtime, ulloadcode, caseno, carowner, carownertel, unloadweight, cargotype, rtnumber, cpqnumber, corpname, weightlimited, fctotalweight
+    	,c.sitename as fixedsitename, d.ulname as ulloadname
+    </sql>
+    
+    <select id="selListById" resultType="Map">
+    	select 
+    	<include refid="Base_Column_List"></include>
+    	<include refid="Base_Column_List_2"></include>
+    	from b_make_cargo a, b_cargo_handling b, bs_fixedsite c, bs_unloading d
+    	where a.withholdno = b.withholdno 
+    	and b.stationid = c.sitecode and b.ulloadcode = d.ulcode
+    	<if test="makeCargoId != null and makeCargoId != ''">
+			and a.id = #{makeCargoId}
+		</if>
+    
+    </select>
+    
+    <!-- 根据条件查询列表 -->
+    <select id="selList" resultType="Map">
+    	select
+    	<include refid="Base_Column_List"></include>
+    	from b_make_cargo a, b_cargo_handling b
+    	where a.withholdno = b.withholdno
+    	<if test="makecargodate != null and makecargodate != ''">
+			and a.makecargodate between #{begin} AND #{end}
+		</if>
+		<if test="stationid != null and stationid != ''">
+			and b.stationid = #{stationid}
+		</if>
+		<if test="withholdno != null and withholdno != ''">
+			and a.withholdno LIKE CONCAT('%',#{withholdno},'%')
+		</if>
+		<if test="makecargono != null and makecargono != ''">
+			and a.makecargono LIKE CONCAT('%',#{makecargono},'%')
+		</if>
+		<if test="makevehicleid != null and makevehicleid != ''">
+			and a.makevehicleid LIKE CONCAT('%',#{makevehicleid},'%')
+		</if>
+    	
+    	order by makecargodate DESC
+    </select>
+    
+    <select id="getIdsByWithholdno" resultType="int">
+    	SELECT
+			id
+		FROM
+			b_make_cargo
+		WHERE
+			withholdno=#{withholdno}
+    </select>
+
+</mapper>

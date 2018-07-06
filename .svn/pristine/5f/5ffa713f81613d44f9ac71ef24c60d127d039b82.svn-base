@@ -1,0 +1,77 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+			<form id="vehicleForm">
+				<input type="hidden" id="id" value="">
+
+				<div class="row">
+					<div class="col-sm-6 b-r">
+						<input id="corpcode" name="隐藏源头企业" type="hidden"/>
+						<#input id="corp_code" name="所属企业" underline="true"/>
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">所有人证件类型</label>
+								<div class="col-sm-9">
+									<#SelectDict id="owneridtype" name="owneridtype" dictName="idtype" dataStyle="btn" cssName="form-control"></#SelectDict>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+						</div>
+						<#input id="owertel" name="所有人联系方式" underline="true" />
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">车型</label>
+								<div class="col-sm-9">
+									<#SelectDict id="vehicletype" name="vehicletype" dictName="trucksType" dataStyle="btn" cssName="form-control"></#SelectDict>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+						</div>
+						<#input id="vin" name="车辆识别代码" underline="true" />
+						<#input id="model" name="品牌型号" underline="true" />
+						<#input id="engineid" name="发动机号" underline="true" />
+
+						<#input id="ratedtotalweight" name="总质量（kg）" underline="true" />
+						<#input id="ratedloading" name="核定载质量（kg）" underline="true" />
+						<#input id="curbQuality" name="整备质量(kg)" underline="false"  />
+					</div>
+
+					<div class="col-sm-6">
+						<#input id="owername" name="所有人" underline="true" />
+						<#input id="ownerid" name="所有人证件号码" underline="true" />
+						<#input id="vehicleid" name="车牌号码" underline="true" />
+						<#input id="bizcertid" name="道路运输证号" underline="true" />
+						<#input id="markVehicle" name="车辆所属标记" underline="true" />
+						<div class="row">
+							<div class="form-group">
+								<label for="axlesum" class="col-sm-3 control-label">车轴数</label>
+								<div class="col-sm-9">
+									<#SelectDict id="axlesum" enabled="false" name="axlesum" dictName="trucksAxles" dataStyle="btn" cssName="form-control"></#SelectDict>
+								</div>
+							</div>
+							<div class="hr-line-dashed"></div>
+						</div>
+
+						<#input id="length" name="车长（mm）" underline="true" />
+						<#input id="width" name="车宽（mm）" underline="true" />
+						<#input id="height" name="车高（mm）" underline="false" />
+
+
+					</div>
+				</div>
+
+				<div class="row btn-group-m-t text-center">
+					<div class="col-sm-10">
+						<#button btnCss="info" name="提交" id="ensure" icon="fa-check"
+							clickFun="VehicleInfoDlg.addSubmit()" />
+						<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"
+							clickFun="VehicleInfoDlg.close()" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/vehicle/vehicle_info.js"></script>
+@}

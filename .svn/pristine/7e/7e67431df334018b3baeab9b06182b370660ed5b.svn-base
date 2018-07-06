@@ -1,0 +1,91 @@
+﻿@layout("/common/_container.html"){
+
+<form class="form-horizontal" data-toggle="validator" id="idPunishmentRulesForm">
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+            	<div class="col-sm-4">
+            		<!-- 图片上传组件 -->
+					<div class="panel-body">
+						<img alt="photo" src="${ctxPath}/static/img/notfoundbl.png" class="img-responsive center-block" id="img_show">
+					</div>
+					<div class=" text-center">例图</div>
+					<div class=" text-center">
+						<label for="img_hidden" class="btn btn-primary">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</label>
+						<!-- 隐藏的文件上传框 -->
+						<input type="file" id="img_hidden" style="display: none" />
+						<!-- 标记图片id,默认为0 -->
+						<input type="text" id="img_id" name="imgId" value="0" style="opacity:0;"/>
+						<input type="hidden" value="punishmentRules" id="imagetype">
+					</div>
+            	</div>
+            	
+                <div class="col-sm-8 row" style="padding:40px 10px 40px 10px;">
+
+                    <div class="layui-col-md6 form-group">
+                        <label for="ruleName" class="col-sm-4 control-label">车型编码：</label>
+                        <div class="col-sm-8">
+                            <input id="ruleName" name="ruleName" class="form-control" value="${sequenceMap.sequence}"
+                            readonly="readonly"/>
+                        </div>
+                    </div>
+
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="trucksType" class="col-sm-4 control-label">车型：</label>
+                                <div class="col-sm-8">
+                                    <select id="trucksType" name=trucksType class="form-control"></select>
+                                </div>
+                            </div>
+                            
+                            <div class="layui-col-md6 form-group">
+                                <label for="trucksAxles" class="col-sm-4 control-label">轴数：</label>
+                                <div class="col-sm-8">
+                                    <select id="trucksAxles" name="trucksAxles" class="form-control"></select>
+                                </div>
+                            </div>
+                            
+                            <div class="layui-col-md6 form-group">
+                                <label for="weightLimit" class="col-sm-4 control-label">核定总重（吨）</label>
+                                <div class="col-sm-8">
+                                    <input id="weightLimit" name="weightLimit" type="text" class="form-control" />
+                                </div>
+                            </div>
+                            
+           
+                </div>
+
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PunishmentRulesInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PunishmentRulesInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</form>
+<script type="text/javascript">
+
+	var trucksTypeValue = "";
+	var trucksAxlesValue = "";
+</script>
+
+	<link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+
+<script src="${ctxPath}/static/modular/platformConfig/punishmentRules/punishmentRules_info.js"></script>
+@}

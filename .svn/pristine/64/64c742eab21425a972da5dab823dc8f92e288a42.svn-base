@@ -1,0 +1,67 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <div id="banner"></div>
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>车辆号码</td>
+                        <td>${item.vehicleid}</td>
+                        <td>车辆类型</td>
+                        <td>${item.vehicletype}</td>
+                    </tr>
+                    <tr>
+                        <td>限载质量（kg）</td>
+                        <td>${item.weightlimited}</td>
+                        <td>车辆品牌</td>
+                        <td>${item.vehiclebrand}</td>
+                    </tr>
+                    <tr>
+                        <td>轴数</td>
+                        <td>${item.axlesum}</td>
+                        <td>车架号</td>
+                        <td>${item.vinnum}</td>
+                    </tr>
+                    <tr>
+                        <td>发动机号</td>
+                        <td>${item.engine}</td>
+                        <td>行驶证号</td>
+                        <td>${item.drivinglicense}</td>
+                    </tr>
+                    <tr>
+                        <td>联系电话</td>
+                        <td>${item.driverphone}</td>
+                        <td>车辆自重（kg）</td>
+                        <td>${item.ratedtotalweight}</td>
+                    </tr>
+                    <tr>
+                        <td>登记时间</td>
+                        <td>${item.caseTimeString}</td>
+                        <td>登记人</td>
+                        <td>${item.enforcername1}</td>
+                    </tr>
+                    <tr>
+                        <td>登记车主</td>
+                        <td>${item.drivername}</td>
+                        <td>备注	</td>
+                        <td>${item.notes}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var checkno = '${item.checkno}';
+    Yang.Tools.banner('/bOefullinfo/getVehicleImages/',checkno)
+</script>
+@}

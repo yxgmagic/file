@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ServerListMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.ServerList">
+		<id column="id" property="id" />
+		<result column="sysalias" property="sysalias" />
+		<result column="sysdesc" property="sysdesc" />
+		<result column="systype" property="systype" />
+		<result column="syssource" property="syssource" />
+		<result column="host" property="host" />
+		<result column="port" property="port" />
+		<result column="dbname" property="dbname" />
+		<result column="dbdriver" property="dbdriver" />
+		<result column="dbuser" property="dbuser" />
+		<result column="dbpassword" property="dbpassword" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sysalias, sysdesc, systype, syssource, host, port, dbname, dbdriver, dbuser, dbpassword
+    </sql>
+
+</mapper>

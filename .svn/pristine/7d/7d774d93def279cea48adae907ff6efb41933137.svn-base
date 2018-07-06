@@ -1,0 +1,418 @@
+.button-margin {
+	margin-left: 15px !important;
+}
+
+.input-none-margin {
+	margin: 0px !important;
+}
+
+.btn-margin-left {
+	margin-left: 15px !important;
+}
+
+.table-head {
+	float: left;
+	width: 100%;
+	height: auto;
+}
+
+.head-scu-label {
+	margin-top: 35px;
+}
+
+.head-scu-btn {
+	margin-top: 68px;
+}
+
+.line-margin {
+	margin: 8px 0 !important;
+}
+
+.be-driver-checkbox {
+	margin-top: 7px;
+}
+
+.btn-group-m-t {
+	margin-top: 20px;
+}
+
+.upload-btn {
+	white-space: nowrap;
+}
+
+.tree-box {
+	border-radius: 0px !important;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2) !important;
+	background: rgb(250, 250, 250) none repeat scroll 0% 0% !important;
+	border: 1px solid rgb(204, 204, 204) !important;
+	overflow-y: scroll !important;
+	overflow-x: auto !important;
+	margin-top: 0px !important;
+	width: 224px !important;
+	max-height: 160px !important;
+	-moz-user-select: none !important;
+}
+.dept-tree {
+	padding:10px
+}
+
+.editorHeight{
+	height: 170px;
+}
+
+
+.yice_btn_defulat{
+	display: inline-block;
+	height: 33px;
+	line-height: 33px;
+	padding: 0 16px;
+	background-color: #009688;
+	color: #fff;
+	white-space: nowrap;
+	text-align: center;
+	font-size: 14px;
+	border: none;
+	border-radius: 2px;
+	cursor: pointer;
+	margin-top:15px;
+}
+
+.row-bottom{
+	margin-bottom:15px;
+}
+.row-top{
+	margin-top:30px;
+}
+.row-margin-tb30{
+	margin-top:30px;
+	margin-bottom:30px;
+}
+.row-margin-tb20{
+	margin-top:30px;
+	margin-bottom:30px;
+}
+.row-margin-tb10{
+	margin-bottom:10px;
+}
+.heig-55{
+	height:55px;
+}
+._formgroup{
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.clean_padding{
+	padding: 0px;
+}
+.clean_margin{
+	margin: 0px;
+}
+
+.amap{
+	width: 100%;
+    height: 500px;
+    background-color: #fff;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}
+.box_info{
+	position: absolute;
+	bottom: 4px;
+	right: 18px;
+	width: 300px;
+	height: 200px;
+	z-index: 9;
+	background-color: #ffffff;
+	border: 1px solid #fff;
+	border-radius: 4px;
+	box-shadow: 1px 1px 10px #999999;
+}
+.box_info_site{
+	margin-top:8px;
+	margin-bottom: 8px;
+	padding: 5px;
+}
+._info_site_title{
+	font-size: 14px;
+	color: #333;
+	padding-left: 8px;
+}
+.point1{
+	width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: green;
+    display: inline-block;
+}
+.topInfo{
+	color: blue;
+	font-size: 10px;
+}
+.topInfo:hover{
+	color: blue;
+	font-size: 10px;
+}
+.tg_bigbox{
+	background-color: #009688;
+	color: #ffffff;
+	font-size: 17px;
+	font-weight: 400;
+	height: 120px;
+}
+
+.tg_bigbox #certificateDiv {
+	margin-top: 85px;
+}
+#certificateDiv > div > a{
+	color: #fff;
+	text-decoration:underline;
+}
+
+
+.img_xx{
+	width: 700px;
+	height: 500px;
+}
+.float-e-margins .btn{
+	margin-left: 10px;
+}
+
+.daterangepicker td.active, .daterangepicker td.active:hover{
+	background-color: #1ab394!important;
+}
+.btn-success{
+	background-color: #1ab394!important;
+}
+.boxClass{
+	border: 1px solid #18a689;
+	border-radius: 5px;
+	background-color: #18a689;
+	width: 400px;
+	height: 110px;
+	box-shadow: 2px 2px 10px #999999;
+}
+.infoBox_title{
+	font-size: 18px;
+    color: #f9f9f9;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    height: 40px;
+    line-height: 40px;
+}
+.infoBox_title:hover{
+	color: #ffffff;
+	text-decoration:underline
+}
+.f9{
+	color: #f9f9f9;
+}
+
+.infoBox_list{
+	height: 20px;
+	width: 100%;
+	display: block;
+	line-height: 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-left: 15px;
+}
+
+.btnInfoBox{
+	width: 60px;
+    height: 20px;
+    display: inline-block;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    float: right;
+    margin-right: 15px;
+    box-shadow: 2px 2px 10px #999;
+}
+.btnInfoBox:hover{
+	background-color: #ffffff;
+}
+
+#carArea{
+	width: 100%;
+	height: 400px;
+	margin-bottom: 40px;
+}
+
+.goBox{
+	width: 140px;
+    height: 70px;
+    position: absolute;
+    top: 10px;
+    right: 28px;
+    background: rgba(0, 0, 0, 0.5);
+    padding-left: 15px;
+    border-radius: 10px;
+}
+
+.goBox .layui-form .layui-form-item .layui-unselect span{
+	color: #fff!important;
+}
+
+
+.searchBox{
+	position: absolute;
+	top: 5px;
+	left: 20px;
+	width: 320px;
+	height: 115px;
+	background-color: rgba(0,0,0,0.5);
+	border-radius: 5px;
+	padding-top: 15px;
+}
+.selectSite{
+	margin-right: 30px;
+}
+
+.infoBox{
+	position: absolute;
+	width: 340px;
+	height: 100px;
+	background-color: #1ab394;
+	border-radius: 4px;
+	box-shadow: 1px 1px 10px #999;
+	display: none;
+}
+.infoBoxClose{
+	position: absolute;
+	color: #f0f0f0;
+	font-size: 24px;
+	right: 4px;
+	top: 4px;
+}
+.infoBoxTitle{
+	height: 32px;
+	margin-top: 2px;
+	line-height: 32px;
+	color: #f9f9f9;
+	padding-left: 20px;
+	font-size: 16px;
+    cursor: pointer;
+}
+.infoBoxCarCount{
+    height: 30px;
+    line-height: 30px;
+    color: #f9f9f9;
+    padding-left: 20px;
+    font-size: 14px;
+}
+.infoBoxOverCar{
+    height: 30px;
+    line-height: 30px;
+    color: #f9f9f9;
+    padding-left: 20px;
+    font-size: 14px;
+}
+.infoBoxProcessed{
+    height: 30px;
+    line-height: 30px;
+    color: #f9f9f9;
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.infoBoxBtn{
+    height: 24px;
+    width: 60px;
+    line-height: 24px;
+    text-align: center;
+    background-color: #f9f9f9;
+    color: #333333;
+    border-radius: 4px;
+    position: absolute;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.infoBoxBtn1{
+    top: 36px;
+    right: 100px;
+}
+
+.infoBoxBtn2{
+    top: 36px;
+    right: 20px;
+}
+
+/* siteYoyAnalysis */
+.sitea-title{
+	font-size: 16px;
+	color: #5c6063;
+	font-family: "Courier New", Courier, monospace;
+	border-left: 3px solid #5c6063;
+	font-weight: 600;
+	padding-left: 18px;
+	margin-bottom: 18px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.sitea-box{
+    background-color: #ffffff;
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 10px;
+    border-top: 5px solid #949494!important;
+    display: block;
+}
+
+/**
+站点选择下拉框的样式
+ */
+#idStationStree {
+	position: absolute !important;
+	border:1px solid #ccc;
+	max-height: 280px;
+	width: 90%;
+	background-color: #FEFEFE;
+	z-index: 20;
+	border-radius: 5px;
+	display: none;
+}
+
+/*鼠标移入后显示div的样式.by yzt*/
+.px5-rectangle{
+	position: relative;
+	left: 10px;
+	top: 1px;
+	border-left: 5px solid #333333;
+	padding-left: 8px;
+}
+.w100{
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+.hover-box{
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	display: none;
+}
+/*鼠标移入后显示div的样式.by yzt*/
+
+/*小标题,带描述信息*/
+.min-title-desc{
+    border-left: 5px solid #000000;
+	position: relative;
+	left: 10px;
+	top: 1px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-left: 15px;
+	font-size: 20px;
+}
+.getcoor{
+	border:1px solid #EEEEEE;
+	text-align:left;
+	background-color:#EEEEEE;
+	width:100px;
+	readonly:expression(this.readOnly=true);
+}

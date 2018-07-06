@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BlacklistMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Blacklist">
+		<id column="id" property="id" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="drivername" property="drivername" />
+		<result column="corpname" property="corpname" />
+		<result column="stationid" property="stationid" />
+		<result column="cartype" property="cartype" />
+		<result column="caraxles" property="caraxles" />
+		<result column="ratedloading" property="ratedloading" />
+		<result column="overload" property="overload" />
+		<result column="fine" property="fine" />
+		<result column="ispunitive" property="ispunitive" />
+		<result column="isblack" property="isblack" />
+		<result column="remarks" property="remarks" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, vehicleid, drivername, corpname, stationid, cartype, caraxles, ratedloading, overload, fine, ispunitive, isblack, remarks
+    </sql>
+
+	<!-- 用于条件查询的列 -->
+	<sql id="Base_Column_List1">
+        id, vehicleid, drivername, corpname, stationid, cartype, caraxles, ratedloading, overload, fine, ispunitive, isblack, remarks
+    </sql>
+
+	<!-- 获取几张车头的图片 -->
+	<!--<select id="getVehicleImages" resultType="Lscinfo">
+    	SELECT
+			COUNT(id),fcvehicleimage,fcvehicleimage1,fcvehicleimage2,rcvehicleimage,rcvehicleimage1,rcvehicleimage2
+		FROM
+			b_lscinfo
+		WHERE
+			vehicleid = #{vehicleid}
+    </select>-->
+
+	<select id="getVehicleImages" resultType="Blacklist">
+		SELECT
+		COUNT(id),vehicleimage,vehicleimage1,vehicleimage2
+		FROM
+		b_blacklist
+		WHERE
+		vehicleid = #{vehicleid}
+	</select>
+    
+    <!-- 根据id查询黑白名单数据 -->
+    <select id="selListById">
+    	Select
+    	<include refid="Base_Column_List1"></include>
+    	FROM
+    		b_blacklist
+    	WHERE
+    		b_blacklist.id=#{id}
+    </select>
+    
+    <!-- 根据条件查询相对应的数据 -->
+    <select id="selList" resultType="Map">
+    	Select
+    	<include refid="Base_Column_List1"></include>
+    	FROM
+    		b_blacklist
+    	WHERE
+    		1=1
+    	
+    	<if test="vehicleid != null and vehicleid != ''">
+			and vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>	
+    	
+    	<if test="drivername != '' and drivername != null">
+    		and drivername like CONCAT('%',#{drivername},'%')
+    	</if>
+    	<if test="vehicleid != '' and vehicleid != null">
+    		and corpname like CONCAT('%',#{corpname},'%')
+    	</if>
+    </select>
+    
+    <update id="updateBlackStatus">
+    	UPDATE 
+    		b_blacklist
+    	SET
+    		isblack = #{statusValue}
+    	WHERE
+    		id = #{id}
+    </update>
+    
+    <!-- 获取超限次数大于三次的记录 -->
+    <select id="generateBlacklist" resultType="Blacklist">
+    	SELECT
+			distinct b.vehicleid, b.drivername, b.stationid, b.vehicletype as cartype,
+			b.axlesum AS caraxles, b.ratedloading, b.overlimited AS overload,
+			b.punishamount as fine, b.fcvehicleimage AS vehicleimage, 
+			b.rcvehicleimage as vehicleimage1
+		FROM
+			(
+			SELECT
+				count(id) as num,
+				vehicleid
+			FROM
+				b_oefullinfo
+			WHERE 1=1
+			<if test="time != '' and time != null">
+	    		and fctime BETWEEN #{begin} and #{end}
+	    	</if>
+				 GROUP BY vehicleid
+			) as a,
+			b_oefullinfo as b
+		WHERE
+		 	a.vehicleid = b.vehicleid
+		AND
+			a.num > 2
+		GROUP BY b.vehicleid
+    </select>
+	
+	<!-- 根据车牌号获取企业名称 -->
+	<select id="getCorpNameByvehicleid" resultType="String">
+		SELECT 
+			a.corpname
+		FROM
+			bs_corp a, bs_vehicle b
+		WHERE
+			a.corpcode = b.corpcode AND
+			vehicleid like CONCAT('%',#{vehicleid},'%')
+	</select>
+	
+	<!-- 根据车牌号获取黑白名单的记录条数,当它大于零的时候就不需要添加新纪录 -->
+	<select id="getRowCount" resultType="int">
+		SELECT 
+			count(id)
+		FROM
+			b_blacklist
+		WHERE
+			vehicleid = #{vehicleid}
+	</select>
+	
+</mapper>

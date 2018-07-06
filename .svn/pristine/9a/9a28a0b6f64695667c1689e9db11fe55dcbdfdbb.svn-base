@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>养护</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+<body class="layui-bg-gray">
+<div class="body-nopadding">
+    <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />养护</h2>
+    <div class="ibox-content margin-bottom-30">
+        <div class="layui-row margin-bottom-10">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">分析时间</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="selectDateArea">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">预测部门</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <select name="checkSite" id="checkSite" class="layui-input">
+                        <option value="">预测部门</option>
+                        <option value="云龙超限检测站">云龙超限检测站</option>
+                        <option value="黄陂田超限检测站">黄陂田超限检测站</option>
+                        <option value="菜花坪超限检测站">菜花坪超限检测站</option>
+                        <option value="蛇湖超限检测站">蛇湖超限检测站</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="text-center margin-top-30">
+            <button class="layui-btn">开始分析</button>
+        </div>
+    </div>
+    <div class="ibox-content  margin-bottom-30">
+        <div class="chart height-20">
+            <div class="shu shu1"></div>
+            <span>养护情况分布图</span>
+            <div class="query">
+                <button class="layui-btn layui-btn-sm shu1">养护数据关联</button>
+            </div>
+        </div>
+        <div id="site" style="width: 100%;height:400px;margin-top:30px;"></div>
+    </div>
+    <div class="ibox-content  margin-bottom-30">
+        <div id="time" style="width: 100%;height:400px;padding:30px;"></div>
+    </div>
+    <div class="ibox-content margin-bottom-30">
+        <div id="main" style="width: 100%;height:400px;padding:30px;"></div>
+    </div>
+    <!--<h2 class="margin-left-30 margin-top-30">车流量与超限量时间点对比</h2>
+    <div class="layui-row margin-bottom-30">
+        <div class="layui-col-lg10 margin-left-30 tb-bg">
+           <div class="chart height-20">
+                    <div class="shu shu1"></div>
+                    <span>时间点分布图</span>
+                    <div class="query">
+                       <span style="float:left;">日期</span>
+                        <input type="text" class="layui-input date" >
+                        <span style="float:left;">--</span>
+                        <input type="text" class="layui-input date">
+                        <button class="layui-btn layui-btn-sm shu1">查询</button>
+                    </div>
+                </div>
+            <div id="two" style="width: 100%;height:400px;padding:30px;"></div>
+        </div>
+    </div>-->
+</div>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/echarts.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script src="${ctxPath}/static/js/common/Ning.js"></script>
+<script>
+    /*$(document).ready(function () {
+        Module.Box.OpenDialog('1000', '500', '选择.html', '车流量或超限分析')
+    });*/
+</script>
+<script>
+
+    //绑定日期选择框
+    //时间范围选择
+    layui.laydate.render({
+        elem: '#selectDateArea'
+        ,range: '~' //或 range: '~' 来自定义分割字符
+    });
+
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('site'));
+    // 指定图表的配置项和数据
+    var option =
+        {
+            title: {
+                text: '养护类型分布图',
+                /*subtext: '各站点对比分析',*/
+                x: 'center',
+                textStyle: {
+                    fontSize: '20',
+                },
+                subtextStyle: {
+                    fontSize: '15',
+                }
+            },
+            color: [
+                '#fec88a', '#7bc576', '#f19319', '#6dcff4', '#3db393'
+            ],
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            /*legend: {
+                orient: 'vertical',
+                bottom: 'bottom',
+                data: ['株洲1站', '株洲2站', '株洲3站', '株洲4站', '株洲5站']
+            },*/
+            series: [
+                {
+                    name: '站点',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        { value: 335, name: '路面大修' },
+                        { value: 310, name: '日常维修' },
+                        { value: 234, name: '设施维修' },
+                        { value: 135, name: '绿化维护' },
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('time'));
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: '养护时态分布图',
+            /*subtext: '各站点对比分析',*/
+            x: 'center',
+            textStyle: {
+                fontSize: '20',
+            },
+            subtextStyle: {
+                fontSize: '15',
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        /*toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },*/
+        legend: {
+            bottom: 'bottom',
+            data:['日常维护','路面大修','设施维修','绿化维护','超限量']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '费用支出',
+                axisLabel: {
+                    formatter: '{value}万元'
+                }
+            },
+            {
+                type: 'value',
+                name: '超限车辆',
+                axisLabel: {
+                    formatter: '{value}辆 '
+                }
+            }
+        ],
+        series: [
+            {
+                name:'日常维护',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[1, 2, 1.5, 2, 1, 2.4, 2.8, 3.5, 2, 1.8, 1.7, 1]
+            },
+            {
+                name:'路面大修',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[15, 14.5, 16, 15.2,22, 20.9, 30, 17, 16, 16.3, 16, 15]
+            },
+            {
+                name:'设施维修',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[3.7, 4.9, 8.0, 16.4, 18.7, 10.7, 11.6, 12.2, 8.7, 4.8, 3.0, 4.3]
+            },
+            {
+                name:'绿化维护',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[3, 2, 2, 1, 2, 2, 3, 4, 2, 4, 3, 3]
+            },
+            {
+                name:'超限量',
+                type:'line',
+                yAxisIndex: 1,
+                data:[6000, 5400, 6360, 6567, 6890, 8450, 7100, 6980, 6700, 6860, 6400, 6300]
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: '超限比重分布图',
+            /*subtext: '各站点对比分析',*/
+            x: 'center',
+            textStyle: {
+                fontSize: '20',
+            },
+            subtextStyle: {
+                fontSize: '15',
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        /*toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },*/
+        legend: {
+            bottom: 'bottom',
+            data:['超限30%','超限30%至50%','超限50%至100%','超限100%']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '车次',
+                axisLabel: {
+                    formatter: '{value}辆'
+                }
+            }
+        ],
+        series: [
+            {
+                name:'超限30%',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[500, 400, 590, 432, 610, 700, 680, 400, 412, 400, 364, 313]
+            },
+            {
+                name:'超限30%至50%',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[300, 200, 390, 232, 410, 500, 480, 200, 212, 200, 164, 113]
+            },
+            {
+                name:'超限50%至100%',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[100, 80, 290, 232, 310, 300, 280, 100, 112, 90, 64, 83]
+            },
+            {
+                name:'超限100%',
+                type:'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data:[30, 20, 39, 23, 41, 80, 48, 20, 12, 20, 16, 11]
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+    var myChart = echarts.init(document.getElementById('averange'));
+    option = {
+        title : {
+            text: '费用开支分布图',
+            subtext: '',
+            x: 'center',
+            textStyle: {
+                fontSize: '20',
+            },
+            subtextStyle: {
+                fontSize: '15',
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '7%',
+            bottom: '10%',
+            containLabel: true
+        },
+        tooltip : {
+            // trigger: 'axis',
+            showDelay : 0,
+            formatter : function (params) {
+                if (params.value.length > 1) {
+                    return params.seriesName + ' :<br/>'
+                        + params.value[0] + ' '
+                        + params.value[1] + ' ';
+                }
+                else {
+                    return params.seriesName + ' :<br/>'
+                        + params.name + ' : '
+                        + params.value + '元 ';
+                }
+            },
+            axisPointer:{
+                show: true,
+                type : 'cross',
+                lineStyle: {
+                    type : 'dashed',
+                    width : 1
+                }
+            }
+        },
+        /*toolbox: {
+            feature: {
+                dataZoom: {},
+                brush: {
+                    type: ['rect', 'polygon', 'clear']
+                }
+            }
+        },
+        brush: {
+        },*/
+        legend: {
+            data: ['日常维修','路面大修','公路维修','危险性维修'],
+            bottom: 'bottom'
+        },
+        xAxis : [
+            {
+                type : 'value',
+                scale:true,
+                axisLabel : {
+                    formatter: '{value} 月'
+                },
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                name: '次数',
+                scale:true,
+                axisLabel : {
+                    formatter: '{value} '
+                },
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        series : [
+            {
+                name:'日常维修',
+                type:'scatter',
+                data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0],
+                    [165.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0],
+
+                ],
+                markArea: {
+                    silent: true,
+                    itemStyle: {
+                        normal: {
+                            color: 'transparent',
+                            borderWidth: 1,
+                            borderType: 'dashed'
+                        }
+                    },
+                    data: [[{
+                        name: '日常维修区间',
+                        xAxis: 'min',
+                        yAxis: 'min'
+                    }, {
+                        xAxis: 'max',
+                        yAxis: 'max'
+                    }]]
+                },
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    lineStyle: {
+                        normal: {
+                            type: 'solid'
+                        }
+                    },
+                    data : [
+                        {type : 'average', name: '平均值'},
+                        { xAxis: 160 }
+                    ]
+                }
+            },
+            {
+                name:'路面大修',
+                type:'scatter',
+                data: [[151.2, 50.6], [150.5, 59.0], [180.5, 50.2], [207.0, 63.0],
+                    [185.2, 55.6], [157.5, 34.0], [187.5, 59.2], [147.0, 63.0],
+
+                ],
+                markArea: {
+                    silent: true,
+                    itemStyle: {
+                        normal: {
+                            color: 'transparent',
+                            borderWidth: 1,
+                            borderType: 'dashed'
+                        }
+                    },
+                    data: [[{
+                        name: '路面大修区间',
+                        xAxis: 'min',
+                        yAxis: 'min'
+                    }, {
+                        xAxis: 'max',
+                        yAxis: 'max'
+                    }]]
+                },
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    lineStyle: {
+                        normal: {
+                            type: 'solid'
+                        }
+                    },
+                    data : [
+                        {type : 'average', name: '平均值'},
+                        { xAxis: 150 }
+                    ]
+                }
+            },
+            {
+                name:'公路维修',
+                type:'scatter',
+                data: [[141.2, 50.6], [170.5, 59.0], [189.5, 50.2], [157.0, 63.0],
+                    [155.2, 55.6], [187.5, 69.0], [179.5, 59.2], [167.0, 63.0],
+
+                ],
+                markArea: {
+                    silent: true,
+                    itemStyle: {
+                        normal: {
+                            color: 'transparent',
+                            borderWidth: 1,
+                            borderType: 'dashed'
+                        }
+                    },
+                    data: [[{
+                        name: '公路维修区间',
+                        xAxis: 'min',
+                        yAxis: 'min'
+                    }, {
+                        xAxis: 'max',
+                        yAxis: 'max'
+                    }]]
+                },
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    lineStyle: {
+                        normal: {
+                            type: 'solid'
+                        }
+                    },
+                    data : [
+                        {type : 'average', name: '平均值'},
+                        { xAxis: 165 }
+                    ]
+                }
+            },
+            {
+                name:'危险性维修',
+                type:'scatter',
+                data: [[174.0, 65.6], [175.3, 71.8], [193.5, 80.7], [186.5, 72.6], [187.2, 78.8],
+                    [181.5, 74.8], [184.0, 86.4], [184.5, 78.4], [175.0, 62.0], [184.0, 81.6],
+                ],
+                markArea: {
+                    silent: true,
+                    itemStyle: {
+                        normal: {
+                            color: 'transparent',
+                            borderWidth: 1,
+                            borderType: 'dashed'
+                        }
+                    },
+                    data: [[{
+                        name: '危险性维修区间',
+                        xAxis: 'min',
+                        yAxis: 'min'
+                    }, {
+                        xAxis: 'max',
+                        yAxis: 'max'
+                    }]]
+                },
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    lineStyle: {
+                        normal: {
+                            type: 'solid'
+                        }
+                    },
+                    data : [
+                        {type : 'average', name: '平均值'},
+                        { xAxis: 170 },
+
+
+                    ]
+                }
+            }
+        ]
+    };
+
+    myChart.setOption(option);
+
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('money'));
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: '超限情况与道路养护支出预测',
+            /*subtext: '各站点对比分析',*/
+            x: 'center',
+            textStyle: {
+                fontSize: '20',
+            },
+            subtextStyle: {
+                fontSize: '15',
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        /*toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },*/
+        legend: {
+            bottom: 'bottom',
+            data:['日常维护','路面大修','设备维修','绿化维护','超限量']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '次数',
+                min: 0,
+                max: 40,
+                interval: 5,
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            {
+                type: 'value',
+                name: '费用支出',
+                min: 0,
+                max: 25,
+                interval: 5,
+                axisLabel: {
+                    formatter: '{value} '
+                }
+            }
+        ],
+        series: [
+            {
+                name:'日常维护',
+                type:'bar',
+                data:[4.0, 6.9, 7.0, 23.2, 25.6, 16.7, 15.0, 14.2, 12.6, 20.0, 6.4, 3.3]
+            },
+            {
+                name:'路面大修',
+                type:'bar',
+                data:[2.6, 5.9, 9.0, 16.4, 18.7, 20.7, 15.6, 22.2, 18.7, 28.8, 8.0, 4.7]
+            },
+            {
+                name:'设备维修',
+                type:'bar',
+                data:[3.7, 4.9, 8.0, 26.4, 28.7, 10.7, 25.6, 12.2, 28.7, 14.8, 6.0, 4.3]
+            },
+            {
+                name:'绿化维护',
+                type:'bar',
+                data:[3.0, 7.9, 10.0, 20.4, 18.7, 20.7, 13.6, 22.2, 18.7, 16.8, 9.0, 5.3]
+            },
+            {
+                name:'超限量',
+                type:'line',
+                yAxisIndex: 1,
+                data:[2.0, 4.0, 3.0, 15.0, 23.0, 20.0, 12.0, 13.0, 11.0, 7.0, 8.0, 6.0]
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+</script>
+</body>
+</html>

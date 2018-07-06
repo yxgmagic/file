@@ -1,0 +1,41 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>执法车信息管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="deptName" name="管理部门" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="carNumber" name="执法车牌号" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="查询" icon="fa-search" clickFun="LawEnforcecar.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="LawEnforcecarTableToolbar" role="group">
+                            @if(shiro.hasPermission("/lawEnforcecar/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="LawEnforcecar.openAddLawEnforcecar()"/>
+                            @}
+                            @if(shiro.hasPermission("/lawEnforcecar/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="LawEnforcecar.openLawEnforcecarDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/lawEnforcecar/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="LawEnforcecar.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="LawEnforcecarTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/lawEnforcecar/lawEnforcecar.js"></script>
+@}

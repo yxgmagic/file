@@ -1,0 +1,69 @@
+﻿@layout("/common/_container.html"){
+ 
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+
+			<input type="hidden" id="id" value="-1">
+
+			<div class="row">
+				<div class="col-sm-6 b-r">
+
+				 
+					<#input id="ldname" name="执法文书名称" underline="true" />
+					<div class="form-group">
+						<label class="col-sm-3 control-label">执法文书类型</label>
+						<div class="col-sm-9">
+							<#SelectDict id="ldtype" dictName="ldtype" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+						<div class="hr-line-dashed"></div>
+											<div class="form-group">
+						<label class="col-sm-3 control-label">执法文书状态</label>
+						<div class="col-sm-9">
+							<#SelectDict id="ldstatus" dictName="status" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+				</div>
+
+				<div class="col-sm-6">
+
+
+					<#input id="ldno" name="模板版本序号"  readonly="true" value="0" underline="true" />
+					<#input id="ldfileurl" name="模板文件路径" readonly="true" underline="true" />
+				 
+							  <label for="img_hidden" class="btn btn-primary"> <i
+								class="glyphicon glyphicon-upload"></i>&nbsp;上传模板
+							</label> <input type="file" id="img_hidden" style="display: none" />  
+				 
+
+
+					
+				</div>
+			</div>
+
+			<div class="row btn-group-m-t">
+				<div class="col-sm-12 text-center">
+					<#button btnCss="info" name="保存" id="ensure" icon="fa-check"
+						clickFun="LawDocInfoDlg.addSubmit()" />
+					<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"
+						clickFun="LawDocInfoDlg.close()" />
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/lawdoc/lawDoc/lawDoc_info.js"></script>
+ 
+<script type="text/javascript">
+
+$("#img_hidden").change(function() {
+	 
+	 LawDocInfoDlg.ajaxFileUploadDoc('img_hidden');
+});
+</script>
+@}

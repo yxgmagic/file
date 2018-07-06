@@ -1,0 +1,108 @@
+package com.zhichao.service.detecManage.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.util.DictUtil;
+import com.zhichao.service.detecManage.IHspinfoService;
+import com.zhichao.beans.guns.Hspinfo;
+import com.zhichao.common.util.ToolUtil;
+import com.zhichao.dal.mapper.HspinfoMapper;
+
+/**
+ * <p>
+ * 不停车预检站数据表 服务实现类
+ * </p>
+ *
+ * @author fengshuonan
+ * @since 2018-01-15
+ */
+@Service(value = "hspinfoServiceImpl")
+public class HspinfoServiceImpl extends ServiceImpl<HspinfoMapper, Hspinfo> implements IHspinfoService {
+
+	@Autowired
+	private HspinfoMapper mapper;
+
+	@Override
+	public List<Hspinfo> selList(Page<Hspinfo> page, String depts, String stationid, String vehicleid, String hsptime) {
+
+		vehicleid = YUtil.isNullOrEmptyReturnString(vehicleid,true);
+
+		//设置时间查询条件
+		String begin = null, end = null;
+		if(!ToolUtil.isEmpty(hsptime)) {
+			begin = hsptime.trim() + " 00:00:00";
+			end = hsptime.trim() + " 23:59:59";
+		}
+
+		String[] deptsArr = null;
+		if(depts != "" && depts != null) {
+			deptsArr = depts.split(",");
+		}
+		List<Hspinfo> hspInfoList = mapper.selList(page, deptsArr, stationid, vehicleid, hsptime, begin, end);
+		
+		//重组汽车类型
+		hspInfoList.forEach(hspinfo -> {
+			hspinfo.setVehicletypeString(DictUtil.selectNameByEnameNum("trucksType", String.valueOf(hspinfo.getVehicletype())));
+		});
+
+		return hspInfoList;
+	}
+
+	@Override
+	public Hspinfo selHspInfo(Integer id) {
+
+		//根据站点id找出所有不停车预检信息
+		Hspinfo hspinfo = mapper.selHspInfo(id);
+
+		//时间日期转换
+		String strTime = hspinfo.getHsptime() != null ? YUtil.DateToString(hspinfo.getHsptime(), "yyyy-MM-dd HH:mm:ss") : null;
+		hspinfo.setStrTime(strTime);
+
+		//货车类型转换
+		hspinfo.setVehicletypeString(DictUtil.selectNameByEnameNum("cartype", String.valueOf(hspinfo.getVehicletype())));
+		
+		return hspinfo;
+	}
+
+
+	@Override
+	public List<String> getVehicleImages(Integer id) {
+        Map<String, String> vehicleImages = mapper.getVehicleImages(id);
+        if (vehicleImages == null) {
+            return null;
+        }
+        List<String> list = new ArrayList<>();
+        vehicleImages.forEach((K,V) -> list.add(V));
+        return list;
+	}
+
+	@Override
+	public List<Double> statistics(String depts, String stationid) {
+
+		List<Double> result = new ArrayList<Double>();
+		if(!ToolUtil.isEmpty(stationid) || !ToolUtil.isEmpty(depts)) {
+			if(!ToolUtil.isEmpty(stationid)) {
+				result = mapper.calcStation(stationid);
+			} else if(!ToolUtil.isEmpty(depts)) {
+				String[] deptsArr = null;
+				if(depts != "" && depts != null) {
+					deptsArr = depts.split(",");
+				}
+				result = mapper.calcDept(deptsArr);
+				int rate = (int) (result.get(1) / (result.get(0) * 100));
+				result.add((double)rate);
+			}
+		}
+		return result;
+	}
+
+
+}

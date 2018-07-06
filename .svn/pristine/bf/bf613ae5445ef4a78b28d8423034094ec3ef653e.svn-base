@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.PeAssessplanMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.PeAssessplan">
+		<id column="id" property="id" />
+		<result column="assessName" property="assessName" />
+		<result column="startTime" property="startTime" />
+		<result column="endTime" property="endTime" />
+		<result column="notes" property="notes" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, assessName, startTime, endTime, notes
+    </sql>
+
+	<select id="selSite" resultType="com.zhichao.beans.guns.QuerySiteOrIndicBO">
+		SELECT
+		  id,sitename AS name
+		FROM
+		  bs_fixedsite
+		WHERE 1=1
+		<if test="assess_id != null and assess_id != ''">
+			AND id
+			<if test="nt != null and nt != ''">
+				NOT
+			</if>
+			IN
+			  (SELECT
+				site_id
+			  FROM
+				pe_assess_site
+			  WHERE 1=1
+				  AND assess_id = #{assess_id}
+			  )
+		</if>
+	</select>
+
+	<select id="selIndic" resultType="com.zhichao.beans.guns.QuerySiteOrIndicBO">
+		SELECT
+		  id,indicatorName AS  name
+		FROM
+		  pe_indicator
+		WHERE 1=1
+			<if test="assess_id != null and assess_id != ''">
+				AND  id
+					<if test="nt != null and nt != ''">
+						NOT
+					</if>
+				IN
+				  (SELECT
+					indic_id
+				  FROM
+					pe_assess_indic
+				  WHERE 1=1
+						AND  assess_id = #{assess_id}
+				  )
+			</if>
+	</select>
+
+    <select id="selById" resultType="java.util.Map">
+		SELECT
+		  id,
+		  assessName,
+		  DATE_FORMAT(startTime, '%Y-%c-%d %h:%i:%s') AS startTime,
+		  DATE_FORMAT(endTime, '%Y-%c-%d %h:%i:%s') AS endTime,
+		  notes,
+		  (SELECT
+			GROUP_CONCAT(b.sitename)
+		  FROM
+			pe_assess_site a,
+			bs_fixedsite b
+		  WHERE
+		  a.site_id = b.id
+		  AND a.assess_id = #{id}) AS assessObj,
+		  (SELECT
+			GROUP_CONCAT(b.indicatorName)
+		  FROM
+			pe_assess_indic a,
+			pe_indicator b
+		  WHERE
+		  a.indic_id = b.id
+		  AND a.assess_id = #{id}) AS assessIndic
+		FROM
+		  pe_assessplan
+		WHERE id = #{id}
+	</select>
+
+	<insert id="insertIndic">
+		INSERT INTO pe_assess_indic (assess_id, indic_id)
+		VALUES
+		(#{assess_id,jdbcType=INTEGER}, #{indic_id,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSite">
+		INSERT INTO pe_assess_site (assess_id, site_id)
+		VALUES
+		(#{assess_id,jdbcType=INTEGER}, #{site_id,jdbcType=INTEGER})
+	</insert>
+
+	<delete id="delAllSiteOrIndicRela">
+		DELETE FROM ${rela} WHERE assess_id = #{assess_id}
+	</delete>
+
+	<select id="selCount" resultType="java.lang.Integer">
+		SELECT COUNT(id) AS SUM FROM ${tableName} WHERE assess_id = #{assess_id}
+	</select>
+
+	<select id="sumScoreBySiteIdAndAssessId" resultType="java.lang.Integer">
+		SELECT
+			SUM(
+					CASE
+					WHEN judgeRules = 1
+						THEN score
+					ELSE - score
+					END
+			) AS score
+		FROM
+			pe_site_indic a,
+			pe_indicator b
+		WHERE a.`indic_id` = b.`id`
+			  AND indic_id IN
+				  (SELECT
+					   b.`indic_id`
+				   FROM
+					   pe_assess_site a,
+					   pe_assess_indic b
+				   WHERE a.`assess_id` = b.`assess_id`
+						 AND a.`site_id` = #{siteId}
+						 AND a.`assess_id` = #{assid})
+			  AND a.`site_id` = #{siteId}
+			  AND a.`time` BETWEEN #{start} AND #{end}
+	</select>
+
+	<select id="queryAssessInfo" resultType="com.zhichao.beans.guns.QueryAssessInfoBO">
+		select
+			a.`site_id` AS siteId, a.`assess_id` AS assessId, b.`sitename` as siteName
+		from
+			pe_assess_site a,
+			bs_fixedsite b
+		where a.`site_id` = b.`id`
+			  and a.`assess_id` = #{assid}
+	</select>
+</mapper>

@@ -1,0 +1,148 @@
+@layout("/common/_container.html"){
+<script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+			<form id="bsCorpForm">
+				<input type="hidden" id="id" value="${item.id}">
+				<div class="row">
+
+					<!-- 图片上传组件 -->
+					<div class="col-sm-2 b-r">
+						<div class="panel-body">
+							<img alt="photo" src="${ctxPath}/static/img/loading.gif" class="img-responsive center-block" id="img_show">
+						</div>
+						<div class="panel-body text-center">
+							<div class="heig-55">
+								营业执照图片
+							</div>
+							<label for="img_hidden" class="btn btn-primary">
+								<i class="glyphicon glyphicon-upload"></i>&nbsp;上传图片
+							</label>
+							<input type="file" id="img_hidden" accept="image/*" style="display: none" />
+							<input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+							<input type="hidden" value="corp" id="imagetype">
+						</div>
+					</div>
+
+					<div class="col-sm-5 b-r">
+						<#input id="corpname" name="企业名称" value="${item.corpname}"
+						underline="true" />
+						<#input id="corpcode" name="营业执照" value="${item.corpcode}"
+						underline="true" />
+						<#input id="managerid" name="身份证号码" value="${item.managerid}"
+						underline="true" />
+						<#input id="turnvolumes" name="年货运吞吐量（kg）"
+						value="${item.turnvolumes}" underline="true"/>
+						<div class="col-sm-12">
+							<div class="form-group">
+								<input id="roadcode" name="所属路网" style="display:none;" value="${item.roadcode}" />
+								<label class="col-sm-3 control-label">所属区域</label>
+								<input id="areacode" name="所属行政区" type="hidden" value="${item.areacode}" />
+
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<select id="Select1" name="Select1" class="layui-input"
+													onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'1');"></select>
+										</div>
+										<div class="col-sm-4">
+											<select id="Select2" name="Select2" class="layui-input"
+													onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'1');"></select>
+										</div>
+										<div class="col-sm-4">
+											<select id="Select3" name="Select3" class="layui-input"
+													onchange="selectRoad(document.getElementById('roadcode'));"></select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="certificate" class="col-sm-3 control-label">检定证书:</label>
+							<div class="col-sm-9">
+								<div class="col-sm-6">
+								<a id="certificateA" href="javascript:showCertificate();"
+								   style="line-height: 34px;color: #00B83F;">暂无</a>
+								<input type="text" id="certificate" name="certificate" class="form-control"
+									   value="${item.certificate}"
+									   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+								</div>
+								<label for="file_input" class="btn btn-primary" style="margin-left: 30px">
+									<i class="glyphicon glyphicon-upload"></i>&nbsp;重新上传
+								</label>
+								<input type="file" id="file_input" style="display: none"/>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<label for="certificateValidityPeriod" class="col-sm-3 control-label">检定证书有效期</label>
+							<div class="col-sm-9">
+								<input type="text" id="certificateValidityPeriod" name="certificateValidityPeriod"
+									   value="${item.certificateValidityPeriod}" class="form-control text-center" />
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-sm-5">
+						<#input id="address" name="详细地址" value="${item.address}"
+						underline="true" />
+						<#input id="manager" name="企业负责人" value="${item.manager}"
+						underline="true" />
+						<#input id="managertel" name="联系电话" value="${item.managertel}"
+						underline="true" />
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">地理坐标</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="clean-margin col-sm-6">
+											<input class="form-control" id="longitude" value="${item.longitude}" name="longitude"/>
+										</div>
+										<div class="col-sm-6">
+											<input class="form-control" id="latitude" value="${item.latitude}" name="latitude"/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<#input id="judicialOrgan" name="审判机关" value="${item.judicialOrgan}" />
+						<#input id="bankAccountName" name="银行户名" value="${item.bankAccountName}"/>
+						<#input id="bankAccount" name="银行账号" value="${item.bankAccount}"/>
+						<#input id="dueBank" name="收款银行" value="${item.dueBank}"/>
+						<#input id="bankAddress" name="银行地址" value="${item.bankAddress}"/>
+
+
+					</div>
+				</div>
+
+				<div class="row btn-group-m-t text-center">
+					<div class="col-sm-10">
+						<#button btnCss="info" name="提交" id="ensure" icon="fa-check"
+						clickFun="BsCorpInfoDlg.editSubmit()" />
+						<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser"
+						clickFun="BsCorpInfoDlg.close()" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+
+    var certificateUrl = "${item.certificateUrl}";
+    var certificateValue = "${item.certificate}";
+
+    //显示证书
+    if(certificateValue.length > 0) {
+        $("#certificateA").text(certificateValue);
+    } else {
+        $("#certificateA").text("暂无");
+    }
+
+</script>
+<script src="${ctxPath}/static/modular/siteRegistration/bsCorp/bsCorp_info.js"></script>
+@}

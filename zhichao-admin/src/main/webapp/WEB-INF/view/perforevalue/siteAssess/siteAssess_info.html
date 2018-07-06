@@ -1,0 +1,15 @@
+﻿@layout("/common/_container.html"){
+<form id="peAssess">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <#table id="SiteAssessInfoTable"/>
+        </div>
+    </div>
+</form>
+<script>
+    var assId = '${item.id}'
+    var start = '${item.start}'
+    var end = '${item.end}'
+</script>
+<script src="${ctxPath}/static/modular/perforevalue/siteAssess/siteAssess_info.js"></script>
+@}

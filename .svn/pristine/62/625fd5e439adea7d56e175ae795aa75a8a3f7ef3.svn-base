@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>违法驾驶员统计表</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+    <div class="body-nopadding">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />违法驾驶员统计表</h2>
+            </div>
+        </div>
+        <div class="ibox-content margin-bottom-30">
+            <div class="layui-row">
+                <div class="layui-col-md6 margin-bottom-10">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">统计时间：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <input type="text" class="layui-input" id="selectDateArea">
+                    </div>
+                </div>
+                <div class="layui-col-md6 margin-bottom-10">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">驾驶员：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">身份证号：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+				<div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">状态：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center margin-top-30">
+                <button class="layui-btn">查询</button>
+            </div>
+        </div>
+        <div class="ibox-content margin-top-30">
+            <div class="text-left" style="float:left">
+                <button class="layui-btn  layui-btn-sm editor" id="btn_cg">抄告</button>
+            </div>
+            <div class="text-right">
+                <button class="layui-btn  layui-btn-sm editor">导出Excel</button>
+            </div>
+            <div class="layui-form">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">序号</th>
+                            <th>驾驶员</th>
+                            <th>身份证号</th>
+                            <th>驾驶证号</th>
+                            <th>从业资格证号</th>
+                            <th>违法次数</th>
+                            <th>抄告日期</th>
+                            <th>数据更新日期</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td>吴康</td>
+                            <td>543313232321</td>
+                            <td>564354353424324</td>
+                            <td>564354353424324</td>
+                            <td>2</td>
+                            <td></td>
+                            <td>2018-02-12</td>
+                            <td>未抄告</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">2</td>
+                            <td>张丽</td>
+                            <td>432324324323</td>
+                            <td>4321321323213</td>
+                            <td>3213213213213</td>
+                            <td>1</td>
+                            <td></td>
+                            <td>2018-02-12</td>
+                            <td>未抄告</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">3</td>
+                            <td>秦晖</td>
+                            <td>533321231231</td>
+                            <td>312323123</td>
+                            <td>312312321312</td>
+                            <td>2</td>
+                            <td></td>
+                            <td>2018-02-12</td>
+                            <td>未抄告</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center" id="demo7"></div>
+            </div>
+        </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script>
+
+        function getContent() {
+            var i = 0;
+            var content = '<div style="overflow: scroll;height: 200px;width: 300px;padding-top: 20px;padding-left: 20px; overflow-x: hidden; overflow-y: auto;">';
+            content = content + "<h2>请选择抄告对象</h2>";
+            content = content + '<input type="checkbox" name="cc1" id="cc1" title="株洲市公路管理局"/><label for="cc1">株洲市公路管理局</label><br>';
+            content = content + '<input type="checkbox" name="cc2" id="cc2" title="株洲市运政管理部门"/><label for="cc2">株洲市运政管理部门</label><br>';
+            content = content + '<input type="checkbox" name="cc3" id="cc3" title="株洲市交警"/><label for="cc3">株洲市交警</label><br>';
+            content = content + '<div class="text-center" style="padding-top: 20px">' +
+                '<button class="layui-btn layui-btn-success" onclick="closelayer()">确定</button></div>';
+            content = content + "</div>";
+
+            return content;
+        }
+
+        function closelayer() {
+            layer.close(openindex)
+        }
+
+        var openindex = 0;
+        $("#btn_cg").click(function() {
+            openindex = layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 1,
+                shadeClose: true,
+                content: getContent()
+            });
+            console.log(openindex)
+        });
+
+        //时间范围选择
+        layui.laydate.render({
+            elem: '#selectDateArea'
+            ,range: '~' //或 range: '~' 来自定义分割字符
+        });
+
+        layui.use(['laypage', 'layer', 'form'], function () {
+            var laypage = layui.laypage
+            , layer = layui.layer;
+
+            //完整功能
+            laypage.render({
+                elem: 'demo7'
+              , count: 3
+              , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+              , jump: function (obj) {
+
+              }
+            });
+        });
+    </script>
+</body>
+</html>

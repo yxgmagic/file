@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.HspinfoMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hspid, hsptime, stationid, vehicleid, vehicletype, axlesum, speed, laneno, totalweight, overlimited, axle1, axle2, axle3, axle4, axle5, axle6, axle7, axle8, prostatus
+    </sql>
+    
+    <select id="selList" resultType="com.zhichao.beans.guns.Hspinfo">
+    	SELECT
+		a.id, a.hspid, a.vehicleid, a.hsptime, b.sitename, b.sitename, a.vehicletype, a.axlesum, a.speed, a.laneno, 
+		a.totalweight, a.overlimited, a.axle1, a.axle2, a.axle3, a.axle4, a.axle5, a.axle6, a.axle7, 
+		a.axle8, a.prostatus,a.video1
+		FROM
+		b_hspinfo a, bs_presite b
+		WHERE
+		a.stationid = b.sitecode
+		<if test="vehicleid != null and vehicleid != ''">
+			AND a.vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="hsptime != null and hsptime != ''">
+			AND a.hsptime  BETWEEN #{begin} AND #{end}
+		</if>
+		<if test="stationid != null and stationid != ''">
+			and a.stationid = #{stationid}
+		</if>
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY a.hsptime DESC
+    </select>
+    
+    <!-- 跳转到修改不停车预检数据管理时查询数据 -->
+    <select id="selHspInfo" resultType="com.zhichao.beans.guns.Hspinfo">
+    	SELECT
+			a.id, a.hspid, a.hsptime, a.vehicleid,
+			 a.vehicletype, a.axlesum, a.speed, a.laneno, 
+			 a.totalweight, a.overlimited, b.sitename,a.video1,a.video2
+		FROM
+			b_hspinfo a, bs_presite b
+		WHERE
+			a.stationid = b.sitecode
+		AND 
+			a.id = #{id}
+    </select>
+
+	<!-- 跳转到修改不停车预检数据管理时找图片 -->
+	<select id="getVehicleImages" resultType="map">
+    	SELECT
+			picview,picplate,picviewback,picside,picside2,pictotal
+		FROM
+			b_hspinfo
+		WHERE
+			id = #{id}
+    </select>
+	
+	<!-- 根据站点id获取数据 -->
+	<select id="calcStation" resultType="java.lang.Double">
+		(SELECT COUNT(id) / 10000 AS vehicleNum FROM b_hspinfo WHERE stationid = #{stationid})
+
+		UNION ALL
+
+		(SELECT COUNT(id) AS overloadNum FROM b_hspinfo WHERE stationid = #{stationid} AND overlimited > 0)
+
+		UNION ALL
+
+		(SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) AS avgOverload FROM b_hspinfo WHERE stationid = #{stationid} AND overlimited > 0)
+
+		UNION ALL
+
+		SELECT CONVERT(
+	   (
+		   SELECT COUNT(id) AS overloadNum FROM b_hspinfo WHERE stationid = #{stationid} AND overlimited > 0
+	   )/(
+		   SELECT COUNT(id) AS vehicleNum FROM b_hspinfo WHERE stationid = #{stationid}
+	   ),
+	   DECIMAL(10,4)) * 100 AS overloadPercentage;
+	</select>
+	
+	
+	<!-- 根据部门id获取数据 -->
+	<select id="calcDept" resultType="java.lang.Double">
+		SELECT COUNT(a.id) / 10000 AS calcArea FROM b_hspinfo a, bs_presite b 
+		WHERE a.stationid = b.sitecode
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+
+		UNION ALL 
+
+		SELECT COUNT(*) AS overloadNum FROM b_hspinfo a, bs_presite b 
+		WHERE a.stationid = b.sitecode
+		AND a.overlimited > 0
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+
+		UNION ALL 
+
+		SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) AS avgOverload
+		FROM b_hspinfo a, bs_presite b 
+		WHERE a.stationid = b.sitecode
+		AND a.overlimited > 0
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+		
+	</select>
+
+	
+</mapper>

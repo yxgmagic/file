@@ -1,0 +1,49 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="alias" name="服务代码" underline="true"/>
+                            <#input id="aliasName" name="服务别名" underline="true"/>
+                            <#input id="url" name="网络地址" underline="true"/>
+                            <#input id="computerName" name="电脑名称" underline="true"/>
+                            <#input id="diskno" name="硬盘号" underline="true"/>
+                            <#input id="macno" name="网卡地址" underline="true"/>
+                            <#input id="begindt" name="开始时间" underline="true"/>
+                            <#input id="enddt" name="结束时间" underline="true"/>
+                            <#input id="license" name="注册码" underline="true"/>
+                            <#input id="cdkey" name="CDKEY"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="status" name="有效状态" underline="true"/>
+                            <#input id="auditStatus" name="" underline="true"/>
+                            <#input id="usercode" name="用户编码" underline="true"/>
+                            <#input id="userpassword" name="用户密码" underline="true"/>
+                            <#input id="creatdt" name="创建时间" underline="true"/>
+                            <#input id="creatid" name="创建人" underline="true"/>
+                            <#input id="auditdt" name="审核时间" underline="true"/>
+                            <#input id="auditid" name="审核人" underline="true"/>
+                            <#input id="deptid" name="所属部门" underline="true"/>
+                            <#input id="updt" name="修改时间" underline="true"/>
+                            <#input id="upid" name="修改人" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ServerAuthInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ServerAuthInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/serverAuth/serverAuth_info.js"></script>
+@}

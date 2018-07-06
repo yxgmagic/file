@@ -1,0 +1,102 @@
+@layout("/common/_container.html"){
+<link rel="stylesheet" href="${ctxPath}/static/css/magic-check.css">
+<!--<script src="${ctxPath}/static/js/common/download2.js"></script>-->
+<div class="row" id="lawdoc_box">
+    <div class="col-sm-12">
+        <div class="col-sm-2">
+            <label class="control-label">文书选择：</label>
+            <div id="docLabel"></div>
+        </div>
+        <div class="col-sm-10">
+            <div class="col-sm-12" id="lawdocList">
+                <!-- 文书列表 -->
+            </div>
+        </div>
+    </div>
+    <!-- 生成文书按钮 -->
+    <div class="col-sm-12 text-center row-margin-tb20">
+        <button id="btn_create_lawdoc" class="btn btn-success">下载文书</button>
+    </div>
+</div>
+
+<script>
+    var msg = parent.msg;
+    var oeid;
+
+	$(function () {
+        oeid = Yang.Util.AJAX('/oefullinfo/getOeidByCheckno',[{'name':'checkno','data':msg.checkno}]);
+
+        if (oeid === -1 || oeid === -2){
+            Feng.info('无法访问,原因[缺少执法序号]!');
+            Yang.Tools.closeCurrentWindow()
+            return;
+        }
+
+	    show_lawdoc(oeid);
+    });
+
+    //查询文书列表，将文书列表显示在页面上
+    function show_lawdoc() {
+	    var result = Yang.Util.AJAX('/oefullinfo/getAllLawdocTypeList');
+        if (result  !== -1 && result !== null) {
+            //生成文书列表
+            $("#lawdocList").empty();
+            //i=2,为了[封面,目录]不显示
+            for (var i = 2; i < result.length; i++) {
+                $("#lawdocList").append("<div class='col-sm-3 b-7'>" +
+                    "<input class='magic-checkbox' type='checkbox' name='lawdoc_list' " +
+                    "id="+result[i].id+" value="+result[i].num+">" +
+                    "<label for="+result[i].id+" id=lawdoc_label_"+result[i].id+">"+ (i-1) + "." + result[i].name+"</label></div>");
+            }
+        }else{
+            Feng.info("非法访问！");
+        }
+    }
+
+    /**
+     * 生成文书
+     */
+    $("#btn_create_lawdoc").click(function() {
+
+        //获取选中的多选框
+        var lawDocList = $("input:checkbox[name='lawdoc_list']:checked");
+
+        //判断是否选择文书
+        if (lawDocList.length <= 0) {
+            Feng.info("请选择文书")
+            return;
+        }
+
+        var arr = new Array();
+
+        for (var i = 0; i < lawDocList.length; i++) {
+            arr[i] = parseInt(lawDocList[i].value);
+        }
+
+
+        var index = layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+
+        $.ajax({
+            url:Feng.ctxPath + "/oefullinfo/createAndDownloadLawdoc",
+            async:true,
+            method: 'POST',
+            data: {"oeid":oeid,"ldtypes":arr},
+            success: function (data) {
+                if (data.code == 200){
+                    window.location.href = Feng.ctxPath + "/" + data.data;
+                }else {
+                    Feng.error("请上传文书模板!")
+                }
+            },
+            error: function (data) {
+                Feng.error("生成失败!请上传文书模板!");
+            }
+        });
+        layer.close(index);
+
+    });
+
+</script>
+@}

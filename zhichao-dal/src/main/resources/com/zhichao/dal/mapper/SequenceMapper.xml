@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.SequenceMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.zhichao.beans.guns.Sequence">
+		<id column="id" property="id" />
+		<result column="seqname" property="seqname" />
+		 
+		<result column="seqtype" property="seqtype" />
+		<result column="seqstr" property="seqstr" />
+		<result column="seqdate" property="seqdate" />
+		<result column="seqmax" property="seqmax" />
+		<result column="seqlen" property="seqlen" />
+		<result column="seqcol" property="seqcol" />
+		<result column="seqtab" property="seqtab" />
+		<result column="seqdept" property="seqdept" />
+		<result column="roadnum" property="roadnum" />
+		<result column="sequence" property="sequence" />
+		<result column="isseries" property="isseries" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, seqname, seqtype, seqstr, seqdate, seqmax,seqlen,
+		seqcol,seqtab,
+		seqdept, roadnum, sequence,isseries
+	</sql>
+<select id="selectAll" resultType="map">
+	select a.*,b.name as isseriesname,concat(a.seqname,'_',a.seqdept,'_',a.roadnum) as seqname1 from bs_sequence a,sys_dict b where
+	convert(a.isseries , CHAR)=b.num and b.pname='yes_no'
+	<if test="seqname != null and seqname != ''">
+		and seqname = #{seqname}
+	</if>
+	<if test="seqtype != null and seqtype != ''">
+		and seqtype = #{seqtype}
+	</if>
+	<if test="seqcol != null and seqcol != ''">
+		and seqcol = #{seqcol}
+	</if>
+	<if test="seqtab != null and seqtab != ''">
+		and seqtab = #{seqtab}
+	</if>
+		<if test="seqdept != null and seqdept != ''">
+		and seqdept = #{seqdept}
+	</if>
+	order by seqtype,seqdept,roadnum
+</select>
+	<select id="getSeqBytpdp" resultType="Sequence">
+		select
+		<include refid="Base_Column_List" />
+		from bs_sequence
+		where seqtype =#{seqtype}
+		<if test="seqdept != null ">
+			and seqdept = #{seqdept}
+		</if>
+		<if test="roadnum != null and roadnum != ''">
+			and roadnum = #{roadnum}
+		</if>
+		<if test="seqcol != null and seqcol != ''">
+			and seqcol = #{seqcol}
+		</if>
+		<if test="seqtab != null and seqtab != ''">
+			and seqtab = #{seqtab}
+		</if>
+	</select>
+
+	<select id="getMaxSeqFromTable" resultType="string">
+
+		select IFNULL(max( ${seqcol} ),"0") as max_seq from ${seqtab} where
+		1=1
+		<if test="sequence != null and sequence != ''">
+			and ${seqcol} like CONCAT( #{sequence},'%')
+		</if>
+	</select>
+	<select id="isExistsSeqFromTableForAdd" resultType="int">
+
+		select count(1 ) as seqnums from ${seqtab} where ${seqcol} = #{sequence}
+
+	</select>
+	<select id="isExistsSeqFromTableForUpdate" resultType="int">
+
+		select
+		count( 1 ) as seqnums from ${seqtab} where ${seqcol} = #{sequence} and
+		id!= #{id}
+
+	</select>
+</mapper>

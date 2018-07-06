@@ -1,0 +1,44 @@
+ @layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+			<input type="hidden" id="id" value="-1">
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#input id="ename" name="员工姓名" underline="true"/>
+                    <#input id="job" name="员工职位" underline="true"/>
+					<#input id="url" name="文件路径" readonly="true" underline="true" />
+				 
+					<label for="img_hidden" class="btn btn-primary"> <i
+							class="glyphicon glyphicon-upload"></i>&nbsp;上传文件
+					</label> 
+					<input type="file" id="img_hidden" style="display: none"  onchange="EmpInfoDlg.ajaxFileUploadDoc()"/>
+                </div>
+                <div class="col-sm-6">
+                		<div class="form-group">
+							<label class="col-sm-3 control-label">状态</label>
+							<div class="col-sm-9">
+								<#SelectDict id="status" dictName="status" dataStyle="btn"
+							cssName="form-control  " underline="true"></#SelectDict>
+							</div>
+						</div>
+						<div class="hr-line-dashed"></div>
+                       	<#input id="hiredate" name="入职时间" underline="true" type="text"
+                            		clickFun="laydate({istime:true, format: 'YYYY-MM-DD'})"
+                            		value=""
+                        />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="EmpInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="EmpInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/zc_js/employee/emp_info.js"></script>
+@}

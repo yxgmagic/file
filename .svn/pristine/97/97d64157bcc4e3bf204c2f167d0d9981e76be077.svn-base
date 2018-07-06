@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.VehicleDriverMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.VehicleDriver">
+		<id column="id" property="id" />
+		<result column="driverid" property="driverid" />
+		<result column="idcard" property="idcard" />
+		<result column="drivername" property="drivername" />
+		<result column="race" property="race" />
+		<result column="sex" property="sex" />
+		<result column="qualificationid" property="qualificationid" />
+		<result column="certtype" property="certtype" />
+		<result column="address" property="address" />
+		<result column="postcode" property="postcode" />
+		<result column="grantorg" property="grantorg" />
+		<result column="certendtime" property="certendtime" />
+		<result column="corpcode" property="corpcode" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, driverid, idcard, drivername, race, sex, qualificationid, certtype, address, postcode, grantorg, certendtime, corpcode
+    </sql>
+    
+    <!-- 查询是否唯一 -->
+    <select id="dataIsExist" resultType="int" parameterType="VehicleDriver">
+    	SELECT COUNT(*)
+    	FROM bs_vehicle_driver
+    	WHERE 1=1
+    	<if test="id != null and id != ''">
+			AND id <![CDATA[!= ]]> #{id}
+		</if>
+		<if test="idcard != null and idcard != ''">
+			AND idcard = #{idcard}
+		</if>
+		<if test="driverid != null and driverid != ''">
+			AND driverid = #{driverid}
+		</if>
+		<if test="qualificationid != null and qualificationid != ''">
+			AND qualificationid = #{qualificationid}
+		</if>
+    </select>
+
+</mapper>

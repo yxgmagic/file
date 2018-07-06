@@ -1,0 +1,56 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>源头企业检测数据管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-2">
+                        <div class="" id="iNickTree" id="iNickTree"></div>
+                    </div>
+
+                    <!--右屏-->
+                    <div class="col-sm-10" id="right">
+                    
+                        <!--右屏顶部大屏-->
+                        <div class="row text-center tg_bigbox">
+                            <div class="col-sm-12 row-top" id="right_top">
+                                <div class="col-md-3">--</div>
+                                <div class="col-md-3">--</div>
+                                <div class="col-md-3">--</div>
+                                <div class="col-md-3">--</div>
+                            </div>
+                            <div>
+                                <div class="col-md-3">车辆总数(万辆)</div>
+                                <div class="col-md-3">超载数量</div>
+                                <div class="col-md-3">平均超限（吨）</div>
+                                <div class="col-md-3">超限百分比（%）</div>
+                            </div>
+                        </div>
+
+                        <!--右屏中部搜索-->
+                        <div class="row row-top">
+                            <div class="col-sm-6">
+                            	<input type="hidden" id="areacode" />
+                                <#input id="vehicleid" name="车牌号"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="corptime" name="时间" clickFun="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+                            </div>
+                            <div class="col-sm-12 row-top text-center">
+                                <#button name="搜索" icon="fa-search" clickFun="Corpinfo.search()"/>
+                            </div>
+                        </div>
+                        
+                        <!-- 右屏底部表格 -->
+                        <#table id="CorpinfoTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/corpinfo/corpinfo.js"></script>
+@}

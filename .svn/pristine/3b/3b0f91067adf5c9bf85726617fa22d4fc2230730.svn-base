@@ -1,0 +1,151 @@
+﻿/**
+ * 执法文书管理初始化
+ */
+var LawDoc = {
+    id: "LawDocTable",	//表格id
+    seItem: null,		//选中的条目
+    table: null,
+    layerIndex: -1
+};
+
+/**
+ * 初始化表格的列
+ */
+LawDoc.initColumn = function () {
+    return [
+        {field: 'selectItem', radio: true},
+		{  
+			field : 'Number',  
+			title : '序号',  
+			formatter: function (value, row, index) {  
+
+				return	index + 1;  
+			}
+		},
+
+        
+            {title: '执法文书名称', field: 'ldname', visible: true, align: 'center', valign: 'middle'},
+            {title: '执法文书类型', field: 'ldtypename', visible: true, align: 'center', valign: 'middle'},
+            {title: '执法文书状态', field: 'ldstatusname', visible: true, align: 'center', valign: 'middle'},
+            {title: '模板版本序号', field: 'ldno', visible: true, align: 'center', valign: 'middle'},
+            {title: '创建人', field: 'crtuser', visible: true, align: 'center', valign: 'middle'},
+            {title: '创建时间', field: 'crtdate', visible: true, align: 'center', valign: 'middle'},
+            {title: '模板文件路径', field: 'ldfileurl', visible: false, align: 'center', valign: 'middle'}
+    ];
+};
+
+/**
+ * 检查是否选中
+ */
+LawDoc.check = function () {
+    var selected = $('#' + this.id).bootstrapTable('getSelections');
+    if(selected.length == 0){
+        Feng.info("请先选中表格中的某一记录！");
+        return false;
+    }else{
+        LawDoc.seItem = selected[0];
+        
+        return true;
+    }
+};
+
+/**
+ * 点击添加执法文书
+ */
+LawDoc.openAddLawDoc = function () {
+    var index = top.layer.open({
+        type: 2,
+        title: '添加执法文书',
+        area: ['800px', '420px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/lawDoc/lawDoc_add'
+    });
+    this.layerIndex = index;
+};
+
+
+
+LawDoc.lookModelFile = function () {
+/*	if (this.check()) {
+		var ajax = new $ax(Feng.ctxPath + "/lawDoc/lawDocCopy", function(data){
+
+		},function(data){
+
+		});
+
+		ajax.start();*/
+
+        if(this.check()) {
+            window.open(Feng.ctxPath + "/tempController/fileDownload?isDownload=1&fileUrl=" + LawDoc.seItem.ldfileurl);
+        }
+        //window.open(Feng.ctxPath + LawDoc.seItem.ldfileurl);
+  /*
+		var index = top.layer.open({
+        type: 2,
+        title: '查看执法文书模板',
+        area: ['0px', '0px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + LawDoc.seItem.ldfileurl
+    });
+    this.layerIndex = index;
+    */
+//}
+};
+/**
+ * 打开查看执法文书详情
+ */
+LawDoc.openLawDocDetail = function () {
+    if (this.check()) {
+        var index = top.layer.open({
+            type: 2,
+            title: '执法文书详情',
+            area: ['800px', '420px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/lawDoc/lawDoc_update/' + LawDoc.seItem.id
+        });
+        this.layerIndex = index;
+    }
+};
+
+/**
+ * 删除执法文书
+ */
+LawDoc.delete = function () {
+    if (this.check()) {
+     	var operation = function(){
+	        var ajax = new $ax(Feng.ctxPath + "/lawDoc/delete", function (data) {
+	            Feng.success("删除成功!");
+	            LawDoc.table.refresh();
+	        }, function (data) {
+	            Feng.error("删除失败!" + data.responseJSON.message + "!");
+	        });
+	        ajax.set("lawDocId",LawDoc.seItem.id);
+	        ajax.start();
+        }
+        Feng.confirm("确认要删除吗?", operation);
+    }
+};
+
+/**
+ * 查询执法文书列表
+ */
+LawDoc.search = function () {
+    var queryData = {};
+    queryData['ldname'] = $("#condition").val();
+    LawDoc.table.refresh({query: queryData});
+};
+
+$(function () {
+    var defaultColunms = LawDoc.initColumn();
+    var table = new BSTable(LawDoc.id, "/lawDoc/list", defaultColunms);
+    table.setPaginationType("client");
+    LawDoc.table = table.init();
+    //隐藏选择列
+    $('#'+LawDoc.id).on('all.bs.table', function (){
+    		$(".bs-checkbox").attr('style',"display:none");
+		}
+    );
+});

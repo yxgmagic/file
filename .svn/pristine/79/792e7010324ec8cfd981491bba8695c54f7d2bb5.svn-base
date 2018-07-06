@@ -1,0 +1,101 @@
+package com.zhichao.service.detecManage.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.util.DictUtil;
+import com.zhichao.service.detecManage.ICorpinfoService;
+import com.zhichao.beans.guns.Corpinfo;
+import com.zhichao.dal.mapper.CorpinfoMapper;
+
+/**
+ * <p>
+ * 源头企业检测数据表 服务实现类
+ * </p>
+ *
+ * @author fengshuonan
+ * @since 2018-01-19
+ */
+@Service(value="corpinfoServiceImpl")
+public class CorpinfoServiceImpl extends ServiceImpl<CorpinfoMapper, Corpinfo> implements ICorpinfoService {
+	
+	@Autowired
+	private CorpinfoMapper mapper;
+	
+	@Override
+	public List<Corpinfo> selList(Page<Corpinfo> page, String areacode, String vehicleid, String corptime) {
+		
+
+		String begin = null, end = null;
+		if (!YUtil.isNullOrEmpty(corptime, true)) {
+			begin = corptime.trim() + " 00:00:00";
+			end = corptime.trim() + " 23:59:59";
+		}
+
+		//切除后面的00
+		String code  = areacode != null ? YUtil.cutStr(areacode) : null;
+		
+		vehicleid = vehicleid != null ? vehicleid.trim() : null;
+		
+		//开始查询
+		List<Corpinfo> corpInfoList = mapper.selList(page, code, vehicleid,corptime, begin, end);
+		
+		//重组汽车类型
+		for (Corpinfo corpinfo : corpInfoList) {
+			corpinfo.setVehicleTypeString(DictUtil.selectNameByEnameNum("cartype", String.valueOf(corpinfo.getVehicletype())));
+		}
+		
+		return corpInfoList;
+	}
+
+	@Override
+	public Corpinfo selCorpInfo(Integer id) {
+		
+		//根据站点id找出所有不停车预检信息
+		Corpinfo corpinfo = mapper.selCorpInfo(id);
+		
+		//时间日期转换
+		corpinfo.setStrTime(YUtil.DateToString(corpinfo.getCorptime(), "yyyy-MM-dd HH:mm:ss"));
+		
+		//重组货车类型
+		corpinfo.setVehicleTypeString(DictUtil.selectNameByEnameNum("trucksType", String.valueOf(corpinfo.getVehicletype())));
+		
+		return corpinfo;
+	}
+
+
+	@Override
+	public List<String> getVehicleImages(Integer id) {
+		Map<String, String> vehicleImages = mapper.getVehicleImages(id);
+		if (vehicleImages == null) {
+			return null;
+		}
+		List<String> list = new ArrayList<>();
+		vehicleImages.forEach((K,V) -> list.add(V));
+		return list;
+	}
+	
+	@Override
+	public List<Double> calculateVehicle(String areacode) {
+		/**
+		 * 当前行政区域编码的最大代表范围
+		 * 430100表示长沙市,返回4301
+		 * 430101表示长沙市辖区,返回430101
+		 */
+		String str = YUtil.cutStr(areacode);
+		List<Double> results = mapper.calculateVehicle(str);
+		if (results != null && results.size() == 3) {
+			int rate = (int) (results.get(1) / (results.get(0) * 100));
+			results.add((double) rate);
+			return results;
+		}
+		throw new IllegalArgumentException("统计时出现异常");
+	}
+}

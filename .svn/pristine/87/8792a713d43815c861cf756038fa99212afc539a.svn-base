@@ -1,0 +1,102 @@
+﻿@layout("/common/_container.html"){
+
+<input type="hidden" id="id" value="${item.id}">
+
+<div class="ibox float-e-margins">
+	<h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>车辆图片</h2>
+	<div class="ibox-content">
+		<div class="row row-bottom-20">
+			<div class="layui-carousel" id="photo" style="margin: auto">
+				<div carousel-item="" id="img_box">
+				</div>
+		    </div>
+		</div>
+	</div>
+	
+	<h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>超重明细</h2>
+	<div class="ibox-content">
+		<div class="row">
+			<table class="layui-table">
+				<colgroup>
+				    <col width="150">
+				    <col width="200">
+				    <col width="150">
+				    <col width="200">
+				</colgroup>
+				<tr>
+					<td class="bg">超重站点</td>
+					<td>${item.stationid}</td>
+					<td class="bg">车牌</td>
+					<td><p id="vehicleid">${item.vehicleid}</p></td>
+				</tr>
+				<tr>
+					<td class="bg">所属单位</td>
+					<td>${item.corpname}</td>
+					<td class="bg">车辆类型</td>
+					<td>${item.cartype}</td>
+				</tr>
+				<tr>
+					<td class="bg">车辆限重(kg)</td>
+					<td><p id="ratedloading">${item.ratedloading}</p></td>
+					<td class="bg">车轴数</td>
+					<td>${item.caraxles}</td>
+				</tr>
+				<tr>
+					<td class="bg">超重数(kg)</td>
+					<td><p id="overload">${item.overload}</p></td>
+					<td class="bg">罚金</td>
+					<td>${item.fine}</td>
+				</tr>
+				<tr>
+					<td class="bg">超重率(%)</td>
+					<td><p id="rate"></p></td>
+					<td class="bg">是否完成处罚</td>
+					<td><p id="ispunitive"></p></td>
+				</tr>
+			</table>
+		</div>
+		
+	</div>
+	
+	<h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>历史超重记录</h2>
+	<div class="ibox-content">
+		<#table id="idHistoryRecordTable" class="text-center"/>
+	</div>
+	
+	<div class="layui-row text-center" style="margin-top: 20px;">
+		<button class="layui-btn" onclick="Module.Box.CloseDialog()">关闭</button>
+	</div>
+	
+</div>
+
+	<script type="text/javascript">
+		var isAdd = 0;
+		$(function() {
+			//计算比例和显示是否完成惩罚
+			var overloadValue = "${item.overload}";
+			var ratedloadingValue = "${item.ratedloading}";
+			if(overloadValue != "" && ratedloadingValue != "") {
+				if(ratedloadingValue == 0) {
+					$("#rate").text("--")
+				} else {
+					$("#rate").text(Math.round(overloadValue / ratedloadingValue * 10000) / 100);
+				}
+			}
+			var ispunitiveValue = "${item.ispunitive}";
+			if(ispunitiveValue != "") {
+                $("#ispunitive").text(ispunitiveValue == '1'? '是': '否');
+			}
+
+		});
+		
+	</script>
+
+	<link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+	<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+
+
+<script src="${ctxPath}/static/modular/lawEnforcement/blacklist/blacklist_info.js"></script>
+@}

@@ -1,0 +1,62 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>流动执法车数据管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-2">
+                        <div class="" id="iNickTree" name="iNickTree"></div>
+                    </div>
+
+                    <!--右屏-->
+                    <div class="col-sm-10">
+                    
+                        <!--右屏顶部大屏-->
+                        <div class="row text-center tg_bigbox">
+                            <div class="col-sm-12 row-top" id="right_top">
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                            </div>
+                            <div>
+                                <div class="col-md-3">车辆总数(万辆)</div>
+                                <div class="col-md-3">超载数量</div>
+                                <div class="col-md-3">平均超限（吨）</div>
+                                <div class="col-md-3">超限百分比（%）</div>
+                            </div>
+                        </div>
+
+                        <!--右屏中部搜索-->
+                        <div class="row row-top form-horizontal">
+                            <div class="col-sm-6">
+                                <#input id="vehicleid" name="车牌号"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="fctime" name="时间" clickFun="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+                            </div>
+                            <div class="col-sm-12 row-top text-center">
+                                <#button name="搜索" icon="fa-search" clickFun="Meinfo.search()"/>
+                            </div>
+                        </div>
+                        
+                        <div class="hidden-xs" id="MeinfoTableToolbar" role="group">
+                            @if(shiro.hasPermission("/meinfo/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="Meinfo.openAddMeinfo()"/>
+                            @}
+                        </div>
+                        
+                        <!-- 右屏底部表格 -->
+                        <#table id="MeinfoTable"/>
+                    </div>
+                    <input type="hidden" id="statid" value="${stationid}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/meinfo/meinfo.js"></script>
+@}

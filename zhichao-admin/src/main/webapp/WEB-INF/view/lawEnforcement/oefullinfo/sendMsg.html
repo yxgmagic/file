@@ -1,0 +1,101 @@
+@layout("/common/_container.html"){
+<script src="${ctxPath}/static/js/common/template-web.js"></script>
+<div class="row" style="padding: 20px">
+    <script id="template" type="text/html">
+        {{if flag}}
+        <h3>
+            您好，{{user.name}}
+            <p style="text-indent: 2em">
+                您的车牌号为{{card.id}}，{{card.axlesum}}轴车，车货限重：{{card.ratedloading}}kg，在检测站：{{site.name}}认定为超载，超载{{card.overload}}kg，
+                请于接到本条消息三天内前往本地区任意固定检测站进行处理。
+            </p>
+        </h3>
+        {{/if}}
+    </script>
+
+    <div id="content"></div>
+
+    <div class="text-center row" style="margin-top: 45px">
+        <button id="send" class="btn btn-success">发送</button>
+    </div>
+
+</div>
+
+<script>
+
+
+    $(function () {
+        var data = parent.msg;
+        var oeid = data.oeid;
+        if(oeid == -1){
+            oeid = Yang.Util.AJAX('/oefullinfo/getOeidByCheckno',[{'name':'checkno','data':data.checkno}])
+        }
+        var detail = Yang.Util.AJAX('/oefullinfo/detail/'+oeid);
+        var obj = {
+            flag : data.flag,
+            user : {
+                name : detail.drivername
+            },
+            card : {
+                id : detail.vehicleid,
+                axlesum : detail.axlesum,
+                ratedloading : detail.ratedloading,
+                weightlimited : detail.weightlimited,
+                overload : detail.overload
+            },
+            site : {
+                name : detail.sitename
+            }
+        };
+        var html = template('template',obj);
+        document.getElementById('content').innerHTML = html;
+
+        $("#send").click(function () {
+            var index = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+
+            var time1 = setInterval(function(){
+                layer.close(index);
+
+                Feng.success('已成功发送给驾驶员 ' + detail.drivername)
+
+                $("#send").attr('disabled','true')
+
+                clearInterval(time1)
+            }, 1500);
+        });
+    })
+</script>
+@}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,211 @@
+package com.zhichao.service.lawEnforcement;
+
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.zhichao.common.exception.BusinessException;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.IService;
+import com.zhichao.beans.guns.Dict;
+import com.zhichao.beans.guns.Lscinfo;
+import com.zhichao.beans.guns.Oefullinfo;
+
+/**
+ * <p>
+ * 违章详细信息 服务类
+ * </p>
+ *立案办理，案件处理公用此服务类
+ *
+ * @author fengshuonan
+ * @since 2018-01-24
+ */
+public interface IOefullinfoService extends IService<Oefullinfo> {
+
+	/**
+	 * 获取立案办理列表数据和立案办理查询功能
+	 * @param casetime 立案时间
+	 * @param vehicleid 车牌号
+	 * @param caseno 案件号
+	 * @param prostatus 
+	 * @return
+	 */
+	List<Oefullinfo> selList(String casetime, String vehicleid, String caseno, Integer prostatus);
+
+	/**
+	 * 获取执法文书类型
+	 * @param oeid 检测单号
+	 * @return
+	 */
+	List<Dict> selIdTypeList(Integer oeid);
+
+	List<Map<String, Object>> getOefullLawdocList(Integer oeid);
+
+	/**
+	 * 获取精检站、非现场执法列表,立案办理(所有状态)
+	 * @param page
+	 * @param fctime
+	 * @param vehicleid
+	 * @param caseno
+	 * @param prostatus
+	 * @return
+	 */
+	List<Map<String, Object>> selOefullList(Page<Map<String, Object>> page, String fctime, String vehicleid, String caseno, Integer prostatus);
+
+	/**
+	 * 通过按钮，修改违章表中的数据状态从2-》3
+		1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.已驳回
+	 * @param id
+	 * @param checkno 
+	 * @return
+	 */
+	Integer via(Integer id, String checkno, String caseSource) throws BusinessException;
+
+	/**
+	 * 重新通过按钮，修改违章表中的数据状态从5-》3
+	 1.未立案
+	 2.立案待审批
+	 3.已立案
+	 4.已结案
+	 5.已驳回
+	 * @param id
+	 * @param checkno
+	 * @return
+	 */
+	Integer reFiling(Integer id, String checkno);
+	
+	/**
+	 * 驳回按钮，修改违章表中的数据状态从2-》5
+		1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.已驳回
+	 * @param id
+	 * @param checkno 
+	 * @return
+	 */
+	Integer turndown(Integer id, String checkno,  String caseSource) throws BusinessException;
+
+	/**
+	 * 从精检站，司机信息，车辆信息中存入违章信息表，prostatus默认状态为2
+	 * 	1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.已驳回
+	 * @param oefullinfo
+	 * @return
+	 */
+	Integer insertPendingApproval(Oefullinfo oefullinfo) throws BusinessException;
+
+
+	/**
+	 * 驳回后重新立案
+	 * 更新违章表中的数据
+	 * 更新违章表的状态从5-->2重新立案
+	 * @param oefullinfo
+	 * @return
+	 */
+	Integer updateOefullinfoAndprostatus(Oefullinfo oefullinfo) throws BusinessException;
+
+	/**
+	 * 根据checkno查询出违章表的主键id
+	 * @param checkno
+	 * @return
+	 */
+	Integer getOefullinfoIdByCheckno(String checkno);
+
+	/**
+	 * 获取所有执法文书列表
+	 * @return
+	 */
+	List<Map<String, Object>> getAllLawdocTypeList();
+
+	/**
+	 * 生成文档,返回下载链接
+	 * @param oeid
+	 * @param ldtypes
+	 * @return
+	 */
+	ResponseEntity<FileSystemResource> createAndDownloadLawdoc(Integer oeid, Integer[] ldtypes, HttpServletRequest req) throws Exception;
+
+	/**
+	 * 上传附件,保存关系到数据库
+	 * @param oeid 违章表主键
+	 * @param file 文件流
+	 * @return
+	 */
+	Map<String, Object> uploadAnnex(Integer oeid, MultipartFile file) throws FileNotFoundException;
+
+	/**
+	 * 根据违章表id获取所有附件
+	 * @param oeid 违章表id
+	 * @return
+	 */
+    List<Map<String, Object>> getAllAnnexByOeid(Integer oeid);
+
+	/**
+	 * 公共方法
+	 * 获取执法人员列表
+	 * @return
+	 */
+	List<Map<String, Object>> getLawEnforceMan();
+
+	/**
+	 * 删除附件
+	 * @param id 附件id
+	 */
+    void delAnnex(Integer id);
+
+	/**
+	 * 根据检测单号查找是否有该案件,如果有,并且状态==5,则是驳回案件.返回整个信息
+	 * @param checkno 检测单号
+	 * @param prostatus 处理状态
+	 * @return
+	 */
+	Oefullinfo findOefullInfoByOseId(Integer id,Integer prostatus);
+	
+	/**
+	 * 根据检测单号查找是否有该案件
+	 * @param id 检测单号(对应案件单号)
+	 * @param prostatus 处理状态(数据库默认浏览已立案后的状态即:3,4,5)
+	 * @param casetype 案件类型: 非现场,固定站
+	 * @return
+	 */
+	Map<String, Object> findOefullInfoBrowse(Integer id,Integer prostatus,String casetype);
+	
+	/**
+	 * 下载附件
+	 * @param id
+	 * @return
+	 */
+	ResponseEntity<FileSystemResource> downloadAnnex(Integer id) throws UnsupportedEncodingException;
+
+	/**
+	 * 根据精检站业务表中的id 查询出业务id(oseid),然后通过checkno查询b_oefullinfo是否存在.如果存在表示是驳回案件,将所有违章表所有数据返回
+	 * @param id 精检站业务表中的id
+	 * @param prostatus 处理状态
+	 * @return
+	 */
+    Oefullinfo findOefullInfoByLscId(Integer id,Integer prostatus);
+
+	/**
+	 * 根据id查找案件
+	 * @param oefullinfoId
+	 * @return
+	 */
+	Oefullinfo findById(Integer oefullinfoId);
+}

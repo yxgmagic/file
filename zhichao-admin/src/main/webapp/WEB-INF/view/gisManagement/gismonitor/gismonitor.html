@@ -1,0 +1,310 @@
+@layout("/common/_container.html"){
+<style>
+    ul li {
+        list-style: none;
+    }
+    #gdMap{
+        width: 100%;
+        height: 400px;
+    }
+    .iboxMenu{
+        height: 40px;
+        width: 100%;
+    }
+    .menu-title{
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        display: inline-block;
+        height: 40px;
+        float: right;
+    }
+    .menu-seach{
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #333333;
+        display: inline-block;
+        height: 40px;
+        float: left;
+    }
+    .menu-seach-btn{
+        display: inline-block;
+        height: 33px;
+        line-height:33px;
+        padding:0 16px;
+        background-color: #009688;
+        color: #fff;
+        white-space:nowrap;
+        text-align: center;
+        font-size: 14px;
+        border:none;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    .seach-text{
+        width: 150px;
+        height: 32px;
+        border: 1px solid #1ab394;
+        border-radius: 5px;
+        padding-left: 5px;
+    }
+    .menu-title-1{
+        font-size: 14px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #333333;
+        margin-right: 8px;
+        margin-left: 12px;
+    }
+    .menu-title-1-item{
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: #333333;
+        border: 1px solid #1ab394;
+        border-radius: 5px;
+        padding: 2px 4px;
+        cursor: pointer;
+        background-color: #F9F9F9;
+    }
+    .site0{
+        text-align: center;
+        display: inline-block;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #fff;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        /*background-color: #009688;*/
+        white-space: nowrap;
+        -webkit-user-select:none;
+        -moz-user-select:none;
+        -ms-user-select:none;
+        user-select:none;
+    }
+    .site0 img{
+        height: 22px;
+        padding-right: 10px;
+    }
+    .site1{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        background: #e4e4e4;
+    }
+    .site2{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        border-radius: 2px;
+        cursor: pointer;
+        background: #e4e4e4;
+    }
+    .site3{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        border-radius: 2px;
+        cursor: pointer;
+        background: #e4e4e4;
+    }
+    .site4{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        border-radius: 2px;
+        cursor: pointer;
+        background: #e4e4e4;
+    }
+    .site5{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        border-radius: 2px;
+        cursor: pointer;
+        background: #e4e4e4;
+    }
+    .site6{
+        height: 33px;
+        line-height: 33px;
+        padding: 0 16px;
+        font-size: 14px;
+        border-radius: 2px;
+        cursor: pointer;
+        background: #e4e4e4;
+    }
+    #mapDiv{
+        width: 300px;
+        height: 255px;
+        background-color: #ffffff;
+        position: absolute;
+        top: 60px;
+        right: 35px;
+        box-shadow: 1px 1px 10px #999999;
+        border-radius: 6px;
+        display: none;
+    }
+    .sitetitle{
+        color: #333333;
+        font-family: 'Microsoft YaHei';
+        font-size: 12px;
+        padding-left: 10px;
+    }
+    .sitecontent{
+        color: #334556;
+        font-family: 'Microsoft YaHei';
+        font-size: 12px;
+        display: inline-block;
+        /*width: 40px;*/
+        /*height: 20px;*/
+    }
+    .mapDivRow{
+        width: 100%;
+        height: 26px;
+        line-height: 26px;
+    }
+    .sitebtn1{
+        position: absolute;
+        top: 160px;
+        right: 10px;
+        text-align: center;
+        display: inline-block;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: #fff;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        background-color: #009688;
+        height: 28px;
+        line-height: 28px;
+        padding: 0 14px;
+        white-space: nowrap;
+    }
+    .sitebtn2{
+        position: absolute;
+        top: 195px;
+        right: 10px;
+        text-align: center;
+        display: inline-block;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: #fff;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        background-color: #009688;
+        height: 28px;
+        line-height: 28px;
+        padding: 0 14px;
+        white-space: nowrap;
+    }
+    #sitename:hover{
+        cursor: pointer;
+        color: #18a689;
+    }
+    .seach-item{
+        width: 180px;
+        height: auto;
+        max-height: 300px;
+        border-radius: 4px;
+        border: 1px solid #fff9ec;
+        box-shadow: 1px 1px 12px #999999;
+        position: absolute;
+        /*top: 50px;*/
+        /*left: 35px;*/
+        background-color: #fff;
+        z-index: 999;
+        cursor: pointer;
+        font-family: "Microsoft YaHei UI";
+        color: #2A2E36;
+        font-size: 13px;
+        padding-left: 5px;
+
+    }
+    .seach-item li img{
+        height: 22px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .seachItem:hover{
+        background-color: #18a689;
+        color: #fff9ec;
+    }
+    .seachItemActive{
+        background-color: #18a689;
+        color: #fff9ec;
+    }
+    .live-status{
+        font-family: "Microsoft JhengHei UI";
+        font-size: 12px;
+        cursor: pointer;
+    }
+    .live-status-red{
+        color: red;
+    }
+    .live-status-green{
+        color: green;
+    }
+    .mapDivRow-img{
+        height: 80px;
+        width: 160px;
+        display: block;
+        margin: 6px auto;
+    }
+    .mapDivRow-img img{
+        height: 100%;
+        margin: 0 auto;
+        display: block;
+    }
+    .disableLng, .disableLat{
+        display: none;
+    }
+</style>
+
+
+
+<div class="row ">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins" style="margin-bottom: 0">
+            <div class="ibox-content" style="margin: 0;">
+                <div class="iboxMenu">
+                    <input type="text" hidden value="${longitude}" id="lng">
+                    <input type="text" hidden value="${latitude}" id="lat">
+                    <input type="text" hidden value="${siteType}" id="stype">
+                    <div class="menu-seach">
+                        <div>
+                            <input type="text" class="seach-text" autoComplete='off'>
+                            <div class="menu-seach-btn">搜索</div>
+                        </div>
+                        <div style="position: relative" id="seachList">
+                            <ul class="seach-item"></ul>
+                        </div>
+                    </div>
+                    <div class="menu-title">
+                        <span class="menu-title-1">显示类型选择</span>
+                        <span class="site0 site1"><img src="${ctxPath}/static/img/bin/fixedmarker.png" alt="">固定治超站</span>
+                        <span class="site0 site2"><img src="${ctxPath}/static/img/bin/premarker.png" alt="">预检站</span>
+                        <span class="site0 site3"><img src="${ctxPath}/static/img/bin/hswaymarker.png" alt="">高速公路出入口</span>
+                        <span class="site0 site4"><img src="${ctxPath}/static/img/bin/LawCar.png" alt="">移动执法车</span>
+                        <span class="site0 site5"><img src="${ctxPath}/static/img/bin/LawMan.png" alt="">移动单兵</span>
+                        <span class="site0 site6"><img src="${ctxPath}/static/img/bin/corpmarker.png" alt="">源头企业</span>
+                    </div>
+                </div>
+                <div id="gdMap"></div>
+                <div id="mapDiv"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=07d90f1910cb06705d375b35a38f6155"></script>
+<script type="text/javascript" src="http://webapi.amap.com/ui/1.0/main.js"></script>
+<script src="${ctxPath}/static/modular/gisManagement/gismonitor/gisFeng.js"></script>
+<script src="${ctxPath}/static/modular/gisManagement/gismonitor/gismonitor.js"></script>
+
+@}

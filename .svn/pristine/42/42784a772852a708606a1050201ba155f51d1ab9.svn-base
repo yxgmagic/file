@@ -1,0 +1,38 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>数据服务链定义管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="condition" name="名称" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="ChainList.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="ChainListTableToolbar" role="group">
+                            @if(shiro.hasPermission("/chainList/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="ChainList.openAddChainList()"/>
+                            @}
+                            @if(shiro.hasPermission("/chainList/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="ChainList.openChainListDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/chainList/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="ChainList.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="ChainListTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/chainList/chainList.js"></script>
+@}

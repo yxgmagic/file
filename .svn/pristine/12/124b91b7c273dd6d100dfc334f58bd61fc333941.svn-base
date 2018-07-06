@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.LscinfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Lscinfo">
+		<id column="id" property="id" />
+		<result column="checkno" property="checkno" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="axlesum" property="axlesum" />
+		<result column="weightlimited" property="weightlimited" />
+		<result column="ratedtotalweight" property="ratedtotalweight" />
+		<result column="ratedloading" property="ratedloading" />
+		<result column="overlimited" property="overlimited" />
+		<result column="overload" property="overload" />
+		<result column="fctime" property="fctime" />
+		<result column="fclaneno" property="fclaneno" />
+		<result column="fctotalweight" property="fctotalweight" />
+		<result column="fcoper" property="fcoper" />
+		<result column="fcaxle1" property="fcaxle1" />
+		<result column="fcaxle2" property="fcaxle2" />
+		<result column="fcaxle3" property="fcaxle3" />
+		<result column="fcaxle4" property="fcaxle4" />
+		<result column="fcaxle5" property="fcaxle5" />
+		<result column="fcaxle6" property="fcaxle6" />
+		<result column="fcaxle7" property="fcaxle7" />
+		<result column="fcaxle8" property="fcaxle8" />
+		<result column="fclength" property="fclength" />
+		<result column="fcwidth" property="fcwidth" />
+		<result column="fcheight" property="fcheight" />
+		<result column="overlength" property="overlength" />
+		<result column="overwidth" property="overwidth" />
+		<result column="overheight" property="overheight" />
+		<result column="rctime" property="rctime" />
+		<result column="rclaneno" property="rclaneno" />
+		<result column="rctotalweight" property="rctotalweight" />
+		<result column="rcoper" property="rcoper" />
+		<result column="rcaxle1" property="rcaxle1" />
+		<result column="rcaxle2" property="rcaxle2" />
+		<result column="rcaxle3" property="rcaxle3" />
+		<result column="rcaxle4" property="rcaxle4" />
+		<result column="rcaxle5" property="rcaxle5" />
+		<result column="rcaxle6" property="rcaxle6" />
+		<result column="rcaxle7" property="rcaxle7" />
+		<result column="rcaxle8" property="rcaxle8" />
+		<result column="rclength" property="rclength" />
+		<result column="rcwidth" property="rcwidth" />
+		<result column="rcheight" property="rcheight" />
+		<result column="offload" property="offload" />
+		<result column="fcvehicleimage" property="fcvehicleimage" />
+		<result column="fcvehicleimage1" property="fcvehicleimage1" />
+		<result column="fcvehicleimage2" property="fcvehicleimage2" />
+		<result column="rcvehicleimage" property="rcvehicleimage" />
+		<result column="rcvehicleimage1" property="rcvehicleimage1" />
+		<result column="rcvehicleimage2" property="rcvehicleimage2" />
+		<result column="stationid" property="stationid" />
+		<result column="prostatus" property="prostatus" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, checkno, vehicleid, axlesum, weightlimited, ratedtotalweight, ratedloading, overlimited, overload, fctime, fclaneno, fctotalweight, fcoper, fcaxle1, fcaxle2, fcaxle3, fcaxle4, fcaxle5, fcaxle6, fcaxle7, fcaxle8, fclength, fcwidth, fcheight, overlength, overwidth, overheight, rctime, rclaneno, rctotalweight, rcoper, rcaxle1, rcaxle2, rcaxle3, rcaxle4, rcaxle5, rcaxle6, rcaxle7, rcaxle8, rclength, rcwidth, rcheight, offload, fcvehicleimage, rcvehicleimage, stationid, prostatus
+    </sql>
+    
+    <!-- 条件查询结果列 -->
+    <sql id="Column_List_1">
+        c.id, checkno, vehicleid, axlesum, weightlimited, ratedtotalweight, ratedloading, overlimited, overload, fctime, fclaneno, fctotalweight, fcoper, fcaxle1, fcaxle2, fcaxle3, fcaxle4, fcaxle5, fcaxle6, fcaxle7, fcaxle8, fclength, fcwidth, fcheight, overlength, overwidth, overheight, rctime, rclaneno, rctotalweight, rcoper, rcaxle1, rcaxle2, rcaxle3, rcaxle4, rcaxle5, rcaxle6, rcaxle7, rcaxle8, rclength, rcwidth, rcheight, offload, stationid, prostatus
+    </sql>
+
+	<!--立案办理开具执法文书时,查询所有的精检站和对应的业务信息的sql列, 日期:2018年6月23日-->
+	<sql id="lsc_site_column">
+		info.id id,site.sitecode,site.sitename,site.certificate,site.certificate_url,site.certificate_validity_period,site.due_bank,site.bank_address,site.bank_account,site.bank_account_name,
+        site.judicial_organ,info.checkno,info.vehicleid,info.axlesum,info.weightlimited,info.ratedtotalweight,info.ratedloading,info.overlimited,info.overload,
+        DATE_FORMAT(info.fctime,'%Y-%m-%d %H:%i:%s') fctime,info.fclaneno,info.fctotalweight,info.fcoper,info.fcaxle1,info.fcaxle2,info.fcaxle3,info.fcaxle4,info.fcaxle5,info.fcaxle6,
+        info.fcaxle7,info.fcaxle8,info.fclength,info.fcwidth,info.fcheight,info.overlength,info.overwidth,info.overheight,DATE_FORMAT(info.rctime,'%Y-%m-%d %H:%i:%s') rctime,info.rclaneno,
+        info.rctotalweight,info.rcoper,info.rcaxle1,info.rcaxle2,info.rcaxle3,info.rcaxle4,info.rcaxle5,info.rcaxle6,info.rcaxle7,info.rcaxle8,info.rclength,info.rcwidth,info.rcheight,
+        info.offload,info.stationid,info.prostatus,info.result,info.message,info.isshow,info.picview,info.picplate,info.picviewback,info.picside,info.picside2,info.pictotal,info.video1,
+        info.video2,info.trucksRuleName
+	</sql>
+
+	<select id="selList" resultType="com.zhichao.beans.guns.Lscinfo">
+
+		select
+		c.id,b.sitename AS stationid, fctime, vehicleid, axlesum, weightlimited, fctotalweight,overlimited ,ratedloading,video1,video2,rctotalweight
+		from bs_fixedsite b, b_lscinfo c
+		where b.sitecode = c.stationid
+		<if test="vehicleid != null and vehicleid != ''">
+			and c.vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="fctime != null and fctime != ''">
+			and fctime between #{begin} AND #{end}
+		</if>
+
+		<if test="chekStatus != null and chekStatus != ''">
+			<if test="chekStatus == 1">
+				and prostatus = 0
+			</if>
+			<if test="chekStatus == 2">
+				and prostatus = 1
+			</if>
+
+		</if>
+
+
+		<if test="stationid != null and stationid != ''">
+			and c.stationid = #{stationid}
+		</if>
+		<if test="depts != null and depts != ''">	
+			and b.deptpid in
+
+			(select
+			id
+			from
+			sys_dept
+			where
+			pids like concat('%',#{depts},'%')
+			OR
+			id = #{depts}
+			)
+
+		</if>
+		
+		order by fctime DESC 
+	</select>
+	
+	<!-- 根据站点 -->
+	
+	<!-- 根据站点id获取 经过站点的车辆总数, 违章数, 平均超载, 超限百分比 -->
+	<select id="calcStation" resultType="java.lang.Double">
+		SELECT COUNT(id) / 10000 AS calcStie FROM b_lscinfo WHERE stationid = #{stationid}
+		UNION ALL 
+		SELECT COUNT(id) FROM b_lscinfo WHERE stationid = #{stationid} AND overlimited > 0
+		UNION ALL 
+		SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) FROM b_lscinfo WHERE stationid = #{stationid} AND overlimited > 0
+		UNION ALL
+		SELECT CONVERT(
+		(
+		SELECT COUNT(id) FROM b_lscinfo WHERE stationid = #{stationid} AND overlimited > 0
+		)/(
+		SELECT COUNT(id)  AS calcStie FROM b_lscinfo WHERE stationid = #{stationid}
+		),
+		DECIMAL(10,4)) * 100 AS overloadPercentage;
+	</select>
+	
+	<select id="calcArea" resultType="java.lang.Double">
+		SELECT COUNT(a.id) / 10000 AS calcArea FROM b_lscinfo a, bs_fixedsite b 
+		WHERE a.stationid = b.sitecode
+		<if test="depts != null and depts != ''">	
+			and b.deptid in
+			(select
+			id
+			from
+			sys_dept
+			where
+			pids like concat('%',#{depts},'%')
+			OR
+			id = #{depts}
+			)
+		</if>
+
+		UNION ALL
+
+		SELECT COUNT(a.id) AS overloadNum FROM b_lscinfo a, bs_fixedsite b
+		WHERE a.stationid = b.sitecode
+		AND overlimited > 0
+		<if test="depts != null and depts != ''">	
+			and b.deptid in
+			(select
+			id
+			from
+			sys_dept
+			where
+			pids like concat('%',#{depts},'%')
+			OR
+			id = #{depts}
+			)
+		</if>
+
+		UNION ALL
+
+		SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) AS avgOverload
+		FROM b_lscinfo a, bs_fixedsite b
+		WHERE a.stationid = b.sitecode
+		AND a.overlimited > 0
+		<if test="depts != null and depts != ''">	
+			and b.deptid in
+			(select
+			id
+			from
+			sys_dept
+			where
+			pids like concat('%',#{depts},'%')
+			OR
+			id = #{depts}
+			)
+		</if>
+		
+	</select>
+	
+	<!-- 获取几张车头的图片 -->
+	<select id="getVehicleImages" resultType="map">
+    	SELECT
+			picview,picplate,picviewback,picside,picside2,pictotal
+		FROM
+			b_lscinfo
+		WHERE
+			id = #{id}
+    </select>
+    
+    <!-- 
+	    修改精检站中的数据状态从
+		1.未立案
+		2.立案待审批
+		3.已立案
+		4.已结案
+		5.驳回
+     -->
+    <update id="updateProstatus">
+    	UPDATE b_lscinfo    
+ 		SET prostatus = #{newstatus} WHERE 1 = 1
+ 		<if test="id != null and id != ''">
+ 			 AND id = #{id}
+ 		</if>
+ 		<if test="checkno != null and checkno != ''">
+ 			 AND checkno = #{checkno}
+ 		</if>
+ 		<if test="oldstatus != null and oldstatus != ''">
+ 			 AND prostatus = #{oldstatus}
+ 		</if>
+    </update>
+    <select id="listSelect" resultType="java.util.Map">
+       select * from bs_allsite
+    </select>
+    
+    <select id="selHistoryListByVehicleid" resultType="java.util.Map">
+    	select 
+		   a.id as id,a.rctime, b.sitename, a.overlimited ,(overlimited / ratedloading) * 100 as reta
+		from 
+			b_lscinfo a, bs_fixedsite b
+		where 
+			b.sitecode = a.stationid
+			AND
+			a.prostatus > 0
+			AND
+			vehicleid = #{vehicleid}
+    </select>
+
+    <!--根据精检站业务信息表id查询出所有业务信息和站点信息-->
+    <select id="findLscAndFixInfo" resultType="java.util.Map">
+        SELECT
+            <include refid="lsc_site_column"/>
+        FROM
+            bs_fixedsite site,
+            b_lscinfo info
+        WHERE
+            site.sitecode = info.stationid
+            and info.id = #{id}
+    </select>
+
+
+</mapper>

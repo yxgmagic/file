@@ -1,0 +1,62 @@
+﻿@layout("/common/_container.html"){
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>路网信息管理</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row form-horizontal">
+							<div class="col-sm-6" style="padding-bottom:3px">
+								<label class="control-label col-sm-4">道路名称</label>
+								<div class="col-sm-8">
+									<input id="roadname" type="text" class="layui-input">
+									<input id="areacode" name="所属行政区" type="hidden" value="" />
+								</div>
+							</div>
+
+							<div class="col-sm-6" style="padding-bottom:3px">
+								<label class="control-label col-sm-2">所属行政区</label>
+								<div class="col-sm-8">
+									<div class="col-sm-6">
+										<select id="Select1" name="Select1" class="layui-input"
+												onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+									</div>
+									<div class="col-sm-6">
+										<select id="Select2" name="Select2" class="layui-input"
+												onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="col-sm-12 text-center" style="margin-top: 26px;">
+								<#button name="搜索" icon="fa-search" clickFun="Road.search()" />
+							</div>
+						</div>
+						<div class="hidden-xs" id="RoadTableToolbar" role="group">
+							@if(shiro.hasPermission("/road/add")){
+							<#button name="添加" icon="fa-plus" clickFun="Road.openAddRoad()" />
+							@}
+							 @if(shiro.hasPermission("/road/update")){
+							<#button name="修改" icon="fa-edit"
+								clickFun="Road.openRoadDetail()" space="true" />
+							@}
+							 @if(shiro.hasPermission("/road/delete")){
+							<#button name="删除" icon="fa-remove" clickFun="Road.delete()"
+								space="true" />
+							@}
+						</div>
+						<#table id="RoadTable" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="${ctxPath}/static/modular/road/road/road.js"></script>
+<script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+@}

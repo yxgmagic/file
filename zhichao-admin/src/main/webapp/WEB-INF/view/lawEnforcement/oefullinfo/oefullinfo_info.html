@@ -1,0 +1,477 @@
+@layout("/common/_container.html"){
+<div class="body-nopadding">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <h2 class="margin-left-30"><img src="${ctxPath}/static/img/car/title.png" style="width: 25px;" />案件信息</h2>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">案件类型：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <label class="layui-form-label1">${item.casetype}</label>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">案件来源：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.caseSource}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">案由：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.casegist}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">案发时间：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.casetime}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">执法类型：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.LawType}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">违法类型：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.t_violation}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">法律依据：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.accordance}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">执法人员1：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.enforcername1}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">执法人员2：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.enforcername2}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">车辆图片：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div class="tuuu">
+                            <img src="${ctxPath}/static/img/car/car.png" alt="图片显示异常"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">车辆视频1：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <img src="${item.video1}" style="width:40%;" alt="没有视频"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">车辆视频2：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <img src="${item.video1}" style="width:40%;" alt="没有视频"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <h2 class="margin-left-30"><img src="${ctxPath}/static/img/car/title.png" style="width: 25px;" />超限信息</h2>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">总重：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.ratedtotalweight}kg</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">限重：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.weightlimited}kg</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">超重：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.overlimited}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">总长：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">7500mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">限长：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">18100mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">超长：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.overlength}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">总宽：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">3000mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">限宽：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">3300mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">超宽：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.overwidth}mm</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">总高：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">2900mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">限高：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">4000mm</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">超高：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.overheight}mm</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">罚款金额：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.shouldpay} 元</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">赔偿金额：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">${item.damageamount + item.shouldpay } 元</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">合计罚款：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <div>
+                            <label class="layui-form-label1">1750  元</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <h2 class="margin-left-30"><img src="${ctxPath}/static/img/car/title.png" style="width: 25px;" />当事人信息</h2>
+            </div>
+        </div>
+        <div class="ibox-content margin-bottom-30">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend class="margin-bottom-10" style="color:#000;">车辆信息</legend>
+                <div class="layui-row margin-bottom-10">
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">车辆号码：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.vehicleid}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">行驶证号码：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.drivinglicense}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">道路运输证号码：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.lawpersonname}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row margin-bottom-10">
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">承运人姓名：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.crarriename}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">承运人地址：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.carrieraddr}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">货物名称：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.cargoname}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row margin-bottom-10">
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">出发地：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.departure}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-col-md4 text-right">
+                            <label class="layui-form-label1">目的地：</label>
+                        </div>
+                        <div class="layui-col-md6 text-left">
+                            <div>
+                                <label class="layui-form-label1">${item.destination}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend class="margin-bottom-10" style="color:#000;">驾驶员信息</legend>
+                    <div class="layui-row margin-bottom-10">
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">司机姓名：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.drivername} </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">身份证号码：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.driveridcard}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">性别：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.drivergender}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row margin-bottom-10">
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">联系方式：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.driverphone}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">从业资格：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.qualificationid}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-col-md4 text-right">
+                                <label class="layui-form-label1">户籍：</label>
+                            </div>
+                            <div class="layui-col-md6 text-left">
+                                <div>
+                                    <label class="layui-form-label1">${item.driverres}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+	</div>
+
+</div>
+    <!-- <script src="../../Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+    <script src="../../Resource/Scripts/Plugins/layui/layui.all.js"></script> -->
+    <script src="${ctxPath}/static/map/js/module.js"></script>
+    <script>
+        $('.tuuu').on('click', function () {
+        	var msg = '${item}';
+            Module.Box.OpenDialog('1200', '440', '${ctxPath}/oefullinfo/carImages', '车辆图片');
+        });
+    </script>
+@}

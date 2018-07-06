@@ -1,0 +1,44 @@
+﻿@layout("/common/_container.html"){
+
+<div class="ibox float-e-margins">
+	<div class="ibox-tools">
+		<button type="button" id="btn_export" class="btn btn-primary btn-xs" onclick="$('.dropdown-menu li')[0].click()">导出Excel</button>
+
+	</div>
+    <div class="ibox-content">
+    	<input type="hidden" value="${item}" id="vehicleid">
+
+        <div class="row">
+            <#table id="BOefullinfoHistoryTable"/>
+        </div>
+            
+
+    </div>
+</div>
+
+<script src="${ctxPath}/static/modular/compreAnalysis/bOefullinfo/bOefullinfo_history.js"></script>
+
+<script type="text/javascript">
+/* 
+function fun() {
+	//.tableexcel是需要导出table的class  
+    $(".tableexcel").table2excel({  
+        //需要导出的列  
+        columns:"1,2,3"  
+        // 不被导出的表格行的CSS class类  
+        exclude: ".noExl",  
+        // 导出的Excel文档的名称  
+        name: "Excel",  
+        // Excel文件的名称  
+        filename: "Excel",  
+        // 是否导出图片  
+        exclude_img: true,  
+        // 是否导出超链接  
+        exclude_links: true,  
+        // 是否导出输入框中的内容  
+        exclude_inputs: true  
+    });  
+} */
+
+</script>
+@}

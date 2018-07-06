@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.MeinfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Meinfo">
+		<id column="id" property="id" />
+		<result column="checkno" property="checkno" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="axlesum" property="axlesum" />
+		<result column="weightlimited" property="weightlimited" />
+		<result column="ratedtotalweight" property="ratedtotalweight" />
+		<result column="ratedloading" property="ratedloading" />
+		<result column="overlimited" property="overlimited" />
+		<result column="overload" property="overload" />
+		<result column="fctime" property="fctime" />
+		<result column="fclaneno" property="fclaneno" />
+		<result column="fctotalweight" property="fctotalweight" />
+		<result column="fcoper" property="fcoper" />
+		<result column="fcaxle1" property="fcaxle1" />
+		<result column="fcaxle2" property="fcaxle2" />
+		<result column="fcaxle3" property="fcaxle3" />
+		<result column="fcaxle4" property="fcaxle4" />
+		<result column="fcaxle5" property="fcaxle5" />
+		<result column="fcaxle6" property="fcaxle6" />
+		<result column="fcaxle7" property="fcaxle7" />
+		<result column="fcaxle8" property="fcaxle8" />
+		<result column="fclength" property="fclength" />
+		<result column="fcwidth" property="fcwidth" />
+		<result column="fcheight" property="fcheight" />
+		<result column="overlength" property="overlength" />
+		<result column="overwidth" property="overwidth" />
+		<result column="overheight" property="overheight" />
+		<result column="offload" property="offload" />
+		<result column="fcvehicleimage" property="fcvehicleimage" />
+		<result column="fcvehicleimage1" property="fcvehicleimage1" />
+		<result column="fcvehicleimage2" property="fcvehicleimage2" />
+		<result column="vehicleno" property="vehicleno" />
+		<result column="prostatus" property="prostatus" />
+		<result column="result" property="result" />
+		<result column="message" property="message" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, checkno, vehicleid, axlesum, weightlimited,rctotalweight, ratedtotalweight, ratedloading, overlimited, overload, DATE_FORMAT(fctime,'%Y-%m-%d %H:%i:%s') fctime, fclaneno, fctotalweight, fcoper, fcaxle1, fcaxle2, fcaxle3, fcaxle4, fcaxle5, fcaxle6, fcaxle7, fcaxle8, fclength, fcwidth, fcheight, overlength, overwidth, overheight, offload, vehicleno, prostatus, result, message
+    </sql>
+    
+    <sql id="sel_list">
+        a.id, checkno, a.vehicleid, axlesum, weightlimited,rctotalweight, ratedtotalweight, ratedloading, overlimited, overload, DATE_FORMAT(fctime,'%Y-%m-%d %H:%i:%s') fctime, fclaneno, fctotalweight, fcoper, fcaxle1, fcaxle2, fcaxle3, fcaxle4, fcaxle5, fcaxle6, fcaxle7, fcaxle8, fclength, fcwidth, fcheight, overlength, overwidth, overheight, offload, b.vehicleno AS stationid, prostatus, result, message,b.`vehicleid` AS enforcecar
+    </sql>
+    
+    <select id="selList" resultType="com.zhichao.beans.guns.Meinfo">
+		SELECT
+		<include refid="sel_list"></include>
+		FROM
+		  `b_meinfo` a,
+		  bs_law_enforcecar b,
+		  `sys_dept` c 
+		WHERE a.`vehicleno` = b.`vehicleno` 
+		  AND b.`deptid` = c.`id`
+		<if test="vehicleid != null and vehicleid != ''">
+			AND a.vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="fctime != null and fctime != ''">
+			AND fctime between #{begin} AND #{end}
+		</if>
+		<if test="depts != null and depts != ''">
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY a.fctime DESC
+	</select>
+	
+	<!-- 跳转到修改源头企业检测数据管理找图片 -->
+	<select id="getVehicleImages" resultType="map">
+    	SELECT
+			picview,picplate,picviewback,picside,picside2,pictotal
+		FROM
+			b_meinfo
+		WHERE
+			id = #{id}
+    </select>
+	
+	<select id="calcDept" resultType="java.lang.Double">
+		SELECT COUNT(1) / 10000 AS calcArea FROM b_meinfo a, bs_law_enforcecar b
+		WHERE a.vehicleno = b.vehicleno
+		<if test="depts != null and depts != ''">	
+			and b.deptid in	<!-- <![CDATA[(]]>#{depts}<![CDATA[)]]> -->
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+
+		UNION ALL 
+
+		SELECT COUNT(1) AS overloadNum FROM b_meinfo a, bs_law_enforcecar b
+		WHERE a.vehicleno = b.vehicleno
+		AND a.overlimited > 0
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+
+		UNION ALL 
+
+		SELECT CONVERT(AVG(overlimited) / 1000, DECIMAL(10,4)) AS avgOverload
+		FROM b_meinfo a, bs_law_enforcecar b
+		WHERE a.vehicleno = b.vehicleno
+		AND a.overlimited > 0
+		<if test="depts != null and depts != ''">	
+			AND b.deptid IN
+			<foreach collection="depts" item="item" separator="," open="(" close=")" index="index">
+				#{item}
+			</foreach>
+		</if>
+		
+	</select>
+
+	<select id="selById" resultType="com.zhichao.beans.guns.Meinfo">
+		SELECT 
+			a.id, checkno, a.drivername,a.vehicleid, axlesum, weightlimited, rctotalweight, ratedtotalweight, ratedloading, overlimited, overload, DATE_FORMAT(fctime,'%Y-%m-%d %H:%i:%s') fctime, fclaneno, fctotalweight, fcoper, fcaxle1, fcaxle2, fcaxle3, fcaxle4, fcaxle5, fcaxle6, fcaxle7, fcaxle8, fclength, fcwidth, fcheight, overlength, overwidth, overheight, offload, a.vehicleno, prostatus, result, message, b.`vehicleid` AS enforcecar
+		FROM
+		  	b_meinfo a,
+		  	bs_law_enforcecar b 
+		WHERE a.`vehicleno` = b.`vehicleno` 
+			AND a.`id` = #{id}
+	</select>
+</mapper>

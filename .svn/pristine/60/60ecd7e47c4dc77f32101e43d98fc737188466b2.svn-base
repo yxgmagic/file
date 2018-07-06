@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.VideoServerMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.VideoServer">
+		<id column="id" property="id" />
+		<result column="uname" property="uname" />
+		<result column="upass" property="upass" />
+		<result column="serverip" property="serverip" />
+		<result column="serverport" property="serverport" />
+		<result column="flag" property="flag" />
+		<result column="verify" property="verify" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, uname, upass, serverip, serverport, flag, verify
+    </sql>
+
+	<select id="getVideoList" resultType="map">
+		<if test="flag != null and flag ==0">
+		SELECT * from bs_video_device where LENGTH(deviceId)=43 and LEFT(deviceId,38) in (
+			select deviceId from bs_video_device where deviceParentId in(
+				select deviceId from bs_video_site where sitecode=#{code}
+			)
+		)
+		</if>
+		<if test="flag != null and flag ==1">
+			SELECT * from bs_video_device where deviceId=#{code}
+		</if>
+	</select>
+	<select id="findVideoList" resultType="map">
+		<if test="siteName != null and siteName !=''">
+			select * from bs_video_device WHERE deviceParentId in (
+				SELECT deviceId from bs_video_device where deviceParentName=#{siteName}
+			)
+		</if>
+	</select>
+</mapper>

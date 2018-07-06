@@ -1,0 +1,106 @@
+package com.zhichao.admin.controller.perforeValue;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.perforevalue.IIndicatorService;
+import com.zhichao.beans.guns.Indicator;
+import com.zhichao.core.base.controller.BaseController;
+
+/**
+ * 指标管理控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-02-27 17:50:26
+ */
+@Controller
+@RequestMapping("/indicator")
+public class IndicatorController extends BaseController {
+
+    private String PREFIX = "/perforevalue/indicator/";
+
+    @Autowired
+    private IIndicatorService indicatorService;
+
+    /**
+     * 跳转到指标管理首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "indicator.html";
+    }
+
+    /**
+     * 跳转到添加指标管理
+     */
+    @RequestMapping("/indicator_add")
+    public String indicatorAdd() {
+        return PREFIX + "indicator_add.html";
+    }
+
+    /**
+     * 跳转到修改指标管理
+     */
+    @RequestMapping("/indicator_update/{indicatorId}")
+    public String indicatorUpdate(@PathVariable Integer indicatorId, Model model) {
+        Indicator indicator = indicatorService.selectById(indicatorId);
+        model.addAttribute("item",indicator);
+        LogObjectHolder.me().set(indicator);
+        return PREFIX + "indicator_edit.html";
+    }
+
+    /**
+     * 获取指标管理列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(@RequestParam(value = "indicName", required = false) String indicName,
+                       @RequestParam(value = "indicType", required = false) String indicType) {
+        return indicatorService.selList(indicName,indicType);
+    }
+
+    /**
+     * 新增指标管理
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(Indicator indicator) {
+        indicatorService.insert(indicator);
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 删除指标管理
+     */
+    @RequestMapping(value = "/delete/{id}")
+    @ResponseBody
+    public Object delete(@PathVariable("id") Integer indicatorId) {
+        indicatorService.deleteById(indicatorId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改指标管理
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(Indicator indicator) {
+        indicatorService.updateById(indicator);
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 指标管理详情
+     */
+    @RequestMapping(value = "/detail/{indicatorId}")
+    @ResponseBody
+    public Object detail(@PathVariable("indicatorId") Integer indicatorId) {
+        return indicatorService.selectById(indicatorId);
+    }
+}

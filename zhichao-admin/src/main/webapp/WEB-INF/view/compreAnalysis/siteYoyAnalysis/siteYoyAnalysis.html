@@ -1,0 +1,178 @@
+@layout("/common/_container.html"){
+<style>
+    .label-control{
+        height: 34px;
+        line-height: 34px;
+        text-align: right;
+    }
+    .search-btn{
+        margin-top: 15px;
+    }
+    #axle{
+        width: 100%;
+        height: 400px;
+    }
+    #site{
+        width: 100%;
+        height: 400px;
+    }
+    #carNumber{
+        width: 100%;
+        height: 400px;
+    }
+    #overRun{
+        width: 100%;
+        height: 400px;
+    }
+    #carGotype{
+        width: 100%;
+        height: 400px;
+    }
+    .yoy-box{
+        background-color: #fdfdfd;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: 1px solid #e6e6e6;
+        margin-bottom: 30px;
+    }
+    .yoy-box-s{
+        background-color: #fdfdfd;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: 1px solid #e6e6e6;
+        margin-bottom: 30px;
+    }
+    .car-number-title{
+        color: #656565;
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #e6e6e6;
+        line-height: 50px;
+        font-size: 18px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .car-number-title span {
+        border-left: 3px solid #47d195!important;
+        padding-left: 5px;
+    }
+    .input-box{
+        display: inline-block;
+        float: right;
+        width: 70%;
+    }
+    .input-box input{
+        width: 60%;
+        display: inline-block;
+    }
+    .sea-box-1{
+        height: 120px;
+        border-bottom: 1px solid #eaeaea;
+        margin-bottom: 24px;
+    }
+    .sea-box-2{
+        height: 120px;
+        line-height: 120px;
+        text-align: center;
+        border-bottom: 1px solid #eaeaea;
+        margin-bottom: 24px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-sm-12">
+
+                <div class="row">
+                    <div class="yoy-box-s">
+                        <div class="car-number-title">
+                            <span>站点数据统计</span>
+                        </div>
+                        <div class="col-sm-6 sea-box-1">
+                            <div class="col-sm-12" style="margin-top: 16px">
+                                <label for="casetime" class="col-sm-2 label-control">时间</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="casetime" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="level" class="col-sm-2 label-control">违章等级</label>
+                                <div class="col-sm-8">
+                                    <select id="level" class="form-control">
+                                        <option value ="">请选择</option>
+                                        <option value ="3">一般</option>
+                                        <option value ="2">严重</option>
+                                        <option value ="1">特别严重</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 sea-box-2">
+                            <#button name="查询" icon="fa-search" id="siteSearch"/>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-12">
+                                <div id="axle"></div>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <div id="site"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 col-xs-12" style="padding-left: 0;">
+                        <div class="yoy-box">
+                            <div class="car-number-title">
+                                <span>时间段内车流量</span>
+                                <div class="input-box">
+                                    <input type="text" id="times" class="form-control">
+                                    <#button name="查询" icon="fa-search" id="timesSearch"/>
+                                </div>
+                            </div>
+                            <div id="carNumber"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xs-12" style="padding-right: 0;">
+                        <div class="yoy-box">
+                            <div class="car-number-title">
+                                <span>时间段内超限量</span>
+                                <div class="input-box">
+                                    <input type="text" id="fctime" class="form-control">
+                                    <#button name="查询" icon="fa-search" id="fctimeSearch"/>
+                                </div>
+                            </div>
+                            <div id="overRun"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="yoy-box-s">
+                        <div class="car-number-title">
+                            <span>超限货物类型统计</span>
+                            <div class="input-box">
+                                <input type="text" id="car-go-type" class="form-control">
+                                <#button name="查询" icon="fa-search" id="carGoTypeSearch"/>
+                            </div>
+                        </div>
+                        <div id="carGotype"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="sitea-box">
+                        <div class="sitea-title">站点案件详情</div>
+                        <#table id="SiteYoyCountTable"/>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/echarts.js"></script>
+<script src="${ctxPath}/static/modular/compreAnalysis/siteYoyAnalysis/siteYoyAnalysis.js"></script>
+@}

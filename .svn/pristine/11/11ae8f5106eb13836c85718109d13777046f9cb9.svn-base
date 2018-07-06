@@ -1,0 +1,58 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <!--图片组件-->
+            <div id="banner"></div>
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>预检序号</td>
+                        <td>${item.corpid}</td>
+                        <td>车牌号码</td>
+                        <td>${item.vehicleid}</td>
+                    </tr>
+                    <tr>
+                        <td>货车类型</td>
+                        <td>${item.vehicletype}</td>
+                        <td>轴数</td>
+                        <td>${item.axlesum}</td>
+                    </tr>
+                    <tr>
+                        <td>车速（km/h）</td>
+                        <td>${item.speed}</td>
+                        <td>车道</td>
+                        <td>${item.laneno}</td>
+                    </tr>
+                    <tr>
+                        <td>总重（kg）</td>
+                        <td>${item.totalweight}</td>
+                        <td>超限量（kg）</td>
+                        <td>${item.overlimited}</td>
+                    </tr>
+                    <tr>
+                        <td>源头企业</td>
+                        <td>${item.corpname}</td>
+                        <td>检测时间</td>
+                        <td>${item.strTime}</td>
+                    </tr>
+                </table>
+                <input type="hidden" id="id" value="${item.id}">
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button name="确定" id="cancel" icon="fa-eraser" clickFun="CorpinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/corpinfo/corpinfo_info.js"></script>
+@}

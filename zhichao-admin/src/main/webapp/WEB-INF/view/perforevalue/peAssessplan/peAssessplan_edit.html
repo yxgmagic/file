@@ -1,0 +1,80 @@
+﻿@layout("/common/_container.html"){
+<form id="peAssess">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div class="form-horizontal">
+
+                <input type="hidden" id="id" value="${item.id}">
+
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <label for="assessName">考核名称</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input id="assessName" name="assessName" class="form-control" value="${item.assessName}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <label for="assessTime">时间区间</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input id="assessTime" name="assessTime" class="form-control"  value="${item.startTime} ~ ${item.endTime}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <label for="assessObj">考核对象</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <textarea id="assessObj" class="form-control" readonly>${item.assessObj}</textarea>
+                            <input type="hidden" id="assessObjHidden">
+                        </div>
+                        <div class="col-sm-2 text-center">
+                            <button class="btn btn-success" onclick="openChoosePlugin('site','edit','${item.id}')">选择对象</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <label for="assessIndic">考核指标</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <textarea id="assessIndic" class="form-control" readonly>${item.assessIndic}</textarea>
+                            <input type="hidden" id="assessIndicHidden">
+                        </div>
+                        <div class="col-sm-2 text-center">
+                            <button class="btn btn-success" onclick="openChoosePlugin('indic','edit','${item.id}')">选择指标</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <label for="notes">备注</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <textarea id="notes" name="notes" class="form-control">${item.notes}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row btn-group-m-t">
+                    <div class="col-sm-12 text-center">
+                        <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PeAssessplanInfoDlg.editSubmit()"/>
+                        <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PeAssessplanInfoDlg.close()"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+<script src="${ctxPath}/static/modular/perforevalue/peAssessplan/peAssessplan_info.js"></script>
+@}

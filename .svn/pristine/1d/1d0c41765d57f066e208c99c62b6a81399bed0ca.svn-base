@@ -1,0 +1,89 @@
+﻿@layout("/common/_container.html"){
+<style>
+    div > table{
+        cursor: pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>考评指标数据查询</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row row-bottom">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">
+                                        <label for="assessName">考核名称：</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <select name="assessName" id="assessName" class="form-control"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 col-sm-offset-2">
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">
+                                        <label for="indicType">指标类型：</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <#SelectDict id="indicType" name="indicType" dictName="indicType" dataStyle="btn"
+                                                cssName="form-control"></#SelectDict>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">
+                                        <label for="indicName">指标：</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <select name="indicName" id="indicName" class="form-control"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 col-sm-offset-2">
+                                <div class="form-group">
+                                    <div class="col-sm-4 control-label">
+                                        <label for="siteName">站点名称：</label>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="siteName" name="siteName" class="form-control" onclick="Ning.Tree.createFixedsiteSelect(this)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center row-top">
+                            <div class="col-sm-12">
+                                <#button name="搜索" icon="fa-search" clickFun="PeSiteIndic.search()"/>
+                            </div>
+                        </div>
+                        <div class="cursor">
+                            <#table id="PeSiteIndicTable"/>
+                        </div>
+
+                        <!--鼠标移入的抓拍图片显示框-->
+                        <div id="photo" class="panel panel-default hover-box">
+                            <div class="panel panel-heading">
+                                <div class="px5-rectangle">
+                                    抓拍图片
+                                </div>
+                            </div>
+                            <div class="panel panel-body" style="padding: 5px; margin: 5px">
+                                <img src="${ctxPath}/static/img/loading.gif" class="w100" width="249px" height="160px" alt="抓拍图片" id="image">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/perforevalue/peSiteIndic/peSiteIndic.js"></script>
+@}

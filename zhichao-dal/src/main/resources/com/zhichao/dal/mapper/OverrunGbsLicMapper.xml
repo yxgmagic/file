@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.OverrunGbsLicMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.OverrunGbsLic">
+		<id column="id" property="id" />
+		<result column="licid" property="licid" />
+		<result column="carid" property="carid" />
+		<result column="sourcename" property="sourcename" />
+		<result column="drivername" property="drivername" />
+		<result column="driverphone" property="driverphone" />
+		<result column="wayid" property="wayid" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, licid, carid, sourcename, drivername, driverphone, wayid
+    </sql>
+
+</mapper>

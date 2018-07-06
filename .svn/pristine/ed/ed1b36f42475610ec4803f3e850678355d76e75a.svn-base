@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.CorpinfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Corpinfo">
+		<id column="id" property="id" />
+		<result column="corpid" property="corpid" />
+		<result column="corptime" property="corptime" />
+		<result column="strTime" property="strTime" />
+		<result column="corpcode" property="corpcode" />
+		<result column="vehicleid" property="vehicleid" />
+		<result column="vehicletype" property="vehicletype" />
+		<result column="axlesum" property="axlesum" />
+		<result column="speed" property="speed" />
+		<result column="laneno" property="laneno" />
+		<result column="totalweight" property="totalweight" />
+		<result column="overlimited" property="overlimited" />
+		<result column="axle1" property="axle1" />
+		<result column="axle2" property="axle2" />
+		<result column="axle3" property="axle3" />
+		<result column="axle4" property="axle4" />
+		<result column="axle5" property="axle5" />
+		<result column="axle6" property="axle6" />
+		<result column="axle7" property="axle7" />
+		<result column="axle8" property="axle8" />
+		<result column="prostatus" property="prostatus" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, corpid, corptime, corpcode, vehicleid, vehicletype, axlesum, speed, laneno, totalweight, overlimited, axle1, axle2, axle3, axle4, axle5, axle6, axle7, axle8, prostatus
+    </sql>
+
+	<select id="selList" resultType="com.zhichao.beans.guns.Corpinfo">
+		SELECT
+		a.id, a.corpid, a.corptime, b.corpname, a.vehicleid, a.vehicletype, a.axlesum, a.speed, a.laneno,
+		a.totalweight, a.overlimited, a.axle1, a.axle2, a.axle3, a.axle4, a.axle5, a.axle6, a.axle7,
+		a.axle8, a.prostatus
+		FROM
+		b_corpinfo a, bs_corp b
+		WHERE
+		a.corpcode = b.corpcode
+		<if test="areacode != null and areacode != ''">
+			AND b.areacode LIKE concat(concat(#{areacode}),'%')
+		</if>
+		<if test="vehicleid != null and vehicleid != ''">
+			AND a.vehicleid like CONCAT('%',#{vehicleid},'%')
+		</if>
+		<if test="corptime != null and corptime != ''">
+			AND a.corptime  BETWEEN #{begin} AND #{end}
+		</if>
+		ORDER BY a.corptime DESC
+	</select>
+    
+    <!-- 跳转到修改源头企业检测数据管理时查询数据 -->
+    <select id="selCorpInfo" resultType="com.zhichao.beans.guns.Corpinfo">
+    	SELECT
+			a.id, a.corpid, a.corptime, a.vehicleid, 
+			a.vehicletype, a.axlesum, a.speed, a.laneno, 
+			a.totalweight, a.overlimited, b.corpname
+		FROM
+			b_corpinfo a, bs_corp b
+		WHERE
+			a.corpcode = b.corpcode
+		AND 
+			a.id = #{id}
+    </select>
+
+	<!-- 跳转到修改源头企业检测数据管理找图片 -->
+	<select id="getVehicleImages" resultType="map">
+    	SELECT
+			picview,picplate,picviewback,picside,picside2,pictotal
+		FROM
+			b_corpinfo
+		WHERE
+			id = #{id}
+    </select>
+
+	<select id="calculateVehicle" resultType="double">
+
+		SELECT
+			COUNT(1) / 10000 AS vehicleNum
+		FROM
+			b_corpinfo a,
+			bs_corp b
+		WHERE a.corpcode = b.corpcode
+			  AND b.areacode LIKE CONCAT(#{areacode}, '%')
+		UNION
+		ALL
+		SELECT
+			COUNT(1) AS overloadNum
+		FROM
+			b_corpinfo a,
+			bs_corp b
+		WHERE a.corpcode = b.corpcode
+			  AND a.overlimited > 0
+			  AND b.areacode LIKE CONCAT(#{areacode}, '%')
+		UNION
+		ALL
+		SELECT
+			CONVERT(
+					AVG(overlimited) / 1000,
+					DECIMAL (10, 4)
+			) AS avgOverload
+		FROM
+			b_corpinfo a,
+			bs_corp b
+		WHERE a.corpcode = b.corpcode
+			  AND a.overlimited > 0
+			  AND b.areacode LIKE CONCAT(#{areacode}, '%')
+	</select>
+
+</mapper>

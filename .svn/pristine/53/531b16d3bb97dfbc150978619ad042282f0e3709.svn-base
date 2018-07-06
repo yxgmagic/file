@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ServerAuthMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.ServerAuth">
+		<id column="id" property="id" />
+		<result column="alias" property="alias" />
+		<result column="alias_name" property="aliasName" />
+		<result column="url" property="url" />
+		<result column="computer_name" property="computerName" />
+		<result column="diskno" property="diskno" />
+		<result column="macno" property="macno" />
+		<result column="begindt" property="begindt" />
+		<result column="enddt" property="enddt" />
+		<result column="license" property="license" />
+		<result column="cdkey" property="cdkey" />
+		<result column="status" property="status" />
+		<result column="audit_status" property="auditStatus" />
+		<result column="usercode" property="usercode" />
+		<result column="userpassword" property="userpassword" />
+		<result column="creatdt" property="creatdt" />
+		<result column="creatid" property="creatid" />
+		<result column="auditdt" property="auditdt" />
+		<result column="auditid" property="auditid" />
+		<result column="deptid" property="deptid" />
+		<result column="updt" property="updt" />
+		<result column="upid" property="upid" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, alias, alias_name AS aliasName, url, computer_name AS computerName, diskno, macno, begindt, enddt, license, cdkey, status, audit_status AS auditStatus, usercode, userpassword, creatdt, creatid, auditdt, auditid, deptid, updt, upid
+    </sql>
+	<select id="list" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+		from dms_server_auth where 1=1
+		<if test="id = null and id = ''">
+			and alias = #{alias} and diskno= #{diskno} and macno= #{macno}
+		</if>
+		<if test="id != null and id != ''">
+			and a.id = #{id}
+		</if>
+	</select>
+<select id="getPrivatekey" resultType="java.lang.String">
+select license from dms_sys_config 
+</select>
+<select id="getAuthPublickey" resultType="java.lang.String">
+select cdkey from dms_server_auth  where id=#{authid}
+</select>
+<select id="list_chain" resultType="map">
+SELECT
+	*
+FROM
+	dms_chain_list
+WHERE
+	id IN (
+		SELECT
+			chainid
+		FROM
+			dms_server_auth_chain
+		WHERE
+			authid = #{authid}
+	)
+ 
+</select>
+<select id="list_inchain" resultType="map">
+SELECT
+	inchainclass
+FROM
+	dms_chain_list
+WHERE
+	id IN (
+		SELECT
+			chainid
+		FROM
+			dms_server_auth_chain
+		WHERE
+			authid = #{authid}
+	)
+AND inchainclass IS NOT NULL
+GROUP BY
+	inchainclass
+</select>
+
+<select id="list_outchain" resultType="map">
+SELECT
+	outchainclass
+FROM
+	dms_chain_list
+WHERE
+	id IN (
+		SELECT
+			chainid
+		FROM
+			dms_server_auth_chain
+		WHERE
+			authid = #{authid}
+	)
+AND outchainclass IS NOT NULL
+GROUP BY
+	outchainclass
+</select>
+
+<select id="list_server_auth_chain" resultType="map">
+select id as serverauthchainid,chainid,authid  from  dms_server_auth_chain where authid=#{authid} order by chainid
+</select>
+
+<select id="list_server_chain" resultType="map">
+select id as serverchainid,chainid,serverid,type,nums from dms_server_chain where chainid in (select chainid from  dms_server_auth_chain where authid=#{authid}) order by chainid,nums,type
+</select>
+
+<select id="list_server_list" resultType="map">
+select id as serverlistid,sysalias,sysdesc,systype,syssource,host,port as ports,dbname,dbdriver,dbuser,dbpassword 
+from dms_server_list where id in (select serverid from dms_server_chain where chainid in (select chainid from  dms_server_auth_chain where authid=#{authid}))
+</select>
+
+<select id="list_chain_action" resultType="map">
+select id as chainactionid,nums,serverchainid,actid from  dms_chain_action where serverchainid in 
+ (select id from dms_server_chain where chainid in 
+ (select chainid from  dms_server_auth_chain where authid=#{authid})
+)  order by serverchainid,nums
+</select>
+
+<select id="list_action_list" resultType="map">
+select id as actid,actalias,actdesc,actclass,actmethod from dms_action_list 
+where id in (select actid from  dms_chain_action where serverchainid in 
+(select id from dms_server_chain where chainid in (select chainid from  dms_server_auth_chain where authid=#{authid})
+))
+</select>
+
+<select id="list_action_para" resultType="map">
+SELECT
+	id AS actionparaid,
+	t.actid,
+	t.paratype,
+	t.paracode,
+	t.paravalue
+FROM
+	(
+		SELECT
+			a.id,
+			a.actid,
+			a.paratype,
+			a.paracode,
+			CASE
+		WHEN paratype = '0' THEN
+			b.paravalue
+		ELSE
+			a.paravalue
+		END AS paravalue
+		FROM
+			dms_action_para a
+		LEFT JOIN dms_para_list b ON a.paratype = '0'
+		AND a.paraid = b.id
+		WHERE
+			actid IN (
+				SELECT
+					id
+				FROM
+					dms_action_list
+				WHERE
+					id IN (
+						SELECT
+							actid
+						FROM
+							dms_chain_action
+						WHERE
+							serverchainid IN (
+								SELECT
+									id
+								FROM
+									dms_server_chain
+								WHERE
+									chainid IN (
+										SELECT
+											chainid
+										FROM
+											dms_server_auth_chain
+										WHERE
+											authid = #{authid}
+									)
+							)
+					)
+			)
+	) t,
+	(
+		SELECT
+			actid,
+			paracode,
+			max(paratype) AS paratype
+		FROM
+			dms_action_para
+		GROUP BY
+			actid,
+			paracode
+	) apl
+WHERE
+	t.paracode = apl.paracode
+AND t.paratype = apl.paratype
+AND t.actid = apl.actid
+
+</select>
+
+<select id="list_sever_para" resultType="map">
+	SELECT
+		id AS actionparaid,
+		0 as actid,
+		'4' AS paratype,
+		pl.paracode,
+		pl.paravalue
+	FROM
+		dms_para_list pl
+	WHERE
+		paracode NOT IN (
+			SELECT
+				a.paracode
+			FROM
+				dms_action_para a
+			LEFT JOIN dms_para_list b ON a.paratype = '0'
+			AND a.paraid = b.id
+			WHERE
+				actid IN (
+					SELECT
+						id
+					FROM
+						dms_action_list
+					WHERE
+						id IN (
+							SELECT
+								actid
+							FROM
+								dms_chain_action
+							WHERE
+								serverchainid IN (
+									SELECT
+										id
+									FROM
+										dms_server_chain
+									WHERE
+										chainid IN (
+											SELECT
+												chainid
+											FROM
+												dms_server_auth_chain
+											WHERE
+												authid = #{authid}
+										)
+								)
+						)
+				)
+		)
+		
+	</select>	
+		<update id="updateCdkey">
+    	UPDATE dms_server_auth 
+    	SET cdkey = #{cdkey} WHERE   id = #{id}
+ 		 
+    </update>
+</mapper>

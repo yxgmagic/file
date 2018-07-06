@@ -1,0 +1,153 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins" >
+	<div class="ibox-content" >
+		<div class="form-horizontal" id="lawEnforcecarFrom">
+
+			<input type="hidden" id="id" value="">
+
+			<div class="col-sm-2">
+				<div class="panel-body">
+					<img alt="photo" src="${ctxPath}/static/img/notfoundbl.png" class="img-responsive center-block" id="img_show">
+				</div>
+				<div class="panel-body text-center">
+					车辆图片
+					<label for="img_hidden" class="btn btn-primary">
+						<i class="glyphicon glyphicon-upload"></i>&nbsp;上传
+					</label>
+					<input type="file" id="img_hidden" style="display: none" />
+					<input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+					<input type="hidden" value="law_enforcecar" id="imagetype">
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">执法车辆牌号</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="vehicleid" name="vehicleid" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">执法车编号</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="vehicleno" name="vehicleno" type="text" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label">车型</label>
+					<div class="col-sm-9">
+						<#SelectDict id="vehicletype" dictName="cartype" dataStyle="btn"
+						cssName="form-control  "></#SelectDict>
+				</div>
+
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">GPS设备</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="gpsdeviceid" name="gpsdeviceid" type="text" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="certificate" class="col-sm-3 control-label">检定证书:</label>
+				<div class="col-sm-5">
+					<a id="certificateA" href="javascript:showCertificate();"
+					   style="line-height: 34px;color: #00B83F;">请点击上传按钮上传</a>
+					<input type="text" id="certificate" name="certificate" class="form-control"
+						   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+				</div>
+				<label for="file_input" class="btn btn-primary" style="">
+					<i class="glyphicon glyphicon-upload"></i>&nbsp;上传证书
+				</label>
+				<input type="file" id="file_input" style="display: none"/>
+			</div>
+
+			<div class="form-group">
+				<label for="certificateValidityPeriod" class="col-sm-3 control-label">检定证书有效期</label>
+				<div class="col-sm-9">
+					<input type="text" id="certificateValidityPeriod" name="certificateValidityPeriod"
+						   class="form-control text-center" />
+				</div>
+			</div>
+			<#input id="dueBank" name="收款银行"/>
+			<#input id="bankAddress" name="银行地址"/>
+			<!-- <div class="form-group">
+                <label class="col-sm-4 control-label">所属站点</label>
+                <div class="col-sm-8">
+                    <input class="form-control" id="vehicletype" name="vehicletype"
+                        type="text" />
+                </div>
+            </div> -->
+		</div>
+
+		<div class="col-sm-5">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">联系人</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="manager" name="manager" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">联系方式</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="managertel" name="managertel" type="text" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">管理部门</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="deptName" name="deptName"
+						   type="text"
+						   readonly="readonly"
+						   onclick="LawEnforcecarInfoDlg.showDeptSelectTree(); return false;"
+						   style="background-color: #ffffff !important;">
+					<input class="form-control" type="hidden" id="deptid" value="">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">所属区域</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="areaName" name="areaName"
+						   type="text"
+						   readonly="readonly"
+						   onclick="LawEnforcecarInfoDlg.showAreaSelectTree(); return false;"
+						   style="background-color: #ffffff !important;">
+					<input class="form-control" type="hidden" id="areacode" value="">
+				</div>
+			</div>
+			<#input id="judicialOrgan" name="审判机关" />
+			<#input id="bankAccountName" name="银行户名"/>
+			<#input id="bankAccount" name="银行账号"/>
+
+		</div>
+		<!-- 父级部门的选择框 -->
+		<div id="parentDeptMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+		<!-- 区域的选择框 -->
+		<div id="parentAreaMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentAreaMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+		<!-- 车型的选择框 -->
+		<div id="parentCarMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentCarMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+		<div class="row btn-group-m-t">
+			<div class="col-sm-12 text-center">
+				<#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="LawEnforcecarInfoDlg.addSubmit()"/>
+				<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="LawEnforcecarInfoDlg.close()"/>
+			</div>
+		</div>
+	</div>
+
+</div>
+</div>
+<script>
+    var certificateUrl = "";
+</script>
+<script src="${ctxPath}/static/modular/siteRegistration/lawEnforcecar/lawEnforcecar_info.js"></script>
+@}

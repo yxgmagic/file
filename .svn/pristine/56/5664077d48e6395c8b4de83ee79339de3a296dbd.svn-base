@@ -1,0 +1,118 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>精检站治超数据管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-3">
+                        <div class="" id="iNickTree" name="iNickTree" style="display:none"></div>
+                    </div>
+
+                    <!--右屏-->
+                    <div class="col-sm-12">
+                    
+                        <!--右屏顶部大屏-->
+                        <div class="row text-center tg_bigbox" style="display:none">
+                            <div class="col-sm-12 row-top" id="right_top">
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                                <div class="col-md-3">---</div>
+                            </div>
+                            <div>
+                                <div class="col-md-3">车辆总数(万辆)</div>
+                                <div class="col-md-3">超载数量</div>
+                                <div class="col-md-3">平均超限（吨）</div>
+                                <div class="col-md-3">超限百分比（%）</div>
+                            </div>
+                        </div>
+
+                        <!--右屏中部搜索-->
+                        <div class="row row-top form-horizontal">
+                            <div class="col-sm-6">
+                                <#input id="vehicleid" name="车牌号"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="fctime" name="时间" clickFun="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+                            </div>
+                            <div class="col-sm-12 row-top text-center">
+                            <input id="stationid" value="${stationid}" type="hidden"/>
+                                <#button name="搜索" icon="fa-search" clickFun="seach1()"/>
+                            </div>
+                        </div>
+                        
+                        <!-- 右屏底部表格 -->
+                        <#table id="LscinfoTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	var stationidValue;
+	$(function() {
+		stationidValue = "${stationid}";
+	});
+	
+</script>
+
+<script src="${ctxPath}/static/modular/detecManage/lscinfo/lscinfo.js"></script>
+	
+	<script type="text/javascript">
+		$("#LscinfoTable").on("click", function() {
+
+			var selected = $('#' + this.id).bootstrapTable('getSelections');
+		    if(selected.length == 0){
+		        Feng.info("请先选中表格中的某一记录！");
+		        return false;
+		    }else{
+
+                var winOpen=Feng.GetFrame("/cargoHandling_add");
+
+                if(winOpen == undefined) {
+                    winOpen=Feng.GetFrame("/cargoHandling_update");
+                }
+
+                if (winOpen!=undefined){
+
+                    winOpen.$("#vehicleid").val(selected[0].vehicleid).change();
+                    winOpen.$("#caseno").val(selected[0].id).change();
+                    if(winOpen.$("#caseno").val() != "") {
+                        winOpen.autoFill()
+                    }
+                    // console.log(winOpen.cpindex);
+                    var index = parent.layer.getFrameIndex(window.name)//获取子窗口索引
+                    parent.layer.close(index);
+
+                } else {
+                    layer.msg("没有找到窗口:cargoHandling_");
+                }
+		    	
+                // parent.$("#vehicleid").val(selected[0].vehicleid).change();
+                // parent.$("#caseno").val(selected[0].id).change();
+                // if(parent.$("#caseno").val() != "") {
+		    		// parent.autoFill()
+                // }
+                // var index = parent.layer.getFrameIndex(window.name);//获取子窗口索引
+		        // parent.layer.close(index);
+		        
+		    }
+		
+		}); 
+		
+		function detailFormatter() {
+			return "--";
+		}
+		
+		function seach1() {
+			stationid = $('#stationid').val();
+			Lscinfo.search();
+		}
+
+	</script>
+@}

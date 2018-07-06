@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>路面衰减趋势</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+    <div class="body-nopadding">
+        <h2 class="margin-left-30">
+            <img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />路面衰减趋势
+        </h2>
+        <div class="ibox-content margin-bottom-30">
+            <div class="layui-row margin-bottom-10">
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">管理部门：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <form class="layui-form">
+                            <select lay-verify="required">
+                                <option value="">株洲县公路局</option>
+                                <option value="">攸县公路局</option>
+                                <option value="">茶陵县公路局</option>
+                                <option value="">炎陵县公路局</option>
+                                <option value="">醴陵市公路局</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-col-md4 text-right">
+                        <label class="layui-form-label1">检测路段：</label>
+                    </div>
+                    <div class="layui-col-md6 text-left">
+                        <form class="layui-form">
+                            <select lay-verify="required">
+                                <option value="">S211线K31+500</option>
+                                <option value="">S211线K57+100</option>
+                                <option value="">S211线K31</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center margin-top-30">
+                <button class="layui-btn">查询</button>
+            </div>
+        </div>
+        <div class="ibox-content margin-top-30">
+            <div class="layui-form">
+                <div id="models" style="width: 100%;height:400px;margin-top:30px;"></div>
+            </div>
+        </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/echarts.min.js"></script>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('models'));
+        // 指定图表的配置项和数据
+        var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+       
+		option = {
+            color: colors,
+
+            
+			tooltip: {
+                trigger: 'axis',
+                
+				axisPointer: {
+                    type: 'cross'
+                }
+            },
+            
+			grid: {
+                right: '20%'
+            },
+            
+			legend: {
+                data: ['超限车辆', '车流量', 'PCI指数']
+            },
+            
+			xAxis: [
+                {
+                    type: 'category',
+                    
+					axisTick: {
+                        alignWithLabel: true
+                    },
+                   
+					data: ['2013年', '2014年', '2015年', '2016年', '2017年', '预测2018年']
+                }
+            ],
+            
+				yAxis: [
+                {
+                    type: 'value',
+                    
+					name: '超限车辆',
+     
+					position: 'right',
+					max:800000,
+					axisLine: {
+                        lineStyle: {
+                            color: colors[0]
+                        }
+                    },
+                    
+					axisLabel: {
+                        formatter: '{value} 辆'
+                    }
+                },
+                {
+                    type: 'value',
+                    
+					name: '车流量',
+   
+					position: 'right',
+					max:800000,
+					offset: 80,
+					axisLine: {
+                        lineStyle: {
+                            color: colors[1]
+                        }
+                    },
+                    
+					axisLabel: {
+                        formatter: '{value} 辆'
+                    }
+                },
+                {
+                    type: 'value',
+                    
+					name: 'PCI指数',
+                    
+					min: 50,
+                    
+					max: 100,
+                    
+					position: 'left',
+                    
+					axisLine: {
+                        lineStyle: {
+                            color: colors[2]
+                        }
+                    }
+                }
+            ],
+            
+				series: [
+                {
+                    name: '超限车辆',
+                    
+					type: 'line',
+                    
+					yAxisIndex: 0,
+                    
+					data: [29000, 48000, 60000, 40000, 89000, 86000]
+                },
+                {
+                    name: '车流量',
+                    
+					type: 'line',
+                    
+					yAxisIndex: 1,
+                    
+					data: [329000, 458000, 560000, 640000, 689000, 756000]
+                },
+                {
+                    name: 'PCI指数',
+                    
+					type: 'line',
+   
+					yAxisIndex: 2,
+					data: [88.3, 86.9, 83.2, 79.1, 74.6, 71.2]
+                }
+]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+
+</body>
+</html>

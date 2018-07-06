@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.BOefullinfoMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, caseno, casegist, accordance, casetime, prostatus, checkno, oeid, vehicleid, axlesum, weightlimited, ratedtotalweight, ratedloading, overlimited, overload, fctime, fclaneno, fctotalweight, fcoper, fclength, fcwidth, fcheight, overlength, overwidth, overheight, rctime, rclaneno, rctotalweight, rcoper, rclength, rcwidth, rcheight, offload, fcvehicleimage, rcvehicleimage, stationid, bizcertid, crarriename, carrieraddr, carrierpost, lawpersonname, lawpersonidtype, lawpersonid, drivername, driveridcard, driverage, driverphone, drivergender, driverpostcode, driverid, qualificationid, driverres, drivinglicense, vinnum, bcnum, vehicletype, vehiclebrand, engine, cargoname, cargotype, cargoownername, cargolawperson, departure, destination, loadingaddr, punishno, punishtime, violationlevel, shouldpay, punishamount, damageamount, enforcername1, enforcerid1, enforcername2, enforcerid2, ismodified, modifydesc, isnonstandard, nonstandarddesc, isgreen, notes, result, message,withholdno
+    </sql>
+    
+    <!-- 根据车牌号查询精检站过磅数据 -->
+    <select id="selLscOverloadByVehicleId" parameterType="String" resultType="QueryVehicleCaseBO">
+		SELECT 
+		  c.id AS id,
+		  a.checkno,
+		  a.rctime AS ctime,
+		  b.sitename AS stationid,
+		  a.weightlimited,
+		  a.axlesum,
+		  CONVERT(
+		    (a.overlimited / a.weightlimited),
+		    DECIMAL (10, 2)
+		  ) AS rate,
+		  a.overlimited,
+		  a.prostatus 
+		FROM
+		  b_lscinfo a,
+		  bs_fixedsite b,
+		  b_oefullinfo c
+		WHERE a.stationid = b.sitecode 
+		AND a.checkno = c.checkno
+		  AND a.vehicleid = #{vehicleid}
+		GROUP BY checkno
+    </select>
+    
+    <!-- 根据车牌号查询不停车预检站过磅信息，已废弃，如需使用需关联违章表查id，同上 -->
+    <select id="selHspOverloadByVehicleId" parameterType="String" resultType="QueryVehicleCaseBO">
+		SELECT 
+		  a.hspid AS checkno,
+		  hsptime AS ctime,
+		  b.sitename AS stationid,
+		  (totalweight - overlimited) AS weightlimited,
+		  axlesum,
+		  CONVERT(
+		    (
+		      overlimited / (totalweight - overlimited)
+		    ),
+		    DECIMAL (10, 2)
+		  ) AS rate,
+		  overlimited,
+		  prostatus 
+		FROM
+		  b_hspinfo a,
+		  bs_presite b 
+		WHERE a.stationid = b.sitecode 
+		  AND a.vehicleid = #{vehicleid} ;
+    </select>
+
+	<!-- 车辆案件查询list -->
+	<select id="selList" resultType="map">
+		SELECT 
+		  oefullid, vehicleid, drivername, ratedloading, overlimited, casetime, stationid, processed, notprocessed 
+		FROM
+		  (SELECT 
+		    vehicleid, drivername, ratedloading, tab.processed AS processed, tab.overlimited,
+		    tab.casetime, tab.stationid, tab.id AS oefullid,
+		    (SELECT 
+		      COUNT(id) 
+		    FROM
+		      b_oefullinfo 
+		    WHERE
+		      vehicleid = tab.vehicleid 
+		      AND prostatus != 4) AS notprocessed 
+		  FROM
+		    (SELECT 
+		      id, vehicleid, drivername, ratedloading, COUNT(id) AS processed, overlimited, casetime, stationid 
+		    FROM
+		      b_oefullinfo 
+		    GROUP BY vehicleid) AS tab) AS t,
+		  bs_fixedsite s 
+		WHERE 1 = 1 
+		AND t.stationid = s.sitecode 
+		<!-- 车牌号 -->
+		<if test="vehicleid != null and vehicleid != ''">
+			AND t.vehicleid = #{vehicleid}
+		</if>
+		<!-- 时间  -->
+		<if test="casetime != null and casetime != ''">
+			AND t.casetime BETWEEN #{start} AND #{end}
+		</if>
+		<!-- 超重情况 -->
+		<if test="overlimited != null and overlimited != ''">
+			AND t.overlimited <![CDATA[ >= ]]> #{min}
+		</if>
+		<if test="max != null and max != ''">
+			AND t.overlimited <![CDATA[ < ]]> #{max}
+		</if>
+		<!-- 1年内超限次数 -->
+		<if test="processed != null and processed != ''">
+			AND t.processed = #{processed}
+			AND t.casetime BETWEEN DATE_SUB(NOW(),INTERVAL 12 MONTH) AND NOW()
+		</if>
+		<!-- 违章未处理次数 -->
+		<if test="notprocessed != null and notprocessed != ''">
+			AND t.notprocessed = #{notprocessed}
+		</if>
+		<!-- 所属区域 -->
+		<if test="areacode != null and areacode != ''">
+			AND s.areacode LIKE concat(concat(#{areacode}),'%')
+		</if>
+		ORDER BY t.casetime DESC
+	</select>
+	
+	<!-- 根据违章表id查询违章表数据 -->
+	<select id="selOefullById" resultType="map">
+		SELECT
+		  a.checkno,
+		  a.id,
+		  a.`stationid`,
+		  a.`vehicleid`,
+		  c.`fullname`,
+		  a.weightlimited,
+		  a.`axlesum`,
+		  a.`overlimited`,
+		  (
+		    a.`overlimited` / a.`weightlimited`
+		  ) AS reta,
+		  a.`shouldpay`,
+		  a.`prostatus`
+		FROM
+		  b_oefullinfo a,
+		  bs_fixedsite b,
+		  sys_dept c 
+		WHERE a.`stationid` = b.`sitecode` 
+		  AND b.`deptid` = c.`id` 
+		  AND a.`id` = #{id}
+	</select>
+	
+	<!-- 获取几张车头的图片 -->
+	<select id="getVehicleImages" resultType="com.zhichao.beans.guns.Lscinfo">
+    	SELECT 
+		  rcvehicleimage,rcvehicleimage1,rcvehicleimage2
+		FROM
+		  b_lscinfo
+		WHERE checkno = #{checkno}
+    </select>
+</mapper>

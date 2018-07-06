@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ReportinfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Reportinfo">
+		<id column="id" property="id" />
+		<result column="reportTitle" property="reportTitle" />
+		<result column="reportContent" property="reportContent" />
+		<result column="flag" property="flag" />
+		<result column="feedback" property="feedback" />
+		<result column="addtime" property="addtime" />
+		<result column="verify" property="verify" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, reportTitle, reportContent, flag, feedback, addtime, verify
+    </sql>
+
+	<select id="ListReport" resultType="map">
+		select id,reportTitle,id as code,null as pcode,1 as isopen from bs_reportinfo a
+		UNION all 
+		select id,"ddd" reportTitle,CONCAT('c_',reportInfoId) as code,reportId as pcode,0 as isopen from bs_reportcontent b 
+		where b.reportId in (select id from bs_reportinfo)
+	</select>
+</mapper>

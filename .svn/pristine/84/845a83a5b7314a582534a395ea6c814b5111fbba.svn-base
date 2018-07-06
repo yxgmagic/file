@@ -1,0 +1,546 @@
+package com.zhichao.admin.controller.detectManage;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.zhichao.service.common.constant.factory.PageFactory;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.detecManage.ICorpinfoService;
+import com.zhichao.service.detecManage.IHspinfoService;
+import com.zhichao.service.detecManage.ILscinfoService;
+import com.zhichao.service.detecManage.IMeinfoService;
+import com.zhichao.service.platformConfig.IPunishmentRulesService;
+import com.zhichao.beans.guns.Corpinfo;
+import com.zhichao.beans.guns.Hspinfo;
+import com.zhichao.beans.guns.Lscinfo;
+import com.zhichao.beans.guns.Meinfo;
+import com.zhichao.beans.guns.PunishmentRules;
+import com.zhichao.core.base.controller.BaseController;
+import com.zhichao.core.util.SpringContextHolder;
+import com.zhichao.common.util.ToolUtil;
+import com.zhichao.dal.mapper.LscinfoMapper;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
+
+/**
+ * 精检站治超数据控制器
+ *
+ * @author fengshuonan
+ * @Date 2018-01-17 09:51:10
+ */
+@Controller
+@RequestMapping("/lscinfo")
+public class LscinfoController extends BaseController {
+
+    private String PREFIX = "/detecManage/lscinfo/";
+
+    @Autowired
+    private ILscinfoService lscinfoService;
+    
+    @Autowired
+    private LscinfoMapper lm;
+
+    @Autowired
+    private IPunishmentRulesService punishmentRulesService;
+
+    /**
+     * 跳转到精检站治超数据首页
+     */
+    @RequestMapping("")
+    public String index(@RequestParam(value = "stationid", required = false) String stationid, Model model) {
+    	model.addAttribute("stationid",stationid);
+    	return PREFIX + "lscinfo.html";
+    }
+
+    /**
+     * 跳转到添加精检站治超数据
+     */
+    @RequestMapping("/lscinfo_add")
+    public String lscinfoAdd(@RequestParam(value = "stationid", required = false) String stationid, Model model) {
+		PubUtil pub= new PubUtil();
+		Map<String,Object> map = pub.getSequence("checkno" , stationid , "7" , "checkno" , "b_lscinfo");
+		model.addAttribute("sequenceMap",map);
+		return PREFIX + "lscinfo_fcheck.html";
+    }
+
+    
+    /**
+     * 跳转到修改精检站治超数据
+     */
+    @RequestMapping("/lscinfo_recheck/{lscinfoId}")
+    public String lscinfoUpdate(@PathVariable Integer lscinfoId, Model model) {
+        Lscinfo lscinfo = lscinfoService.selectById(lscinfoId);
+        model.addAttribute("item",lscinfo);
+        String ftimeString = YUtil.DateToString(lscinfo.getFctime(), "yyyy-MM-dd HH:mm:ss");
+        String rtimeString = YUtil.DateToString(lscinfo.getRctime(), "yyyy-MM-dd HH:mm:ss");
+        Map<String, String> timeMap = new HashMap();
+        timeMap.put("ftimeString", ftimeString);
+        timeMap.put("rtimeString", rtimeString);
+        model.addAttribute("timeMap",timeMap);
+        LogObjectHolder.me().set(lscinfo);
+        return PREFIX + "lscinfo_recheck.html";
+    }
+
+    /**
+     * 获取精检站治超数据列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(@RequestParam(value = "vehicleid", required = false) String vehicleid, 
+					@RequestParam(value = "fctime", required = false) String fctime,
+					@RequestParam(value = "chekStatus", required = false) String chekStatus,
+					@RequestParam(value = "depts", required = false) String depts,
+					@RequestParam(value = "stationid", required = false) String stationid) {
+
+
+    	if(ToolUtil.isEmpty(depts) && ToolUtil.isEmpty(stationid)) {
+    		return null;
+    	}
+    	
+    	Page<Lscinfo> page = new PageFactory<Lscinfo>().defaultPage();
+    	List<Lscinfo> result = lscinfoService.selList(page, depts, stationid, vehicleid, fctime, chekStatus);
+    	page.setRecords(result);
+    	return super.packForBT(page);
+    }
+
+	//select  *  from  bs_punishment_rules order by rand()  limit 1
+	/*
+	模拟从地磅获取数据(初检)
+	 */
+	@RequestMapping(value = "/getLoadometer")
+	@ResponseBody
+	public Object getLoadometer(@RequestParam(value = "depts", required = false) String depts,
+								@RequestParam(value = "stationid", required = false) String stationid) {
+
+		EntityWrapper<PunishmentRules> ew = new EntityWrapper<>();
+		EntityWrapper<Lscinfo> ew1 = new EntityWrapper<>();
+		ew.orderBy("rand() limit 1");
+		ew1.orderBy("rand() limit 1");
+		Map<String, Object> punishmentRulesMap = punishmentRulesService.selectMap(ew);
+		Map<String, Object> lscinfoMap = lscinfoService.selectMap(ew1);
+		List<Map<String, Object>> resultMap = new ArrayList<>();
+		resultMap.add(punishmentRulesMap);
+		resultMap.add(lscinfoMap);
+		return resultMap;
+	}
+
+	/**
+	 * 获取右屏统计信息 (总车流量,超限车流量,平均超限量,超限率)
+	 * @param depts
+	 * @param stationid
+	 * @return
+	 */
+    @RequestMapping(value = "/getStatistics")
+    @ResponseBody
+    public Object getStatistics(@RequestParam(value = "depts", required = false) String depts,
+    		@RequestParam(value = "stationid", required = false) String stationid) {
+    	
+    	return lscinfoService.statistics(depts, stationid);
+    }
+    
+
+    /**
+     * 新增精检站治超数据
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(Lscinfo lscinfo, @RequestParam(value = "ftimeString", required = false) String ftimeString) {
+        lscinfoService.insert(lscinfo, ftimeString);
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 删除精检站治超数据
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam Integer lscinfoId) {
+        lscinfoService.deleteById(lscinfoId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改精检站治超数据
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(Lscinfo lscinfo, @RequestParam(value = "rtimeString", required = false) String rtimeString) {
+        lscinfoService.updateById(lscinfo, rtimeString);
+        
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 精检站治超数据详情
+     */
+    @RequestMapping(value = "/detail/{lscinfoId}")
+    @ResponseBody
+    public Object detail(@PathVariable("lscinfoId") Integer lscinfoId) {
+        return lscinfoService.selectById(lscinfoId);
+    }
+        
+    /**
+     * 跳转到修改数据管理后查询图片信息
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/getVehicleImages")
+    @ResponseBody
+    public Object getVehicleImages (@RequestParam(value = "id") Integer id) {
+    	return lscinfoService.getVehicleImages(id);
+    }
+    
+    @RequestMapping("/lscinfo_preview/{lscinfoId}")
+    public String lscinfoPreview(@PathVariable Integer lscinfoId, Model model) {
+    	Lscinfo lscinfo = lscinfoService.selectById(lscinfoId);
+        model.addAttribute("item",lscinfo);
+        String ftimeString = YUtil.DateToString(lscinfo.getFctime(), "yyyy-MM-dd HH:mm:ss");
+        String rtimeString = YUtil.DateToString(lscinfo.getRctime(), "yyyy年MM月dd日");
+        Map<String, String> timeMap = new HashMap();
+        timeMap.put("ftimeString", ftimeString);
+        timeMap.put("rtimeString", rtimeString);
+        model.addAttribute("timeMap",timeMap);
+        LogObjectHolder.me().set(lscinfo);
+        return PREFIX + "lscinfo_preview.html";
+    }
+    
+    /**
+     * 根据车牌号查询车辆历史违法记录
+     * @param vehicleid
+     * @return
+     */
+    @RequestMapping(value = "/getHistoryRecord")
+    @ResponseBody
+    public Object selHistoryListByVehicleid (@RequestParam(value = "vehicleid") String vehicleid) {
+    			
+    	Map<String, Object> resultMap = new HashMap();
+    	List<Map<String, Object>> dataList = lscinfoService.selHistoryListByVehicleid(vehicleid);
+    	resultMap.put("code", 0);
+    	resultMap.put("msg", "成功");
+    	resultMap.put("count", dataList.size());
+    	resultMap.put("data", dataList);
+    	
+    	return resultMap;
+    }
+    
+    
+    /**
+     * 跳转到模拟治超数据
+     */
+    @RequestMapping("/lscinfoSimulate")
+    public String lscinfoSimulate() {
+        return PREFIX + "lscinfo_simulate.html";
+    }
+    
+    /**
+     * 模拟治超数据取列表
+     */
+    @RequestMapping(value = "/sitelist")
+    @ResponseBody
+    public Object sitelist(){
+    	
+    	
+    	return  lm.listSelect();
+    }
+
+    
+    /**
+     * 模拟生成治超数据
+     */
+    @RequestMapping(value = "/updateSimulate")
+    @ResponseBody
+    public Object updateSimulate(String sitetype,String sitecode,String fctime,Integer ratedloading ,
+    		Integer fctotalweight,int axlesum,Integer ratedtotalweight,String vehicleid ,String vehicletype,int fclaneno) {
+        
+        	
+    	 
+    		// TODO Auto-generated method stub
+    		System.out.println("TestTask.run"+sitetype);
+    	 
+    	 
+    		int alxwgs=fctotalweight;//默认车重
+    		int axle1=0,axle2=0,axle3=0,axle4=0,axle5=0,axle6=0,axle7=0,axle8=0;
+    		int fz1=4,fz2=6,fm=5;
+    		if(axlesum>=1){
+    			axle1=RandomUtil.randomInt(alxwgs*fz1/fm/axlesum,alxwgs*fz2/fm/axlesum+1);
+    			alxwgs=fctotalweight-axle1;
+    		}
+    		if(axlesum>=2){
+    			axle2=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-1)-1,alxwgs*fz2/fm/(axlesum-1)+1);
+    			alxwgs=alxwgs-axle2;
+    		}
+
+    		if(axlesum>=3){
+    			axle3=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-2),alxwgs*fz2/fm/(axlesum-2)+1);
+    			alxwgs=alxwgs-axle3;
+    		}
+
+    		if(axlesum>=4){
+    			axle4=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-3),alxwgs*fz2/fm/(axlesum-3)+1);
+    			alxwgs=alxwgs-axle4;
+    		}
+
+    		if(axlesum>=5){
+    			axle5=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-4),alxwgs*fz2/fm/(axlesum-4)+1);
+    			alxwgs=alxwgs-axle5;
+    		}
+
+    		if(axlesum>=6){
+    			axle6=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-5),alxwgs*fz2/fm/(axlesum-5)+1);
+    			alxwgs=alxwgs-axle6;
+    		}
+
+    		if(axlesum>=7){
+    			axle7=RandomUtil.randomInt(alxwgs*fz1/fm/(axlesum-6),alxwgs*fz2/fm/(axlesum-6)+1);
+    			alxwgs=alxwgs-axle7;
+    		}
+
+    		if(axlesum>=8){
+    			axle8=alxwgs;
+
+    		}
+ 
+ 
+    		int length=RandomUtil.randomInt(6000,14000);
+    		int width=RandomUtil.randomInt(2500,6000);
+    		int height=RandomUtil.randomInt(2000,6600);
+     
+
+
+    		if("2".equals(sitetype)){
+    		 
+    			Corpinfo corp=new Corpinfo();
+    	 
+    				corp.setAxle1(axle1);
+    				corp.setAxle2(axle2);
+    				corp.setAxle3(axle3);
+    				corp.setAxle4(axle4);
+    				corp.setAxle5(axle5);
+    				corp.setAxle6(axle6);
+    				corp.setAxle7(axle7);
+    				corp.setAxle8(axle8);
+    	 
+   
+    			corp.setAxlesum(axlesum);
+    			corp.setSpeed(RandomUtil.randomInt(80,120));
+    			corp.setCorptime(DateUtil.parse(fctime));
+    	 
+    			corp.setTotalweight(fctotalweight);
+    			int overlimited =fctotalweight-ratedloading-ratedtotalweight;
+    			if(overlimited<0)overlimited=0;
+    			corp.setOverlimited(overlimited);
+    			corp.setCorpcode(sitecode);
+    			 
+    			corp.setLaneno(fclaneno);
+    			PubUtil pub= new PubUtil();
+    			Map<String,Object> map=pub.getSequence("hspid",sitecode,fclaneno,"corpid","b_corpinfo");
+    			String hspid="";
+    			if(map.containsKey("ERROR")){
+    				hspid=RandomUtil.randomString(23);
+    				System.out.println(map.get("ERROR"));
+    			}else if(map.containsKey("sequence")){
+    				hspid=map.get("sequence").toString();
+    			}
+    			corp.setCorpid(hspid);
+
+    			corp.setVehicleid(vehicleid);corp.setVehicletype(Integer.valueOf(vehicletype));
+    		 
+    			System.out.println(corp.toString());
+    			corp.setProstatus(corp.getOverlimited()>1000?"1":"0");
+    			ICorpinfoService hspService=SpringContextHolder.getBean("corpinfoServiceImpl");
+    			hspService.insert(corp);
+    		}
+
+    		if("1".equals(sitetype)){
+
+    			Hspinfo hsp=new Hspinfo();
+    		 
+    				hsp.setAxle1(axle1);
+    				hsp.setAxle2(axle2);
+    				hsp.setAxle3(axle3);
+    				hsp.setAxle4(axle4);
+    				hsp.setAxle5(axle5);
+    				hsp.setAxle6(axle6);
+    				hsp.setAxle7(axle7);
+    				hsp.setAxle8(axle8);
+    			 
+    			hsp.setAxlesum(axlesum);
+    			hsp.setSpeed(RandomUtil.randomInt(80,120));
+    			hsp.setHsptime(DateUtil.parse(fctime));
+
+    			hsp.setTotalweight(fctotalweight);
+    			int overlimited =fctotalweight-ratedloading-ratedtotalweight;
+    			if(overlimited<0)overlimited=0;
+    			hsp.setOverlimited(overlimited);
+    			hsp.setStationid(sitecode);
+    			hsp.setLaneno(fclaneno);
+    			PubUtil pub= new PubUtil();
+    			Map<String,Object> map=pub.getSequence("hspid",sitecode,fclaneno,"hspid","b_hspinfo");
+    			String hspid="";
+    			if(map.containsKey("ERROR")){
+    				hspid=RandomUtil.randomString(23);
+    				System.out.println(map.get("ERROR"));
+    			}else if(map.containsKey("sequence")){
+    				hspid=map.get("sequence").toString();
+    			}
+    			hsp.setHspid(hspid);
+    			hsp.setVehicleid(vehicleid);
+    			hsp.setVehicletype(Integer.valueOf(vehicletype));
+    			 
+    			hsp.setProstatus(hsp.getOverlimited()>1000?"1":"0");
+    			System.out.println(hsp.toString());
+    			IHspinfoService hspService=SpringContextHolder.getBean("hspinfoServiceImpl");
+    			hspService.insert(hsp);
+
+    		}
+
+    		if("4".equals(sitetype)){
+    			Meinfo hsp=new Meinfo();
+    
+    				hsp.setFcaxle1(axle1);
+    				hsp.setFcaxle2(axle2);
+    				hsp.setFcaxle3(axle3);
+    				hsp.setFcaxle4(axle4);
+    				hsp.setFcaxle5(axle5);
+    				hsp.setFcaxle6(axle6);
+    				hsp.setFcaxle7(axle7);
+    				hsp.setFcaxle8(axle8);
+    		 
+    			hsp.setFctime(DateUtil.parse(fctime));
+    			hsp.setAxlesum(8);
+    			hsp.setRatedtotalweight(ratedtotalweight);
+    			hsp.setFclength(length);
+    			hsp.setFcwidth(width);
+    			hsp.setFcheight(height);
+    		 
+    			hsp.setWeightlimited(ratedtotalweight+ratedloading );
+
+    			hsp.setRatedloading(ratedloading);
+    			hsp.setFctotalweight(fctotalweight);
+    			int overlimited =fctotalweight-ratedtotalweight-ratedloading;
+    			if(overlimited<0)overlimited=0;
+    			hsp.setOverlimited(overlimited);
+    			hsp.setOverload(fctotalweight-ratedtotalweight);
+
+    			hsp.setOverlength(hsp.getFclength()-10000<0?0:hsp.getFclength()-10000);
+    			hsp.setOverwidth(hsp.getFcwidth()-3600<0?0:hsp.getFcwidth()-3600);
+    			hsp.setOverheight(hsp.getFcheight()-46000<0?0:hsp.getFcheight()-46000);
+    			hsp.setVehicleno(sitecode );
+
+
+
+    		 
+    			hsp.setFclaneno(fclaneno);
+    			PubUtil pub= new PubUtil();
+    			Map<String,Object> map=pub.getSequence("checkno",sitecode,fclaneno,"checkno","b_meinfo");
+    			String hspid="";
+    			if(map.containsKey("ERROR")){
+    				hspid=RandomUtil.randomString(23);
+    				System.out.println(map.get("ERROR"));
+    			}else if(map.containsKey("sequence")){
+    				hspid=map.get("sequence").toString();
+    			}
+    			hsp.setCheckno(hspid);
+
+    			hsp.setVehicleid(vehicleid);
+    			hsp.setProstatus(hsp.getOverlimited()>1000?"1":"0");
+    			System.out.println(hsp.toString());
+    			
+    			IMeinfoService hspService=SpringContextHolder.getBean("meinfoServiceImpl");
+    			hspService.insert(hsp);
+
+    		}	
+
+    		if("3".equals(sitetype)){
+    			Lscinfo hsp=new Lscinfo();
+ 
+    				hsp.setFcaxle1(axle1);
+    				hsp.setFcaxle2(axle2);
+    				hsp.setFcaxle3(axle3);
+    				hsp.setFcaxle4(axle4);
+    				hsp.setFcaxle5(axle5);
+    				hsp.setFcaxle6(axle6);
+    				hsp.setFcaxle7(axle7);
+    				hsp.setFcaxle8(axle8);
+    			 
+    			hsp.setFctime(DateUtil.parse(fctime));
+    			hsp.setAxlesum(axlesum);
+    			hsp.setRatedtotalweight(ratedtotalweight);
+    			hsp.setFclength(length);
+    			hsp.setFcwidth(width);
+    			hsp.setFcheight(height); 
+    			 
+    			hsp.setWeightlimited(ratedtotalweight+ratedloading);
+
+    			hsp.setRatedloading(ratedloading);
+    			hsp.setFctotalweight(fctotalweight);
+    			int overlimited =fctotalweight-ratedtotalweight-ratedloading;
+    			if(overlimited<0)overlimited=0;
+    			hsp.setOverlimited(overlimited);
+    			hsp.setOverload(fctotalweight-ratedtotalweight);
+
+    			hsp.setOverlength(hsp.getFclength()-10000<0?0:hsp.getFclength()-10000);
+    			hsp.setOverwidth(hsp.getFcwidth()-3600<0?0:hsp.getFcwidth()-3600);
+    			hsp.setOverheight(hsp.getFcheight()-46000<0?0:hsp.getFcheight()-46000);
+    			hsp.setStationid(sitecode );
+    			hsp.setFclaneno(fclaneno);
+    			PubUtil pub= new PubUtil();
+    			Map<String,Object> map=pub.getSequence("checkno",sitecode,fclaneno,"checkno","b_lscinfo");
+    			String hspid="";
+    			if(map.containsKey("ERROR")){
+    				hspid=RandomUtil.randomString(23);
+    				System.out.println(map.get("ERROR"));
+    			}else if(map.containsKey("sequence")){
+    				hspid=map.get("sequence").toString();
+    			}
+    			hsp.setCheckno(hspid);
+
+    			hsp.setVehicleid(vehicleid);
+
+    			System.out.println(hsp.toString());
+    			hsp.setFcoper("张三");
+    			hsp.setRcoper("李四");
+    			int kx=1000-20*overlimited*100/fctotalweight;
+    			hsp.setRcaxle1(overlimited>1000?axle1>1?RandomUtil.randomInt(axle1*kx/1000-1,axle1):axle1:axle1);
+    			hsp.setRcaxle2(overlimited>1000?axle2>1?RandomUtil.randomInt(axle2*kx/1000-1,axle2):axle2:axle2);
+    			hsp.setRcaxle3(overlimited>1000?axle3>1?RandomUtil.randomInt(axle3*kx/1000-1,axle3):axle3:axle3);
+    			hsp.setRcaxle4(overlimited>1000?axle4>1?RandomUtil.randomInt(axle4*kx/1000-1,axle4):axle4:axle4);
+    			hsp.setRcaxle5(overlimited>1000?axle5>1?RandomUtil.randomInt(axle5*kx/1000-1,axle5):axle5:axle5);
+    			hsp.setRcaxle6(overlimited>1000?axle6>1?RandomUtil.randomInt(axle6*kx/1000-1,axle6):axle6:axle6);
+    			hsp.setRcaxle7(overlimited>1000?axle7>1?RandomUtil.randomInt(axle7*kx/1000-1,axle7):axle7:axle7);
+    			hsp.setRcaxle8(overlimited>1000?axle8>1?RandomUtil.randomInt(axle8*kx/1000-1,axle8):axle8:axle8);
+    			
+    			hsp.setRclength(hsp.getOverlength()>0?RandomUtil.randomInt(hsp.getFclength()-1000,14000):hsp.getFclength());
+    			hsp.setRcwidth(hsp.getOverwidth()>0?RandomUtil.randomInt(hsp.getFcwidth()-1000,6000):hsp.getFcwidth());
+    			hsp.setRcheight(hsp.getOverheight()>0?RandomUtil.randomInt(hsp.getFcheight()-1000,6600):hsp.getFcheight());
+    			
+    			hsp.setRctotalweight(hsp.getRcaxle1()+hsp.getRcaxle2()+hsp.getRcaxle3()+hsp.getRcaxle4()+hsp.getRcaxle5()+hsp.getRcaxle6()+hsp.getRcaxle7()+hsp.getRcaxle8());
+    			hsp.setOffload(fctotalweight-hsp.getRctotalweight());
+    			hsp.setRclaneno(RandomUtil.randomInt(1,3));
+    			hsp.setProstatus(hsp.getOverlimited()>1000?"1":"0");
+    			ILscinfoService hspService=SpringContextHolder.getBean("lscinfoServiceImpl");
+    			hspService.insert(hsp);
+
+    		}
+
+    	
+ 
+        
+        return super.SUCCESS_TIP;
+    }
+}

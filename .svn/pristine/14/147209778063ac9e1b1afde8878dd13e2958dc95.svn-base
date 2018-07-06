@@ -1,0 +1,90 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>行政区域管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+						<div class="row">
+							<div class="row row-bottom">
+								<div class="col-sm-5 col-sm-offset-1">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">所属区域</label>
+										<div class="col-sm-9">
+											<input type="hidden" id="hpid" value="" /> <select id="pid"
+												name="pid" class="form-control"></select>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-5">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">行政区类别</label>
+										<div class="col-sm-9">
+											<#SelectDict id="areatype" dictName="areatype"
+												dataStyle="btn" cssName="form-control"></#SelectDict>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row row-bottom">
+								<div class="col-sm-5 col-sm-offset-1">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">行政区域代码</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" id="areacode"
+												name="areacode" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-5">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">地理位置</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" id="address"
+												name="address" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row text-center">
+                        	<div class="col-sm-12">
+                                <#button name="搜索" icon="fa-search" clickFun="Area.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="AreaTableToolbar" role="group">
+                            @if(shiro.hasPermission("/arc/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="Area.openAddArea()"/>
+                            @}
+                            @if(shiro.hasPermission("/arc/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="Area.openAreaDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/arc/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="Area.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="AreaTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/platformConfig/administrativeregion/area.js"></script>
+<script>
+$.ajax({
+	  type: 'POST',
+	  url: '${ctxPath}/arc/selByPid',
+	  data: {'pid':''},
+	  success: function(data) {
+		$("#pid").empty().append("<option value=''>请选择所属区域</option>");
+		for(var i = 0; i < data.length; i ++){
+			$("#pid").append("<option value="+data[i].id+">"+data[i].areaname+"</option>");
+		}
+	  },
+});
+</script>
+@}

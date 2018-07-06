@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.DeptAreasiteMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.DeptAreasite">
+		<id column="id" property="id" />
+		<result column="deptid" property="deptid" />
+		<result column="areasitecode" property="areasitecode" />
+		<result column="areasitetype" property="areasitetype" />
+		<result column="authadd" property="authadd" />
+		<result column="authdelete" property="authdelete" />
+		<result column="authselect" property="authselect" />
+		<result column="authupdate" property="authupdate" />
+		<result column="crtdate" property="crtdate" />
+		<result column="crtuserid" property="crtuserid" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, deptid, areasitecode, areasitetype, authadd, authdelete, authselect, authupdate, crtdate, crtuserid
+    </sql>
+    <select id="getDeptAreaById" resultType="map">
+           select a.*,b.simplename,c.areaname from sys_dept_areasite a,sys_dept b,bs_area c where a.id=#{id} and a.deptid=b.id and a.areasitecode=c.areacode 
+    </select>
+	<select id="list" resultType="map">
+SELECT a.id,
+	c.simplename AS deptid,
+	d.areaname AS areasitecode,
+	CASE
+WHEN areasitetype = '1' THEN
+	'省'
+WHEN areasitetype = '2' THEN
+	'市'
+WHEN areasitetype = '3' THEN
+	'区县'
+WHEN areasitetype = '4' THEN
+	'站'
+END AS areasitetype,
+ CASE
+WHEN authadd = '1' THEN
+	'是'
+ELSE
+	'否'
+END AS authadd,
+ CASE
+WHEN authdelete = '1' THEN
+	'是'
+ELSE
+	'否'
+END AS authdelete,
+ CASE
+WHEN authselect = '1' THEN
+	'是'
+ELSE
+	'否'
+END AS authselect,
+ CASE
+WHEN authupdate = '1' THEN
+	'是'
+ELSE
+	'否'
+END AS authupdate,
+ crtdate,
+ b. NAME AS crtuserid
+FROM
+	sys_dept_areasite a,
+	sys_user b,
+	sys_dept c,
+	bs_area d
+WHERE
+	a.crtuserid = b.id
+AND a.deptid = c.id
+AND a.areasitecode = d.areacode
+ 		<if test="deptid != null and deptid != ''">
+			and a.deptid = #{deptid}
+		</if>
+		<if test="areasitecode != null and areasitecode != ''">
+			and a.areasitecode like CONCAT( #{areasitecode},'%') 
+		</if>
+	</select>
+</mapper>

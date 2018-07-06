@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>超限许可证预警</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+<div class="body-nopadding">
+    <h2 class="margin-left-30">
+        <img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />超限许可证预警
+    </h2>
+    <div class="ibox-content margin-bottom-30">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">检测时间：</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="checkDateArea">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">经过站点：</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <select name="checkSite" id="checkSite" class="layui-input">
+                        <option value="">经过站点</option>
+                        <option value="云龙超限检测站">云龙超限检测站</option>
+                        <option value="黄陂田超限检测站">黄陂田超限检测站</option>
+                        <option value="王家洲超限检测站">王家洲超限检测站</option>
+                        <option value="蛇湖超限检测站">蛇湖超限检测站</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row margin-top-10">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">车牌号：</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="vehicleId">
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">许可证编号：</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <input type="text" class="layui-input" id="licence">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center margin-top-30">
+        <button class="layui-btn" id="btn_search">查询</button>
+    </div>
+</div>
+<div class="ibox-content margin-top-30">
+    <button class="layui-btn  layui-btn-sm" id="tochufa">处罚</button>
+    <!--<button class="layui-btn  layui-btn-sm ">查看</button>-->
+    <!--<button class="layui-btn  layui-btn-sm ">删除</button>-->
+    <div class="layui-form">
+        <table class="layui-table" id="data-table">
+            <thead>
+            <tr>
+                <th class="text-center">序号</th>
+                <th>检测时间</th>
+                <th>经过站点</th>
+                <th>车牌号</th>
+                <th>所有人</th>
+                <th>联系方式</th>
+                <th>许可证编号</th>
+                <th>许可证有效期</th>
+                <th>预警原因</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>2018-03-28</td>
+                <td>蛇湖超限检测站</td>
+                <td>湘B45872</td>
+                <td>徐工科技</td>
+                <td>13541255635</td>
+                <td>CX2017-016047</td>
+                <td>2018-01-20</td>
+                <td>许可证过期</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-center" id="demo7"></div>
+    </div>
+</div>
+
+<div style="height: 0px; overflow: hidden;">
+    <div class="body-nopadding" id="info_view">
+        <div class="ibox-content margin-top-30">
+            <div class="layui-form">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="200">
+                        <col width="200">
+                        <col width="300">
+                        <col width="300">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>许可证编号</td>
+                        <td id="licencei"></td>
+                        <td colspan="2" rowspan="5">
+                            <div >
+                                <img id="img1" src="" style="max-width: 538px;width: 538px !important; height: 195px !important;"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>许可证有效期</td>
+                        <td id="licenceValidityi"></td>
+                    </tr>
+                    <tr>
+                        <td>车牌号</td>
+                        <td id="vehicleIdi"></td>
+                    </tr>
+                    <tr>
+                        <td>轴数</td>
+                        <td id="axlei"></td>
+                    </tr>
+                    <tr>
+                        <td>核定重量</td>
+                        <td id="ratedWeighti"></td>
+                    </tr>
+                    <tr>
+                        <td>检测重量</td>
+                        <td id="checkWeighti"></td>
+                        <td>超重</td>
+                        <td id="overWeighti"></td>
+                    </tr>
+                    <tr>
+                        <td>检测时间</td>
+                        <td id="checkDatei"></td>
+                        <td>途经站点</td>
+                        <td id="checkSitei"></td>
+                    </tr>
+                    <tr>
+                        <td>所有人</td>
+                        <td id="owneri"></td>
+                        <td>联系方式</td>
+                        <td id="telephonei"></td>
+                    </tr>
+                    <tr>
+                        <td>预警原因</td>
+                        <td id="causei"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-center margin-top-30">
+            <button class="layui-btn layui-btn-primary cancel">关闭</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script src="${ctxPath}/static/js/common/Ning.js"></script>
+<script src="${ctxPath}/static/js/common/Feng.js"></script>
+
+
+<script>
+
+    $(function() {
+        //绑定日期选择框
+        //时间范围选择
+        layui.laydate.render({
+            elem: '#checkDateArea'
+            ,range: '~' //或 range: '~' 来自定义分割字符
+        });
+
+        dataToTable(certificateEWData);
+    });
+
+
+    layui.laypage.render({
+        elem: 'demo7'
+        , count: 1
+        , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+        , jump: function (obj) {
+        }
+    });
+
+    //用来记录打开的弹窗的index
+    var index = 0;
+    //本页面基本数据对象
+    var baseObject = {
+        id: '',
+        checkSite: '',
+        vehicleId: '',
+        owner: '',  //所有人
+        telephone: '',  //联系人电话
+        licence: '',    //许可证
+        licenceValidity: '',  //许可证有效期
+        cause: '',   //预警原因
+        axle: '',    //车轴
+        ratedWeight: '',  //核定重量
+        checkWeight: '',   //检定重量
+        checkDate: '' ,   //检测时间
+        overWeight: '',   //超重
+        imgUrl: '' //图片地址
+    };
+
+    var tempUrl = 'http://192.168.10.136:8080/group1/M00/05/FC/wKgKiFrKJSKAQ4uMAAlbFF8V6Ls239.jpg';
+
+    //本页面数据
+    var certificateEWData = [
+        {
+            id: '0',
+            checkSite: '蛇湖超限检测站',
+            vehicleId: '湘B45872',
+            owner: '徐工科技',  //所有人
+            telephone: '13541255635',  //联系人电话
+            licence: 'CX2017-016047',    //许可证
+            licenceValidity: '2018-01-20',  //许可证有效期
+            cause: '许可证过期',   //预警原因
+            axle: '6',    //车轴
+            ratedWeight: '30000',  //核定重量
+            checkWeight: '32000',   //检定重量
+            checkDate: '2018-03-28' ,   //检测时间
+            overWeight: '2000',   //超重
+            imgUrl: 'http://192.168.10.136:8080/group1/M00/12/22/wKgKiFrKcsmAJRCyAAj2Hj0Agl8710.jpg' //图片地址
+        },
+        {
+            id: '1',
+            checkSite: '云龙超限检测站',
+            vehicleId: '鄂A54D36',
+            owner: '东天建筑工程有限公司',  //所有人
+            telephone: '18645872145',  //联系人电话
+            licence: 'CX2018-254786',    //许可证
+            licenceValidity: '2018-06-12',  //许可证有效期
+            cause: '不按规定路线行驶',   //预警原因
+            axle: '4',    //车轴
+            ratedWeight: '26000',  //核定重量
+            checkWeight: '20000',   //检定重量
+            checkDate: '2018-03-25' ,   //检测时间
+            overWeight: '4000',   //超重
+            imgUrl: 'http://192.168.10.136:8080/group1/M00/12/47/wKgKiFrKc7GAJaSxAAkcFUIN1fU840.jpg' //图片地址
+        },
+        {
+            id: '2',
+            checkSite: '王家洲超限检测站',
+            vehicleId: '粤B12578',
+            owner: '中润建设',  //所有人
+            telephone: '13754854698',  //联系人电话
+            licence: 'CX2017-548796',    //许可证
+            licenceValidity: '2019-01-18',  //许可证有效期
+            cause: '不按规定路线行驶',   //预警原因
+            axle: '2',    //车轴
+            ratedWeight: '4000',  //核定重量
+            checkWeight: '3800',   //检定重量
+            checkDate: '2018-02-20' ,   //检测时间
+            overWeight: '0',   //超重
+            imgUrl: tempUrl //图片地址
+        },
+    ];
+
+    //将数据展示到页面
+    function dataToTable(tempData) {
+        $("#data-table tbody").empty();
+        var length = tempData.length;
+
+        for(var i = 0; i < length; i++) {
+            var temp = tempData[i];
+            $("#data-table tbody").append($('<tr>' +
+                '<td>' + (i+1) + '</td>' +
+                '<td>' + temp.checkDate + '</td>' +
+                '<td>'+temp.checkSite+'</td>' +
+                '<td>'+temp.vehicleId+'</td>' +
+                '<td>'+temp.owner+'</td>' +
+                '<td>'+temp.telephone+'</td>' +
+                '<td>'+temp.licence+'</td>' +
+                '<td>'+temp.licenceValidity+'</td>' +
+                '<td>'+temp.cause+'</td>' +
+                '<td>' +
+                '<button class="layui-btn  layui-btn-sm editor" objId="'+temp.id+'">查看</button>' +
+                '<button class="layui-btn  layui-btn-sm del" objId="'+temp.id+'">删除</button>' +
+                '</td>' +
+                '</tr>'));
+        }
+    }
+
+    //绑定搜索按钮
+    $("#btn_search").click(function() {
+        //生成一个用于查询的对象
+        var tempObj = {};
+        //用于接收查询之后的结果
+        var tmepArr = [];
+        //给临时变量属性一一赋值
+        for(var i in baseObject) {
+            tempObj[i] = $("#" + i).val();
+        }
+        //查询
+        tmepArr = Ning.Tools.selectArray(certificateEWData, tempObj);
+
+
+        //处理时间的代码
+        var sendDateArea = $("#checkDateArea").val();
+        if(sendDateArea.length > 0) {
+            //分割时间区间的日期为两个日期字符串
+            var dateArr = sendDateArea.split("~");
+            console.log(dateArr[0]);
+            console.log(dateArr[1]);
+            var timestamp1 = new Date(dateArr[0]).getTime();
+            var timestamp2 = new Date(dateArr[1]).getTime();
+            var length = tmepArr.length;
+            var removedId = [];
+            for(var i = 0; i < length; i++) {
+                var temp = tmepArr[i];
+                var tempTimestamp = new Date(temp.checkDate).getTime();
+                if(tempTimestamp > timestamp2 || tempTimestamp < timestamp1) {
+                    removedId.push(temp.id);
+                }
+            }
+            length = removedId.length;
+            for(var i = 0; i < length; i++) {
+                Ning.Tools.deleteArrayById(tmepArr, removedId[i]);
+            }
+        }
+
+
+        //展示数据
+        dataToTable(tmepArr);
+    });
+
+    //绑定删除事件
+    $("#data-table tbody").on("click",".del",function(){
+        var dataIndex = $(this).attr("objId");
+
+        layer.confirm('是否删除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            Ning.Tools.deleteArrayById(certificateEWData, dataIndex);
+            dataToTable(certificateEWData);
+            layer.msg("删除成功",{time:500});
+        });
+
+    });
+
+
+    //绑定详情弹出框
+    $("#data-table tbody").on("click",".editor",function(){
+
+
+        //获取到需要展示的对象的id(index)
+        var objId = $(this).attr("objId");
+        //将添加按钮隐藏
+        $("#box_insert").hide();
+
+        //设置标签为查看详情
+        $("#popup_title").text("查看抄告反馈信息");
+        //清空详情页面的值
+        for(var i in baseObject) {
+            $("#" + i + 'i').val('');
+        }
+
+
+        //从数据中获取到需要展示的obj
+        var tempArr = Ning.Tools.selectArray(certificateEWData,{id:objId});
+        var tempObj = tempArr[0];
+        //给相关input赋值,用于展示
+        for(var i in tempObj) {
+            $("#" + i + 'i').text(tempObj[i]);
+        }
+        //给图片附上图片
+        $("#img1")[0].src = tempObj.imgUrl;
+        //layui.form.render('select');
+        //弹框
+        index = layer.open({
+            type: 1,
+            area: ['1000px', '550px'], //宽高
+            content: $("#info_view")
+        });
+    });
+
+    //绑定关闭事件
+    $('.cancel').click(function () {
+        Module.Box.Close(index);
+    });
+
+
+
+    //跳转到立案页面
+    $("#tochufa").click(function () {
+
+        top.layer.open({
+            title: false,
+            content: '<div class="yiload">是否跳转到立案页面</div>'+
+            '<a class="J_menuItem btn-primary yiloadbtn btn" id="toLcsInfo" onclick="menuItem1()" '+
+            'name="tabMenuItem">确定</a>',
+            type: 1,
+            skin: 'layui-layer-rim',
+            area: ['200px', '92px'],
+            shade : 0.3
+        });
+
+
+    });
+
+
+
+</script>
+</body>
+</html>

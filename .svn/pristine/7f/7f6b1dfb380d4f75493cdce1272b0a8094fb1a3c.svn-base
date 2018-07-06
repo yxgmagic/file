@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.platformConfig.LawEnforceManDao">
+
+      <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        bs_law_enforce_man.id, lem_name AS lemName, lem_sex AS lemSex, lem_birthday AS lemBirthday, lem_edu_bg AS lemEduBg, lem_politics_status AS lemPoliticsStatus, lem_id_card_num AS lemIdCardNum, law_enforcement_agencies AS lawEnforcementAgencies, lem_contact AS lemContact, lem_duty AS lemDuty, lem_grade AS lemGrade, lem_num AS lemNum
+    </sql>
+    
+    <select id="selectList" resultType="map">
+		select
+		<include refid="Base_Column_List" />
+			, bs_area.areaname, bs_area.areacode
+			from bs_law_enforce_man, bs_area where bs_area.areacode = bs_law_enforce_man.areacode
+		<if test="areacode != null and areacode != ''">
+			and bs_area.areacode like CONCAT('%',#{areacode},'%')
+		</if>
+		<if test="lemName != null and lemName != ''">
+			and lem_name like CONCAT('%',#{lemName},'%')
+		</if>
+		<if test="lawEnforcementAgencies != null and lawEnforcementAgencies != ''">
+			and law_enforcement_agencies like CONCAT('%',#{lawEnforcementAgencies},'%')
+		</if>
+		
+	</select>
+	
+	<select id="check" resultType="int">
+		select count(*)
+		from bs_law_enforce_man
+		where 1=1
+		<if test="lemId != null and lemId != ''">
+			AND id <![CDATA[!= ]]> #{lemId}
+		</if>
+		<if test="lemIdCardNum != null and lemIdCardNum != ''">
+			AND lem_id_card_num = #{lemIdCardNum}
+		</if>
+		<if test="lemNum != null and lemNum != ''">
+			AND lem_num = #{lemNum}
+		</if>
+		
+	</select>
+	
+	
+</mapper>

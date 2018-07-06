@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.LawDocMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.LawDoc">
+		<id column="id" property="id" />
+		<result column="ldcode" property="ldcode" />
+		<result column="ldname" property="ldname" />
+		<result column="ldtype" property="ldtype" />
+		<result column="ldstatus" property="ldstatus" />
+		<result column="ldno" property="ldno" />
+		<result column="ldfileurl" property="ldfileurl" />
+		<result column="crtuserid" property="crtuserid" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, ldcode, ldname, ldtype, ldstatus, ldno, ldfileurl,crtuserid,crtdate
+    </sql>
+	<update id="setLdStatus">
+		update bs_law_doc set ldstatus ="2" where ldtype=#{ldtype} and ldstatus ="1" and id!= #{id}
+	</update>
+	
+	   <select id="getLawDocByTp" resultType="lawDoc">
+	         select * from  bs_law_doc where     ldtype=  #{ldtype} and ldstatus ="1" 
+	   </select>
+     <select id="listLawDocByTp" resultType="map">
+     select <include refid="Base_Column_List"></include> from  bs_law_doc where     ldtype=  #{ldtype} and ldstatus ="1" and id!= #{id}
+     </select>
+	<select id="getMaxLdno" resultType="int">
+		select IFNULL(max(ldno),0)+1 as maxldno from bs_law_doc where ldtype= #{ldtype}
+	</select>
+	<select id="getLdId" resultType="int">
+		select id from bs_law_doc where ldtype= #{ldtype} and ldstatus="1"
+	</select>
+	<select id="getMaxLdId" resultType="int">
+		select id from bs_law_doc where ldtype= #{ldtype} and ldno=(select IFNULL(max(ldno),0)  from bs_law_doc where ldtype= #{ldtype})
+	</select>
+     <select id="listLawDoc" resultType="map">
+      select a.*,b.name as ldtypename,c.name as ldstatusname,d.name as crtuser from bs_law_doc a,sys_dict b,sys_dict  c,sys_user d
+      where a.ldtype=b.num and b.pname="ldtype"  and  a.ldstatus=c.num and c.pname="status"  and a.crtuserid=d.id 
+      <if test="id != null and id != ''">
+            and a.id =  #{id}
+        </if>
+        <if test="ldname != null and ldname != ''">
+            and a.ldname like  CONCAT('%',#{ldname},'%')   
+        </if>
+        
+     </select>
+
+</mapper>

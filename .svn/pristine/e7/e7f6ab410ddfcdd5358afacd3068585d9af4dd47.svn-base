@@ -1,0 +1,331 @@
+var gisFeng = {
+    zoom: 7,
+    center: [113.151737,27.835806],
+    mapStyle: 'amap://styles/7449d35945cab4e61db7c0442c5a7d10',
+    adcode: 430000,
+    colors: [ "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00",
+        "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707",
+        "#651067", "#329262", "#5574a6", "#3b3eac"],
+
+    markerFixed: [],
+    lnglatFixed: [],
+
+    markerPre: [],
+    lnglatPre: [],
+
+    markerCorp: [],
+    lnglatCorp: [],
+
+    markerHsway: [],
+    lnglatHsway: [],
+
+    markerLawMan: [],
+    lnglatLawMan: [],
+
+    markerLawCar: [],
+    lnglatLawCar: [],
+
+    /**
+     * @description 点击marker
+     * @param e 点击的marker对象
+     */
+    markerInfoWindow: function (e) {
+        var clickSiteType = e.target.getExtData();
+        e.target.setAnimation('AMAP_ANIMATION_DROP'); // 给marker添加跳动动画
+        // 获取当前点击的marker的坐标，
+        var elng = parseFloat(e.target.G.position.lng);
+        var elat = parseFloat(e.target.G.position.lat);
+        layer.open({
+            type: 3,
+            success : function(layero, index){
+                switch (clickSiteType) {
+                    case "fixedSite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '1', index);
+                        break;
+                    case "preSite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '2', index);
+                        break;
+                    case "corpSite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '5', index);
+                        break;
+                    case "hsWaySite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '3', index);
+                        break;
+                    case "lawManSite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '6', index);
+                        break;
+                    case "lawCarSite":
+                        gisFeng.setRightTopBoxInfo(elng, elat, '4', index);
+                        break;
+                }
+            }
+        });
+    },
+
+    /**
+     * @description 设置marker的站点名称，坐标，图标，站点类型
+     * @param siteName 站点名称
+     * @param lng 坐标
+     * @param lat 坐标
+     * @param iconName 图标名称
+     * @param siteType 站点类型
+     * @returns {AMap.Marker} 返回Marker对象
+     */
+    setMarkerInfo: function(siteName, lng, lat, iconName, siteType) {
+        return new AMap.Marker({
+            position: [lng, lat],
+            title: siteName,
+            map: aMap,
+            icon: Feng.ctxPath + '/static/img/bin/' + iconName + '.png',
+            extData: siteType
+        });
+    },
+
+
+    /**
+     * 根据不同的接口请求不同的站点类型的站点数据
+     * @param url
+     */
+    setMarker: function(url){
+        $.ajax({
+            type: 'GET',
+            url: Feng.ctxPath + '/gismonitor/' + url,
+            async: false,
+            success: function(res){
+                if (res) {
+                    for ( var i = 0; i < res.length; i++ ) {
+                        var marker;
+                        var lnglat = {lng: '', lat: ''};
+                        lnglat.lng = parseFloat(res[i].longitude);
+                        lnglat.lat = parseFloat(res[i].latitude);
+                        switch (url) {
+                            case "selfixedsite":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'fixedmarker', 'fixedSite')
+                                break;
+                            case "selpresite":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'premarker', 'preSite')
+                                break;
+                            case "selCrop":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'corpmarker', 'corpSite')
+                                break;
+                            case "selHsway":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'hswaymarker', 'hsWaySite')
+                                break;
+                            case "sellawMan":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'LawMan', 'lawManSite')
+                                break;
+                            case "sellawCar":
+                                gisFeng.setMarkerCase(lnglat, res[i].sitename, 'LawCar', 'lawCarSite')
+                                break;
+                        }
+                    }
+                }
+            },
+            error: function (err) {
+                return console.log('set marker failed:', err);
+            }
+        })
+    },
+
+    setMarkerCase: function(lnglat, resSiteName, marker_type, site_type) {
+        // 暂存此类型的站点的坐标
+        gisFeng.lnglatFixed.push(lnglat);
+        // 设置Marker的信息
+        marker = gisFeng.setMarkerInfo(resSiteName, lnglat.lng, lnglat.lat, marker_type, site_type);
+        // 暂存此类型的站点的Marker对象 - 用于删除Marker
+        gisFeng.markerFixed.push(marker);
+        // 给Marker绑定click对象
+        marker.on('click', markInfoWindow);
+    },
+
+    // 删除marker
+    removeMarker: function (data, type) {
+        amap.remove(data);
+        if (type === 1){
+            gisFeng.markerFixed = [];
+            gisFeng.lnglatFixed = [];
+        } else if (type === 2){
+            gisFeng.markerPre = [];
+            gisFeng.lnglatPre = [];
+        } else if (type === 5) {
+            gisFeng.markerCorp = [];
+            gisFeng.lnglatCorp = [];
+        } else if (type === 3){
+            gisFeng.markerHsway = [];
+            gisFeng.lnglatHsway = [];
+        } else if (type === 6){
+            gisFeng.markerLawMan = [];
+            gisFeng.lnglatLawMan = [];
+        } else if (type === 4){
+            gisFeng.markerLawCar = [];
+            gisFeng.lnglatLawCar = [];
+        }
+    },
+
+    // set right top box info
+    setRightTopBoxInfo: function(elng, elat, sitetype, index){
+        $("#mapDiv").css("display", "block");
+        $.ajax({
+            method: "GET",
+            url: Feng.ctxPath + "/gismonitor/selSiteInfo",
+            data: {
+                longitude: elng,
+                latitude: elat,
+                sitetype: sitetype,
+                time: Yi.components.getNowMonthArea()
+            },
+            success: function (result) {
+                // console.log(result);
+                // aMap.setZoom(14);
+                if (result) {
+                    if (result.siteType === '1' || result.siteType === '2'){
+                        var _img = '';
+                        if (result.img == ''){
+                            _img = '<img src="'+Feng.ctxPath+'/static/img/bin/notfoundbl.png" id="RowImg" alt="">'
+                        } else {
+                            _img = '<img src="data:image/'+result.imgext+';base64,'+result.img+'" id="RowImg" alt="">';
+                        }
+                        $('#mapDiv').css("height","255px");
+                        // console.log($('#mapDiv')[0].innerHTML)
+                        $('#mapDiv')[0].innerHTML = '<div class="mapDivRow-img">'+_img+'</div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">状态：</span><span class="live-status live-status-red">离线</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">站点名称：</span><div class="sitecontent" id="sitename" onclick="toInfo()">'+result.siteName+'</div><span class="sitetitle">站点编码：</span><span class="sitecontent" id="sitecode">'+result.siteCode+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">站点负责人：</span><span class="sitecontent" id="manager">'+result.manager+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">站点总车流量：</span><span class="sitecontent" id="carnumber">'+result.carNumber+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">超限车辆总数：</span><span class="sitecontent" id="overcar">'+result.overCar+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">已处理车辆总数：</span><span class="sitecontent" id="processed">'+result.processed+'</span></div>'
+                            + '<div style="display: none" id="sitetype">'+result.siteType+'</div><div class="sitebtn1" onclick="videoView()">实时监控</div><input type="hidden" readonly value="" id="lng">\n' +
+                            '                    <input type="hidden" readonly value="" id="lat">\n' +
+                            '                    <input type="hidden" readonly value="" id="stype">';
+                    } else if( result.siteType == '3') {
+                        // console.log(result);
+                        var _img = '';
+                        if (result.img == ''){
+                            _img = '<img src="'+Feng.ctxPath+'/static/img/bin/notfoundbl.png" id="RowImg" alt="">'
+                        } else {
+                            _img = '<img src="data:image/'+result.imgext+';base64,'+result.img+'" id="RowImg" alt="">';
+                        }
+                        $('#mapDiv').css("height","150px");
+                        $('#mapDiv')[0].innerHTML = '<div class="mapDivRow-img">'+_img+'</div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">状态：</span><span class="live-status live-status-red">离线</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">站点名称：</span><div class="sitecontent" id="sitename">'+result.siteName+'</div>'
+                            + '<div style="display: none" id="sitetype">'+result.siteType+'</div><div class="sitebtn1" style="top: 116px;" onclick="videoView()">实时监控</div><input type="hidden" readonly value="" id="lng">\n' +
+                            '                    <input type="hidden" readonly value="" id="lat">\n' +
+                            '                    <input type="hidden" readonly value="" id="stype">';
+                    } else if (result.siteType == '4') {
+                        // console.log(result);
+                        var _img = '';
+                        if (result.img == ''){
+                            _img = '<img src="'+Feng.ctxPath+'/static/img/bin/notfoundbl.png" id="RowImg" alt="">'
+                        } else {
+                            _img = '<img src="data:image/'+result.imgext+';base64,'+result.img+'" id="RowImg" alt="">';
+                        }
+                        $('#mapDiv')[0].innerHTML = '<div class="mapDivRow-img">'+_img+'</div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">状态：</span><span class="live-status live-status-red">离线</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">车牌号：</span><div class="sitecontent" id="sitename">'+result.siteName+'</div><span class="sitetitle">执法车编码：</span><span class="sitecontent" id="sitecode">'+result.siteCode+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">联系人：</span><span class="sitecontent" id="manager">'+result.manager+'</span></div>'
+                            + '<div style="display: none" id="sitetype"></div><div class="sitebtn1" onclick="videoView()">实时监控</div><input type="hidden" readonly value="" id="lng">\n' +
+                            '                    <input type="hidden" readonly value="" id="lat">\n' +
+                            '                    <input type="hidden" readonly value="" id="stype">';
+                    } else if (result.siteType == '5') {
+                        // console.log(result);
+                        var _img = '';
+                        if (result.img == ''){
+                            _img = '<img src="'+Feng.ctxPath+'/static/img/bin/notfoundbl.png" id="RowImg" alt="">'
+                        } else {
+                            _img = '<img src="data:image/'+result.imgext+';base64,'+result.img+'" id="RowImg" alt="">';
+                        }
+                        $('#mapDiv').css("height","225px");
+                        $('#mapDiv')[0].innerHTML = '<div class="mapDivRow-img">'+_img+'</div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">状态：</span><span class="live-status live-status-red">离线</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">企业名称：</span><div class="sitecontent" id="sitename">'+result.siteName+'</div><span class="sitetitle">企业编码：</span><span class="sitecontent" id="sitecode">'+result.siteCode+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">企业负责人：</span><span class="sitecontent" id="manager">'+result.manager+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">企业总车流量：</span><span class="sitecontent" id="carnumber">'+result.carNumber+'</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">超限车辆总数：</span><span class="sitecontent" id="overcar">'+result.overCar+'</span></div>'
+                            + '<div style="display: none" id="sitetype"></div><div class="sitebtn1" onclick="videoView()">实时监控</div><input type="hidden" readonly value="" id="lng">\n' +
+                            '                    <input type="hidden" readonly value="" id="lat">\n' +
+                            '                    <input type="hidden" readonly value="" id="stype">';
+                    } else if (result.siteType == '6'){
+                        // console.log(result);
+                        var _img = '';
+                        if (result.img == ''){
+                            _img = '<img src="'+Feng.ctxPath+'/static/img/bin/notfoundbl.png" id="RowImg" alt="">'
+                        } else {
+                            _img = '<img src="data:image/'+result.imgext+';base64,'+result.img+'" id="RowImg" alt="">';
+                        }
+                        $('#mapDiv').css("height","150px");
+                        $('#mapDiv')[0].innerHTML = '<div class="mapDivRow-img">'+_img+'</div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">状态：</span><span class="live-status live-status-red">离线</span></div>'
+                            + '<div class="mapDivRow"><span class="sitetitle">姓名：</span><div class="sitecontent" id="sitename">'+result.siteName+'</div><span class="sitetitle">人员编码：</span><span class="sitecontent" id="sitecode">'+result.siteCode+'</span></div>'
+                            + '<div style="display: none" id="sitetype"></div><div class="sitebtn1" style="top:111px" onclick="videoView()">实时监控</div><input type="hidden" readonly value="" id="lng">\n' +
+                            '                    <input type="hidden" readonly value="" id="lat">\n' +
+                            '                    <input type="hidden" readonly value="" id="stype">';
+                    }
+
+                    if (index) {
+                        layer.close(index);
+                    }
+                }
+            }
+        });
+    },
+
+    // seach marker click function
+    seachMarkerInfoWindow: function (lng, lat) {
+
+        var elng = parseFloat(lng);
+        var elat = parseFloat(lat);
+        layer.open({
+            type: 3,
+            success : function(layero, index){
+                for ( var i = 0; i < gisFeng.lnglatFixed.length; i++ ) {
+                    if (elng == gisFeng.lnglatFixed[i].lng && elat == gisFeng.lnglatFixed[i].lat) {
+                        aMap.panTo([gisFeng.lnglatFixed[i].lng, gisFeng.lnglatFixed[i].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '1', index);
+                        break;
+                    }
+                }
+                for ( var j = 0; j < gisFeng.lnglatPre.length; j++ ) {
+                    if (elng == gisFeng.lnglatPre[j].lng && elat == gisFeng.lnglatPre[j].lat) {
+                        // map.panTo([elng, elng]);
+                        aMap.panTo([gisFeng.lnglatPre[j].lng, gisFeng.lnglatPre[j].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '2', index);
+                        break;
+                    }
+                }
+                for (var k = 0; k < gisFeng.lnglatCorp.length; k++) {
+                    if (elng == gisFeng.lnglatCorp[k].lng && elat == gisFeng.lnglatCorp[k].lat) {
+                        // map.panTo([elng, elng]);
+                        aMap.panTo([gisFeng.lnglatCorp[k].lng, gisFeng.lnglatCorp[k].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '5', index);
+                        break;
+                    }
+                }
+                for (var k = 0; k < gisFeng.lnglatHsway.length; k++) {
+                    if (elng == gisFeng.lnglatHsway[k].lng && elat == gisFeng.lnglatHsway[k].lat) {
+                        // map.panTo([elng, elng]);
+                        aMap.panTo([gisFeng.lnglatHsway[k].lng, gisFeng.lnglatHsway[k].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '3', index);
+                        break;
+                    }
+                }
+                for (var k = 0; k < gisFeng.lnglatLawMan.length; k++) {
+                    if (elng == gisFeng.lnglatLawMan[k].lng && elat == gisFeng.lnglatLawMan[k].lat) {
+                        // map.panTo([elng, elng]);
+                        aMap.panTo([gisFeng.lnglatLawMan[k].lng, gisFeng.lnglatLawMan[k].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '6', index);
+                        break;
+                    }
+                }
+                for (var k = 0; k < gisFeng.lnglatLawCar.length; k++) {
+                    if (elng == gisFeng.lnglatLawCar[k].lng && elat == gisFeng.lnglatLawCar[k].lat) {
+                        // map.panTo([elng, elng]);
+                        aMap.panTo([gisFeng.lnglatLawCar[k].lng, gisFeng.lnglatLawCar[k].lat]);
+                        gisFeng.setRightTopBoxInfo(elng, elat, '4', index);
+                        break;
+                    }
+                }
+            }
+        });
+    }
+};

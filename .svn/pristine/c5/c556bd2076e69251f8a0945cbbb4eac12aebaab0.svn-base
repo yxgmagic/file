@@ -1,0 +1,195 @@
+package com.zhichao.admin.controller.compreAnalysis;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.zhichao.service.core.log.LogObjectHolder;
+import com.zhichao.service.compreAnalysis.IBOefullinfoService;
+import com.zhichao.beans.guns.BOefullinfo;
+import com.zhichao.beans.guns.QueryVehicleCaseBO;
+import com.zhichao.core.base.controller.BaseController;
+
+/**
+ * 车辆案件查询功能
+ *
+ * @author fengshuonan
+ * @Date 2018-02-01 11:48:23
+ */
+@Controller
+@RequestMapping("/bOefullinfo")
+public class BOefullinfoController extends BaseController {
+
+    private String PREFIX = "/compreAnalysis/bOefullinfo/";
+
+    @Autowired
+    private IBOefullinfoService bOefullinfoService;
+
+    /**
+     * 跳转到车辆案件查询功能Mapper文件首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "bOefullinfo.html";
+    }
+
+    /**
+     * 获取车辆案件查询功能Mapper文件列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Object list(@RequestParam(value = "vehicleid", required = false) String vehicleid, 
+    		@RequestParam(value = "casetime", required = false) String casetime,
+    		@RequestParam(value = "overlimited", required = false) String overlimited,
+    		@RequestParam(value = "processed", required = false) Integer processed, 
+    		@RequestParam(value = "notprocessed", required = false) Integer notprocessed, 
+    		@RequestParam(value = "areacode", required = false) String areacode) {
+    	
+        return bOefullinfoService.selList(vehicleid, casetime, overlimited, processed, notprocessed, areacode);
+    }
+
+    /**
+     * 打开关联历史页面
+     * @param vehicleid 车牌号
+     * @param model
+     * @return
+     */
+    @RequestMapping("/historyPage/{vehicleid}")
+    public String historyPage(@PathVariable(value = "vehicleid") String vehicleid, Model model) {
+    	
+        model.addAttribute("item",vehicleid);
+        return PREFIX + "bOefullinfo_history.html";
+    }
+    /**
+     * 打开关联历史页面时查询数据
+     * @param vehicleid 车牌号
+     * @param model
+     * @return
+     */
+    @RequestMapping("/historyList/{vehicleid}")
+    public @ResponseBody Object historyList(@PathVariable(value = "vehicleid") String vehicleid) {
+    	 
+    	List<QueryVehicleCaseBO> overload = bOefullinfoService.selOverloadByVehicleId(vehicleid);
+        return overload;
+    }
+    
+    
+    /**
+     * 根据违章表id查询违章表数据
+	 * @param ofid  违章表id
+     * @param model
+     * @return
+     */
+    @RequestMapping("/historyDetail/{ofid}")
+    public String historyDetail(@PathVariable(value = "ofid") Integer ofid, Model model) {
+    	
+    	Map<String, Object> oe = bOefullinfoService.selOefullById(ofid);
+    	
+    	model.addAttribute("item",oe);
+        LogObjectHolder.me().set(oe);
+        return PREFIX + "bOefullinfo_edit.html";
+    }
+    
+    /**
+     * 进入historyDetail页面后，异步获取车辆图片
+     * @param checkno
+     * @return
+     */
+    @PostMapping("getVehicleImages/{checkno}")
+    public @ResponseBody Object getVehicleImages(@PathVariable(value = "checkno") String checkno) {
+    	return bOefullinfoService.getVehicleImages(checkno);
+    }
+    
+    /**
+     * 车辆信息
+     * @param vid 车辆车牌号
+     * @return
+     */
+    @RequestMapping("vehicleDetail/{vid}")
+    public String vehicleDetail(@PathVariable(value = "vid") String vid, Model model) {
+
+        BOefullinfo oeinfo = bOefullinfoService.selVehicleDetailByVehicleId(vid);
+
+        model.addAttribute("item",oeinfo);
+        LogObjectHolder.me().set(oeinfo);
+
+    	return PREFIX + "bOefullinfo_vehicle.html";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * 跳转到修改车辆案件查询功能Mapper文件
+     */
+    @RequestMapping("/bOefullinfo_update/{bOefullinfoId}")
+    public String bOefullinfoUpdate(@PathVariable Integer bOefullinfoId, Model model) {
+        BOefullinfo bOefullinfo = bOefullinfoService.selectById(bOefullinfoId);
+        model.addAttribute("item",bOefullinfo);
+        LogObjectHolder.me().set(bOefullinfo);
+        return PREFIX + "bOefullinfo_edit.html";
+    }
+    
+    /**
+     * 跳转到添加车辆案件查询功能Mapper文件
+     */
+    @RequestMapping("/bOefullinfo_add")
+    public String bOefullinfoAdd() {
+        return PREFIX + "bOefullinfo_add.html";
+    }
+    /**
+     * 新增车辆案件查询功能Mapper文件
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Object add(BOefullinfo bOefullinfo) {
+        bOefullinfoService.insert(bOefullinfo);
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 删除车辆案件查询功能Mapper文件
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam Integer bOefullinfoId) {
+        bOefullinfoService.deleteById(bOefullinfoId);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改车辆案件查询功能Mapper文件
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(BOefullinfo bOefullinfo) {
+        bOefullinfoService.updateById(bOefullinfo);
+        return super.SUCCESS_TIP;
+    }
+
+    /**
+     * 车辆案件查询功能Mapper文件详情
+     */
+    @RequestMapping(value = "/detail/{bOefullinfoId}")
+    @ResponseBody
+    public Object detail(@PathVariable("bOefullinfoId") Integer bOefullinfoId) {
+        return bOefullinfoService.selectById(bOefullinfoId);
+    }
+}

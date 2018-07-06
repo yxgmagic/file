@@ -1,0 +1,99 @@
+package com.zhichao.service.detecManage.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.zhichao.beans.guns.BOseinfo;
+import com.zhichao.common.util.ToolUtil;
+import com.zhichao.common.util.YUtil;
+import com.zhichao.dal.mapper.BOseinfoMapper;
+import com.zhichao.service.core.util.DictUtil;
+import com.zhichao.service.detecManage.IBOseinfoService;
+
+/**
+ * <p>
+ * 非现场执法数据表 服务实现类
+ * </p>
+ *
+ * @author zhichao
+ * @since 2018-04-04
+ */
+@Service
+public class BOseinfoServiceImpl extends ServiceImpl<BOseinfoMapper, BOseinfo> implements IBOseinfoService {
+
+    @Autowired
+    private BOseinfoMapper oseMapper;
+
+    @Override
+    public List<BOseinfo> selList(Page<BOseinfo> page, String depts, String stationid, String vehicleid, String osetime) {
+
+        vehicleid = YUtil.isNullOrEmptyReturnString(vehicleid, true);
+
+        String begin = null, end = null;
+        if(!ToolUtil.isEmpty(osetime)) {
+            begin = osetime.trim() + " 00:00:00";
+            end = osetime.trim() + " 23:59:59";
+        }
+
+        //将部门从xxx,xxx,xxx转换成数组
+        String[] deptsArr = null;
+        if (depts != null){
+            deptsArr = depts.split(",");
+        }
+
+        List<BOseinfo> oseinfos = oseMapper.selList(page, deptsArr, stationid, vehicleid, osetime, begin, end, null);
+
+        //案件状态
+//        oseinfos.forEach(oseinfo -> oseinfo.setProstatus(DictUtil.selectNameByEnameNum("prostatus", oseinfo.getProstatus())));
+
+        return oseinfos;
+    }
+
+    @Override
+    public BOseinfo oseInfo(Integer id) {
+        BOseinfo oseinfo = oseMapper.oseInfo(id);
+        if (null != oseinfo){
+            oseinfo.setVehicletype(DictUtil.selectNameByEnameNum("trucksType",oseinfo.getVehicletype()));
+            oseinfo.setOsetimeString(YUtil.DateToString(oseinfo.getOsetime(),null));
+        }
+        return oseinfo;
+    }
+
+    @Override
+    public List<String> getVehicleImages(Integer id) {
+        Map<String, String> vehicleImages = oseMapper.getVehicleImages(id);
+        if (vehicleImages == null) {
+            return null;
+        }
+        List<String> list = new ArrayList<>();
+        vehicleImages.forEach((K,V) -> list.add(V));
+        return list;
+    }
+
+    @Override
+    public List<Double> statistics(String depts, String stationid) {
+
+        List<Double> result = new ArrayList<>();
+
+        if (!ToolUtil.isEmpty(stationid)){
+            result = oseMapper.calcStation(stationid);
+        }else if (!ToolUtil.isEmpty(depts)){
+            String[] deptsArr = !"".equals(depts) ? depts.split(",") : null;
+            result = oseMapper.calcDept(deptsArr);
+            int rate = (int) (result.get(1) / (result.get(0) * 100));
+            result.add((double)rate);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> findOseAndOseSiteInfo(Integer id) {
+        return oseMapper.findOseAndOseSiteInfo(id);
+    }
+}

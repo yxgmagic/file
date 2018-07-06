@@ -1,0 +1,242 @@
+﻿@layout("/common/_container.html"){
+
+<form class="form-horizontal" data-toggle="validator" id="idPresiteForm">
+
+<div class="ibox float-e-margins">
+	<h2 class="margin-left-30">
+		<img src="${ctxPath}/static/Resource/Images/title.png"
+			 style="width: 25px;" />基础信息
+	</h2>
+
+	<div class="ibox-content">
+
+		<div class="form-horizontal">
+
+			<input type="hidden" id="id" value="">
+
+			<div class="row">
+
+
+				<div class="col-sm-2 b-r">
+					<div class="panel-body">
+						<img alt="photo" src="${ctxPath}/static/img/notfoundbl.png"
+							 class="img-responsive center-block" id="img_show">
+					</div>
+					<div class="panel-body text-center">
+						营业执照图片 <label for="img_hidden" class="btn btn-primary"> <i
+							class="glyphicon glyphicon-upload"></i>&nbsp;上传图片
+					</label> <input type="file" id="img_hidden" style="display: none" /> <input
+							type="hidden" id="img_id" name="img_id" value="0"
+							style="display: none" /> <input type="hidden" value="presite"
+															id="imagetype">
+					</div>
+					<div class="hr-line-dashed"></div>
+
+				</div>
+				<div class="col-sm-5 b-r">
+
+					<#input id="sitename" name="*站点名称" value=""
+					underline="true" />
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">*地理坐标</label>
+						<div class="col-sm-9 row">
+							<div class="col-sm-6" style="padding:2px;">
+								<label for="longitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">经</label>
+								<div class="col-sm-8" style="padding:0px;margin:0px;">
+									<input id="longitude" name="longitude" readonly class="form-control getcoor" style="padding:2px;" type="text"/>
+								</div>
+							</div>
+							<div class="col-sm-6" style="padding:2px;">
+								<label for="latitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">纬</label>
+								<div class="col-sm-8" style="padding:0px;margin:0px;">
+									<input id="latitude" name="latitude" readonly class="form-control getcoor" style="padding:2px;" type="text"/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="hr-line-dashed"></div>
+					<#input id="longlimited" name="*限长(毫米)" value=""
+					underline="true" />
+
+
+
+					<#input id="heightlimited" name="*限高(毫米)" value=""
+					underline="true" />
+					<div class="form-group">
+						<label class="col-sm-3 control-label" >*检测方式</label>
+						<div class="col-sm-9">
+							<#SelectDict id="checkmode" dictName="checkmode" dataStyle="btn"
+							cssName="form-control"></#SelectDict>
+					</div>
+				</div>
+				<div class="hr-line-dashed"></div>
+				<#input id="stakeNumber" name="*桩号" value="" underline="true" />
+
+				<#input id="precision" name="*误差" value=""
+				underline="true" />
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label">*等级</label>
+					<div class="col-sm-9">
+						<#SelectDict id="sitelevel" dictName="sitelevel" dataStyle="btn"
+						cssName="form-control  "></#SelectDict>
+				</div>
+			</div>
+			<div class="hr-line-dashed"></div>
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">*管理路段</label> <input
+					id="areacode" name="所属行政区" type="hidden" value="" />
+				<input id="roadcode" name="所属行政区" type="hidden"
+					   value=" " />
+				<div class="col-sm-9">
+					<div class="row">
+						<div class="col-sm-4">
+							<select id="Select1" name="Select1" class="form-control"
+									onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+						</div>
+						<div class="col-sm-4">
+							<select id="Select2" name="Select2" class="form-control"
+									onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'0');"></select>
+						</div>
+						<div class="col-sm-4">
+							<select id="Select3" name="Select3" class="form-control"
+									onchange="selectRoad(document.getElementById('roadcode'));"></select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-5">
+
+			<#input id="sitecode2" readonly="true" name="站点顺序号" value=""
+			underline="true" />
+			<#input id="sitecode" readonly="true"  name="唯一标识" value=""
+			underline="true" />
+
+			<#input id="widthlimited" name="*限宽(毫米)" value=""
+			underline="true" />
+			<#input id="weightlimited" name="最大称重(千克)*" value=""
+			underline="true" />
+
+			<#input id="checkdirection" name="检测方向"
+			value="" underline="true" />
+
+			<#input id="manager" name="负责人" value=""
+			underline="true" />
+
+			<#input id="managertel" name="联系方式" value=""
+			underline="true" />
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">*管理部门</label>
+				<div class="col-sm-9">
+					<input class="form-control" id="deptName" name="deptName"
+						   type="text" readonly="readonly" value=""
+						   onclick="PresiteInfoDlg.showDeptSelectTree(); return false;"
+						   style="background-color: #ffffff !important;"> <input
+						class="form-control" type="hidden" id="deptid" value="">
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+</div>
+
+<h4 class="margin-left-30">&nbsp;</h4>
+<h2 class="margin-left-30">
+	<img src="${ctxPath}/static/Resource/Images/title.png"
+		 style="width: 25px;" />检定证书
+</h2>
+
+<div class="ibox-content form-horizontal">
+
+	<div class="row">
+
+		<div class="col-sm-4 form-group">
+			<label class="col-sm-4 control-label">*检定证书:</label>
+			<div class="col-sm-7">
+				<a id="certificateA" href="javascript:showCertificate();"
+				   style="line-height: 34px;color: #00B83F;">请点击上传按钮上传</a>
+				<input type="text" id="certificate" name="certificate" class="form-control"
+					   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+			</div>
+		</div>
+		<div class="col-sm-4 form-group">
+			<label for="file_input" class="btn btn-primary">
+				<i class="glyphicon glyphicon-upload"></i>&nbsp;上传证书
+			</label>
+			<input type="file" id="file_input" style="display: none"/>
+		</div>
+        <div class="col-sm-4">
+        <#input id="certificateValidityPeriod" name="*检定证书有效期" value=""
+        underline="true" />
+        </div>
+
+
+	</div>
+</div>
+
+<input type="hidden" id="roadwidth">
+<!--<#input id="roadwidth" name="车道宽度(毫米)" value="" underline="true" />-->
+
+<!-- 父级部门的选择框 -->
+<div id="parentDeptMenu" class="menuContent"
+	 style="display: none; position: absolute; z-index: 200;">
+	<ul id="parentDeptMenuTree" class="ztree tree-box"
+		style="width: 188px !important;"></ul>
+</div>
+
+<div class="row btn-group-m-t">
+	<div class="col-sm-12 text-center">
+		<#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PresiteInfoDlg.addSubmit()"/>
+		<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PresiteInfoDlg.close()"/>
+	</div>
+</div>
+
+
+</div>
+</div>
+
+</form>
+<script src="${ctxPath}/static/modular/presite/presite/presite_info.js"></script>
+<script
+		src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+<script type="text/javascript">
+
+    Feng.getImage($("#id").val(), $("#imagetype").val());
+    //监听上传按钮的改变事件
+    $("#img_hidden").change(function() {
+        //隐藏图片(input=file)id,显示图片id,上传图片后图片id
+        Feng.ajaxFileUploadEntityImage();
+    });
+
+    //检定证书路径
+    var certificateUrl = "";
+
+    function ajaxFileUpload() {
+        var formData = new FormData();
+        formData.append("file", document.getElementById("img-hidden").files[0]);
+        console.log(typeof formData)
+        $.ajax({
+            type : "POST",
+            url : "/image/upload",
+            data : formData,
+            async : false,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function(data) {
+                alert(data);
+            },
+            error : function(XMLHttpRequest, textStatus, errorThrown, data) {
+                alert(errorThrown);
+            }
+        });
+    }
+</script>
+@}

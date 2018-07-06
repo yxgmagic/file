@@ -1,0 +1,38 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="sysalias" name="数据终端别名" underline="true"/>
+                            <#input id="sysdesc" name="数据终端描述" underline="true"/>
+                            <#input id="systype" name="数据服务类型" underline="true"/>
+                            <#input id="syssource" name="数据来源去向" underline="true"/>
+                            <#input id="host" name="网络地址"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="port" name="端口" underline="true"/>
+                            <#input id="dbname" name="数据库名或服务名" underline="true"/>
+                            <#input id="dbdriver" name="数据驱动类名" underline="true"/>
+                            <#input id="dbuser" name="访问用户" underline="true"/>
+                            <#input id="dbpassword" name="访问密码" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ServerListInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ServerListInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/serverList/serverList_info.js"></script>
+@}

@@ -1,0 +1,38 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>抄告对象管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="reportName" name="对象名称" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="查询" icon="fa-search" clickFun="Reportservice.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="ReportserviceTableToolbar" role="group">
+                            @if(shiro.hasPermission("/reportservice/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="Reportservice.openAddReportservice()"/>
+                            @}
+                            @if(shiro.hasPermission("/reportservice/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="Reportservice.openReportserviceDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/reportservice/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="Reportservice.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="ReportserviceTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/report/reportservice/reportservice.js"></script>
+@}

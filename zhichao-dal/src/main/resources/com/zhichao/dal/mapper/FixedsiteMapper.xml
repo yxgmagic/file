@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.FixedsiteMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Fixedsite">
+		<id column="id" property="id" />
+		<result column="sitecode" property="sitecode" />
+		<result column="sitename" property="sitename" />
+		<result column="sitelevel" property="sitelevel" />
+		<result column="longitude" property="longitude" />
+		<result column="latitude" property="latitude" />
+		<result column="address" property="address" />
+		<result column="planarea" property="planarea" />
+		<result column="unloadarea" property="unloadarea" />
+		<result column="areacode" property="areacode" />
+		<result column="roadcode" property="roadcode" />
+		<result column="deptid" property="deptid" />
+		<result column="lawperson" property="lawperson" />
+		<result column="lawpersontel" property="lawpersontel" />
+		<result column="setbegindate" property="setbegindate" />
+		<result column="unloadcode" property="unloadcode" />
+		<result column="unloadperson" property="unloadperson" />
+		<result column="unloadpersontel" property="unloadpersontel" />
+		<result column="manager" property="manager" />
+		<result column="managertel" property="managertel" />
+		<result column="approves" property="approves" />
+		<result column="actuals" property="actuals" />
+		<result column="checks" property="checks" />
+		<result column="contracts" property="contracts" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sitecode, sitename, sitelevel, longitude, latitude, address, planarea, unloadarea, areacode, roadcode, deptid, lawperson, lawpersontel, setbegindate, unloadcode, unloadperson, unloadpersontel, manager, managertel, approves, actuals, checks, contracts
+    </sql>
+
+</mapper>

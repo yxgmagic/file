@@ -1,0 +1,61 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+        	<input type="hidden" value="${item.id}" id="id">
+            <input type="hidden" value="${item.checkno}" id="checkno">
+            <div class="row row-bottom">
+                <div id="banner"></div>
+            </div>
+            <div class="row">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tr>
+                        <td>超重站点</td>
+                        <td>${item.stationid}</td>
+                        <td>车牌</td>
+                        <td>${item.vehicleid}</td>
+                    </tr>
+                    <tr>
+                        <td>所属单位</td>
+                        <td>${item.fullname}</td>
+                        <td>车辆</td>
+                        <td>默认值，，，，，</td>
+                    </tr>
+                    <tr>
+                        <td>车货限重(kg)</td>
+                        <td>${item.weightlimited}</td>
+                        <td>轴数</td>
+                        <td>${item.axlesum}</td>
+                    </tr>
+                    <tr>
+                        <td>超限量(kg)</td>
+                        <td>${item.overlimited}</td>
+                        <td>超重率(kg)</td>
+                        <td>${item.reta}</td>
+                    </tr>
+                    <tr>
+                        <td>罚金（元）</td>
+                        <td>${item.shouldpay}</td>
+                        <td>是否完成处罚</td>
+                        <td>${item.punish}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="primary hidden" name="确定" id="cancel" icon="fa-check" clickFun="BOefullinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/compreAnalysis/bOefullinfo/bOefullinfo_info.js"></script>
+@}

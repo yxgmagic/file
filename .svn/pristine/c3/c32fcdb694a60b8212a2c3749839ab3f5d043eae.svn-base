@@ -1,0 +1,57 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+						<div class="row">
+
+							<div class="form-group">
+								<label class="col-sm-1 control-label">文书类型</label>
+								<div class="col-sm-2">
+									<#SelectDict id="ldtype" dictName="ldtype" dataStyle="btn"
+										cssName="form-control  "></#SelectDict>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-1 control-label">文书状态</label>
+								<div class="col-sm-2">
+									<#SelectDict id="procstatus" dictName="lawstatus"
+										dataStyle="btn" cssName="form-control  "></#SelectDict>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<#button name="搜索" icon="fa-search"
+									clickFun="OefullLawdoc.search()" />
+							</div>
+						</div>
+						<div class="hidden-xs" id="OefullLawdocTableToolbar" role="group">
+                            @if(shiro.hasPermission("/oefullLawdoc/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="OefullLawdoc.openAddOefullLawdoc()"/>
+                            @}
+                            @if(shiro.hasPermission("/oefullLawdoc/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="OefullLawdoc.openOefullLawdocDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/oefullLawdoc/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="OefullLawdoc.delete()" space="true"/>
+                            @}
+                         <button class="btn btn-info"  name="生成文书文件"  id="ensure"  
+						onclick="OefullLawdoc.addnewOefullLawdoc()" >  <i class="fa fa-check"></i>&nbsp;生成文书文件</button>
+                       
+                           <button class="btn btn-info"  name="查看文书文件"  id="ensure"  
+						onclick="OefullLawdoc.getOefullLawdoc()" >  <i class="fa fa-check"></i>&nbsp;查看文书文件</button>
+                       
+                        </div>
+                        <#table id="OefullLawdocTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/oefulllawdoc/oefullLawdoc/oefullLawdoc.js"></script>
+@}

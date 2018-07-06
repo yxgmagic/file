@@ -1,0 +1,464 @@
+package com.zhichao.admin.imyzt;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.zhichao.admin.base.BaseJunit;
+import com.zhichao.common.util.IdCardGenerator;
+import com.zhichao.service.core.util.PubUtil;
+import com.zhichao.service.detecManage.ILscinfoService;
+import com.zhichao.service.lawEnforcement.ICargoHandlingService;
+import com.zhichao.service.lawEnforcement.IOefullinfoService;
+import com.zhichao.service.platformConfig.ILawEnforceManService;
+import com.zhichao.service.siteRegistration.IFixedsiteService;
+import com.zhichao.beans.guns.CargoHandling;
+import com.zhichao.beans.guns.Fixedsite;
+import com.zhichao.beans.guns.LawEnforceMan;
+import com.zhichao.beans.guns.Lscinfo;
+import com.zhichao.beans.guns.Oefullinfo;
+import com.zhichao.dal.mapper.LscinfoMapper;
+import com.zhichao.dal.mapper.OefullinfoMapper;
+
+public class CreateCCC extends BaseJunit {
+
+    @Autowired
+    private ILscinfoService lscinfoService;
+
+    @Autowired
+    private ICargoHandlingService cargoHandlingService;
+
+    @Autowired
+    private LscinfoMapper lscMapper;
+
+    @Autowired
+    private IFixedsiteService fixedsiteService;
+
+    @Autowired
+    private ILawEnforceManService lawEnforceManService;
+
+    IdCardGenerator idCardGenerator = new IdCardGenerator();
+
+    @Autowired
+    private IOefullinfoService oefullinfoService;
+
+    @Autowired
+    private OefullinfoMapper oefullinfoMapper;
+
+
+    public void addCargoHandingOrder() {
+
+        //货物处理的暂扣单号
+        PubUtil pub= new PubUtil();
+
+        //创建精检站数据管理构造器
+        EntityWrapper<Lscinfo> ew = new EntityWrapper<>();
+        //设置查询条件
+        ew.where("prostatus = 1");
+        //获取到符合规则的精检站数据管理列表
+        List<Lscinfo> lscinfoList = lscinfoService.selectList(ew);
+
+        //新建一个货物处理对象
+        CargoHandling cargoHandling = new CargoHandling();
+
+        //计数
+        int count = 0;
+
+//            for (int i = 0; i < 12; i++) {
+//                System.out.println(getLicenseKey() + "--" + getNames() + "--" + getTelephoneNumber());
+//            }
+        //循环将记录添加到表中
+        for(Lscinfo lscinfo : lscinfoList) {
+            //车货限重
+            Integer weightlimited = lscinfo.getWeightlimited();
+            //卸货前总质量
+            Integer fctotalweight = lscinfo.getFctotalweight();
+            //卸货重量
+            Integer unloadweight = fctotalweight - weightlimited;
+
+            if(unloadweight < 0) {
+                continue;
+            }
+
+
+            //获取到标号生成器返回的Map
+            Map<String,Object> sequenceMap = pub.getSequence("withholdno" , "" , 0 , "withholdno" , "b_cargo_handling");
+            //拿到暂扣单号
+            String widthOn = sequenceMap.get("sequence") + "";
+            //拿到检测站点
+            String stationidVlalue = lscinfo.getStationid();
+            //车牌号
+            String vehicleidValue = lscinfo.getVehicleid();
+            //卸货场
+            String unloadNo = "4302000004";
+            //车辆联系人
+            String carownerVlue = getNames();
+            //车辆联系人联系方式
+            String carownertel = getTelephoneNumber();
+
+            //道路运输证号
+            String dlysz = getLicenseKey();
+            //从业资格证号
+            String cyzgz = getLicenseKey();
+            //给货物处理对象赋值
+            cargoHandling.setWithholdno(widthOn);
+            cargoHandling.setStationid(stationidVlalue);
+            cargoHandling.setVehicleid(vehicleidValue);
+            cargoHandling.setUlloadcode(unloadNo);
+            cargoHandling.setCarowner(carownerVlue);
+            cargoHandling.setCarownertel(carownertel);
+            cargoHandling.setWeightlimited(weightlimited);
+            cargoHandling.setFctotalweight(fctotalweight);
+            cargoHandling.setUnloadweight(unloadweight);
+            cargoHandling.setRtnumber(dlysz);
+            cargoHandling.setCpqnumber(cyzgz);
+            //将货物处理对象存入数据库
+            cargoHandlingService.insert(cargoHandling);
+            count++;
+        }
+        System.out.println(count);
+
+
+
+    }
+
+    @Test
+    public void addOefOrder(){
+
+        //创建精检站数据管理构造器
+        EntityWrapper<Lscinfo> ew = new EntityWrapper<>();
+        //设置查询条件
+        ew.where("prostatus = 1");
+        //获取到符合规则的精检站数据管理列表
+        List<Lscinfo> lscinfoList = lscinfoService.selectList(ew);
+
+        //获取到固定治超站列表
+        List<Fixedsite> fixedsiteList = fixedsiteService.selectList(null);
+        //存储固定治超站站点id和站点名字的map
+        Map<String,String> fixedsiteMap = new HashMap<>();
+        for(int i = fixedsiteList.size() - 1; i >= 0; i--) {        //遍历治超站列表
+            Fixedsite fixedsite = fixedsiteList.get(i);             //获取治超站
+            fixedsiteMap.put(fixedsite.getSitecode(), fixedsite.getSitename());     //将治超站的id和名称传进去
+        }
+
+        List<LawEnforceMan> lawEnforceManList = lawEnforceManService.selectList(null);
+
+        String[] shiArr = {"长沙","株洲","湘潭","岳阳","衡阳","邵阳","怀化","益阳","常德","郴州","永州","张家界","娄底","湘西州"};
+
+        Random random=new Random();
+
+        //卸货记录们
+        List<CargoHandling> cargoHandlings = cargoHandlingService.selectList(null);
+        System.out.println(cargoHandlings.size());
+        int i = 0;
+        for (CargoHandling cargoHandling : cargoHandlings) {
+            i++;
+
+            Lscinfo lscinfo = getLsc(lscinfoList,cargoHandling.getStationid(),cargoHandling.getVehicleid());
+            if(lscinfo == null) {
+                continue;
+            }
+            System.out.println("精检站数据记录" + lscinfo);
+            EntityWrapper<Oefullinfo> ewo = new EntityWrapper<>();
+
+            ewo.where("checkno={0}",lscinfo.getCheckno());
+
+            List<Oefullinfo> oefullinfos = oefullinfoService.selectList(ewo);
+            System.out.println("准备" + i + oefullinfos);
+            if (oefullinfos != null && oefullinfos.size() > 0){
+                continue;
+            }
+            System.out.println("进来了" + i);
+            //生成案号
+            PubUtil pub= new PubUtil();
+            Map<String,Object> map = pub.getSequence("caseno" , "HN0205" , "3" , "caseno" , "b_oefullinfo");
+            String caseNo = map.get("sequence").toString();
+
+            //案件处理对象
+            Oefullinfo oefullinfo = new Oefullinfo();
+            oefullinfo.setCaseno(caseNo);
+            oefullinfo.setCasetype("1");
+            oefullinfo.setCaseSource("1");
+            oefullinfo.setCasegist("1");
+            oefullinfo.setCasetime(new Date());
+            oefullinfo.setLawType("1");
+
+            //
+            oefullinfo.setAccordance("2");
+            //司机名字
+            String driverName = getNames();
+            oefullinfo.setDrivername(driverName);
+            //司机手机
+            String driverTelephone = getTelephoneNumber();
+            oefullinfo.setDriverphone(driverTelephone);
+            //驾驶证号
+            oefullinfo.setDriverid(getLicenseKey());
+            //行驶证号
+            oefullinfo.setDrivinglicense(getLicenseKey());
+            //法人代表
+            oefullinfo.setLawpersonname(driverName);
+            //法人代表证件类型
+            oefullinfo.setLawpersonidtype("1");
+            //法人代表身份号
+            oefullinfo.setLawpersonid(idCardGenerator.generate());
+            //出发地
+            oefullinfo.setDeparture(shiArr[random.nextInt(shiArr.length)]);
+            //目的地
+            oefullinfo.setDestination(shiArr[random.nextInt(shiArr.length)]);
+            //货物名称
+            oefullinfo.setCargotype("6");
+
+            ///////////////////////////////////////////////////下面的从卸货场拿
+
+            //设置卸货单号
+            oefullinfo.setWithholdno(cargoHandling.getWithholdno());
+            //从业资格证号
+            oefullinfo.setQualificationid(cargoHandling.getWithholdno());
+            //车牌号
+            oefullinfo.setVehicleid(cargoHandling.getVehicleid());
+            //卸货重量
+            oefullinfo.setOffload(cargoHandling.getUnloadweight());     //从超载货物处理取
+
+            ////////////////////////////////////////////////////下面的从精检站数据拿
+
+            //车轴数
+            oefullinfo.setAxlesum(lscinfo.getAxlesum());   //从精检站数据拿
+            //检测单号
+            oefullinfo.setCheckno(lscinfo.getCheckno());
+            //初检时间
+            oefullinfo.setFctime(lscinfo.getFctime());   //从精检站数据里面拿
+            //初检操作员
+            oefullinfo.setFcoper(lscinfo.getFcoper());
+            //车货限重
+            oefullinfo.setWeightlimited(lscinfo.getWeightlimited());     //从精检站数据获取
+            //车辆标记总质量
+            oefullinfo.setRatedtotalweight(lscinfo.getRatedtotalweight());   //从精检站数据获取
+            //复检时间
+            oefullinfo.setRctime(lscinfo.getRctime());       //复检时间,从精检站数据获取
+
+            //核定载质量
+            oefullinfo.setRatedloading(lscinfo.getRatedloading());       //精检站数据
+            //复检总质量
+            oefullinfo.setRctotalweight(lscinfo.getRctotalweight());     //精检站数据
+            //复检操作员
+            oefullinfo.setRcoper(lscinfo.getRcoper());
+
+            //站点id(编号)
+            oefullinfo.setStationid(lscinfo.getStationid());
+            //站点名字
+            oefullinfo.setSitename(fixedsiteMap.get(lscinfo.getStationid()));
+
+            int overLimitedValue = lscinfo.getOverlimited();
+
+            //超限量
+            oefullinfo.setOverlimited(lscinfo.getOverlimited());     //超限量
+            //初检总重量
+            oefullinfo.setFctotalweight(lscinfo.getFctotalweight());  //从固定治超站数据获取
+
+
+
+            //复检车道号
+            oefullinfo.setRclaneno(0);
+            //初检车道号
+            oefullinfo.setFclaneno(0);
+            //复检长度
+            oefullinfo.setRclength(0);
+            //复检宽度
+            oefullinfo.setRcwidth(0);
+            //复检高度
+            oefullinfo.setRcheight(0);
+
+            /////////////////////////////////////从执法人信息拿
+
+            //执法人员1
+            oefullinfo.setEnforcerid1(lawEnforceManList.get(random.nextInt(lawEnforceManList.size())).getId() + "");    //从执法人员信息拿
+            //执法人员2
+            oefullinfo.setEnforcerid2(lawEnforceManList.get(random.nextInt(lawEnforceManList.size())).getId() + "");    //同上
+
+            //超高量
+            oefullinfo.setOverheight(0);
+            //超长量
+            oefullinfo.setOverlength(0);
+            //超宽量
+            oefullinfo.setOverwidth(0);
+
+            int money = 0, n = 0;
+            if (overLimitedValue > 1000){
+                n = (int)(overLimitedValue / 1000);
+            }else if (overLimitedValue == 1000){
+                n = 1;
+            }
+
+            money = n * 500;
+            money = money > 30000 ? 30000 : money;
+
+            //应罚款
+            oefullinfo.setShouldpay("" + money);
+            //实际罚款
+            oefullinfo.setPunishamount(money + 0.0f);
+
+            //违法类型
+            oefullinfo.setT_violation("1");
+
+            lscMapper.updateProstatus(lscinfo.getId(), null, 1, 2);
+
+            oefullinfo.setProstatus("2");
+            oefullinfoMapper.insert(oefullinfo);
+        }
+
+
+/*        //查询精检站数据表
+        Lscinfo lscinfo = lscinfoService.selectById("22");
+        lscinfo.setFctimeString(YUtil.DateToString(lscinfo.getFctime(),null));
+        lscinfo.setRctimeString(YUtil.DateToString(lscinfo.getRctime(),null));
+        //精检站数据
+        EntityWrapper<Fixedsite> fixedsiteEntityWrapper = new EntityWrapper<>();
+        fixedsiteEntityWrapper.where("sitecode={0}",lscinfo.getStationid());
+        Fixedsite fixedsites = lscinfoService.selectList(fixedsiteEntityWrapper).get(0);
+
+
+        //生成案号
+        Oefullinfo oefullinfo = new Oefullinfo();
+        PubUtil pub= new PubUtil();
+        Map<String,Object> map = pub.getSequence("caseno" , oefullinfo.getStationid() , oefullinfo.getFclaneno() , "caseno" , "b_oefullinfo");
+        oefullinfo.setCaseno(map.get("sequence").toString());
+
+
+        //修改精检站中业务数据状态
+        lscMapper.updateProstatus(oefullinfo.getId(), null, 1, 2);*/
+
+    }
+
+    //获取精检站信息
+    public Lscinfo getLsc(List<Lscinfo> lscinfoList,String stationId, String vehicleid) {
+        for(int i = lscinfoList.size() - 1; i > 0; i--) {
+            Lscinfo lscinfo = lscinfoList.get(i);
+            if(stationId.equals(lscinfo.getStationid()) &&
+                    vehicleid.equals(lscinfo.getVehicleid()) &&
+                    "1".equals(lscinfo.getProstatus())) {
+                lscinfoList.remove(i);
+                return lscinfo;
+            }
+        }
+
+        return null;
+
+    }
+    //获取随机手机号码
+    public String getTelephoneNumber() {
+        Random random=new Random();
+        String[] letters = {"137", "138", "152", "186", "189",
+                "182","186"};
+
+        int index=random.nextInt(letters.length-1);
+        StringBuilder letter = new StringBuilder(letters[index]);
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+
+        return letter.toString();
+    }
+
+    //获取随机的许可证号
+    public String getLicenseKey() {
+        Random random=new Random();
+
+        String[] letters = {"Q", "W", "E", "R", "T",
+                "Y", "U", "I", "O", "P", "A", "S", "D",
+                "F", "G", "H", "J", "K", "L", "Z", "X",
+                "C", "V", "B", "N", "M"};
+
+        int index=random.nextInt(letters.length-1);
+        StringBuilder letter = new StringBuilder(letters[index]);
+        index=random.nextInt(letters.length-1);
+        letter.append(letters[index]);
+        index=random.nextInt(letters.length-1);
+        letter.append(letters[index]);
+
+
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+        letter.append(random.nextInt(10));
+
+        return letter.toString();
+
+    }
+
+
+    public String getNames() {
+        Random random=new Random();
+        /* 598 百家姓 */
+        String[] Surname= {"赵","钱","孙","李","周","吴","郑","王","冯","陈","褚","卫","蒋","沈","韩","杨","朱","秦","尤","许",
+                "何","吕","施","张","孔","曹","严","华","金","魏","陶","姜","戚","谢","邹","喻","柏","水","窦","章","云","苏","潘","葛","奚","范","彭","郎",
+                "鲁","韦","昌","马","苗","凤","花","方","俞","任","袁","柳","酆","鲍","史","唐","费","廉","岑","薛","雷","贺","倪","汤","滕","殷",
+                "罗","毕","郝","邬","安","常","乐","于","时","傅","皮","卞","齐","康","伍","余","元","卜","顾","孟","平","黄","和",
+                "穆","萧","尹","姚","邵","湛","汪","祁","毛","禹","狄","米","贝","明","臧","计","伏","成","戴","谈","宋","茅","庞","熊","纪","舒",
+                "屈","项","祝","董","梁","杜","阮","蓝","闵","席","季","麻","强","贾","路","娄","危","江","童","颜","郭","梅","盛","林","刁","钟",
+                "徐","邱","骆","高","夏","蔡","田","樊","胡","凌","霍","虞","万","支","柯","昝","管","卢","莫","经","房","裘","缪","干","解","应",
+                "宗","丁","宣","贲","邓","郁","单","杭","洪","包","诸","左","石","崔","吉","钮","龚","程","嵇","邢","滑","裴","陆","荣","翁","荀",
+                "羊","于","惠","甄","曲","家","封","芮","羿","储","靳","汲","邴","糜","松","井","段","富","巫","乌","焦","巴","弓","牧","隗","山",
+                "谷","车","侯","宓","蓬","全","郗","班","仰","秋","仲","伊","宫","宁","仇","栾","暴","甘","钭","厉","戎","祖","武","符","刘","景",
+                "詹","束","龙","叶","幸","司","韶","郜","黎","蓟","溥","印","宿","白","怀","蒲","邰","从","鄂","索","咸","籍","赖","卓","蔺","屠",
+                "蒙","池","乔","阴","郁","胥","能","苍","双","闻","莘","党","翟","谭","贡","劳","逄","姬","申","扶","堵","冉","宰","郦","雍","却",
+                "璩","桑","桂","濮","牛","寿","通","边","扈","燕","冀","浦","尚","农","温","别","庄","晏","柴","瞿","阎","充","慕","连","茹","习",
+                "宦","艾","鱼","容","向","古","易","慎","戈","廖","庾","终","暨","居","衡","步","都","耿","满","弘","匡","国","文","寇","广","禄",
+                "阙","东","欧","殳","沃","利","蔚","越","夔","隆","师","巩","厍","聂","晁","勾","敖","融","冷","訾","辛","阚","那","简","饶","空",
+                "曾","毋","沙","乜","养","鞠","须","丰","巢","关","蒯","相","查","后","荆","红","游","郏","竺","权","逯","盖","益","桓","公","仉",
+                "督","岳","帅","缑","亢","况","郈","有","琴","归","海","晋","楚","闫","法","汝","鄢","涂","钦","商","牟","佘","佴","伯","赏","墨",
+                "哈","谯","篁","年","爱","阳","佟","言","福","南","火","铁","迟","漆","官","冼","真","展","繁","檀","祭","密","敬","揭","舜","楼",
+                "疏","冒","浑","挚","胶","随","高","皋","原","种","练","弥","仓","眭","蹇","覃","阿","门","恽","来","綦","召","仪","风","介","巨",
+                "木","京","狐","郇","虎","枚","抗","达","杞","苌","折","麦","庆","过","竹","端","鲜","皇","亓","老","是","秘","畅","邝","还","宾",
+                "闾","辜","纵","侴","万俟","司马","上官","欧阳","夏侯","诸葛","闻人","东方","赫连","皇甫","羊舌","尉迟","公羊","澹台","公冶","宗正",
+                "濮阳","淳于","单于","太叔","申屠","公孙","仲孙","轩辕","令狐","钟离","宇文","长孙","慕容","鲜于","闾丘","司徒","司空","兀官","司寇",
+                "南门","呼延","子车","颛孙","端木","巫马","公西","漆雕","车正","壤驷","公良","拓跋","夹谷","宰父","谷梁","段干","百里","东郭","微生",
+                "梁丘","左丘","东门","西门","南宫","第五","公仪","公乘","太史","仲长","叔孙","屈突","尔朱","东乡","相里","胡母","司城","张廖","雍门",
+                "毋丘","贺兰","綦毋","屋庐","独孤","南郭","北宫","王孙"};
+
+        int index=random.nextInt(Surname.length-1);
+        String name = Surname[index]; //获得一个随机的姓氏
+
+        /* 从常用字中选取一个或两个字作为名 */
+        if(random.nextBoolean()){
+            name+=getChinese()+getChinese();
+        }else {
+            name+=getChinese();
+        }
+        return name;
+    }
+
+    public String getChinese() {
+        String str = null;
+        int highPos, lowPos;
+        Random random = new Random();
+        highPos = (176 + Math.abs(random.nextInt(71)));//区码，0xA0打头，从第16区开始，即0xB0=11*16=176,16~55一级汉字，56~87二级汉字
+        random=new Random();
+        lowPos = 161 + Math.abs(random.nextInt(94));//位码，0xA0打头，范围第1~94列
+
+        byte[] bArr = new byte[2];
+        bArr[0] = (new Integer(highPos)).byteValue();
+        bArr[1] = (new Integer(lowPos)).byteValue();
+        try {
+            str = new String(bArr, "GB2312");   //区位码组合成汉字
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+}
+
+

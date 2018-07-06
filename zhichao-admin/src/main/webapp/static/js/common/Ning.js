@@ -1,0 +1,957 @@
+
+	var Ning = {};
+	
+	Ning.Tools = {
+
+        /* 资源权限校验 */
+        permissionsCheck: function(urlList){
+            var result = "";
+            $.ajax({
+                type: "post",
+                url: Feng.ctxPath + "/permissions/permissionsCheck",
+                data: {'urlList':JSON.stringify(urlList)},
+                dataType: "json",
+                async : false,//需设置同步请求，异步请求获取不到返回结果
+                success: function(data){
+                    result = data;
+                }
+            });
+            return result;
+        },
+			
+		/**
+		 * 根据数组将数组添加到下拉菜单
+		 * arrData = [菜单值, 菜单名]
+		 * downEmnu = 用来接收数据的下拉菜单对象（引用）
+		 */
+		appendToEmnu: function(arrData, downMenu) {
+			var tempData = arrData;
+			var length = tempData.length;
+			var i = 0;
+			for(i = 0; i < length; i++) {
+				var temp = tempData[i];
+				var option = "<option value='"+tempData[i][0]+"'>"+tempData[i][1]+"</option>";
+				downMenu.append(option);
+			}
+		},
+		
+		/**
+		 * 根据json的名字和属性名和属性值，返回一个相对应的json（map？）对象
+		 * tempData : json的名字
+		 * attr ： 属性名
+		 * value ： 属性值
+		 */
+		getObjOfVal: function(tempData, attr, value) {
+			var tempItem;
+			for(var i in tempData) {
+				tempItem = tempData[i];
+				for(var item in tempItem) {
+					if(item == attr && value == tempItem[item]) {
+						return tempItem;
+						break;
+					}
+				}
+			}
+			return "";
+		},
+		//根据传进来的file获取文件路径
+        getObjectURL: function(file) {
+			var url = null;
+			if (window.createObjectURL != undefined) {
+				url = window.createObjectURL(file)
+			} else if (window.URL != undefined) {
+				url = window.URL.createObjectURL(file)
+			} else if (window.webkitURL != undefined) {
+				url = window.webkitURL.createObjectURL(file)
+			}
+			return url
+    	},
+
+        /**
+		 * 根据id删除数组指定的元素
+         * @param tempArr
+         * @param id
+         */
+        deleteArrayById: function(tempArr, id) {
+			for (var i in tempArr) {
+				var temp = tempArr[i];
+				if(temp.id == id) {
+					tempArr .splice(i,1);
+				}
+			}
+		},
+
+        /**
+		 * 插入元素
+         * @param tempArr
+         * @param obj
+         */
+		insertArray: function(tempArr, obj) {
+			return tempArr.push(obj);
+		},
+
+        /**
+		 * 更新数组指定元素
+         * @param tempArr 数组中的对象必须包含id,否则定位不到相对的元素
+         * @param obj
+         * @returns {number} 返回插入的位置,没有更新的返回-1
+         */
+		updateArray: function(tempArr, obj) {
+			var index = 0;
+
+			for (index in tempArr) {
+				var temp = tempArr[index];
+				if(temp.id == obj.id) {
+					var tempObj = temp;
+					for(var i in obj) {
+                        tempObj[i] = obj[i];
+					}
+					//tempArr.splice(index, 1, obj);
+                    index--;
+					break;
+				}
+			}
+			if(index < tempArr.length) {
+                return ++index;
+			} else {
+				return -1;
+			}
+
+
+		},
+
+        /**
+		 * 根据对象从数组进行查询
+		 *
+         * @param tempArr [{key:value}]
+         * @param obj {key:value}
+         * @returns {Array}
+         */
+		selectArray:function(tempArr, obj) {
+			var resultArr = [];
+			var length = tempArr.length;
+			for (var j = 0; j < length; j++) {
+				var tempObj = tempArr[j];
+				var flag = true;
+				//遍历属性
+				for (var i in obj) {
+					var tempAttr = i;
+					var tempAttrValue = obj[tempAttr];
+					if(typeof(tempAttrValue) == 'undefined') {
+						continue;
+					}
+					var tempObjAttrValue = tempObj[tempAttr];
+					//将其改变成String对象
+					tempObjAttrValue = tempObjAttrValue + "";
+					//如果没有找到相匹配的value则不是需要的对象
+					if(tempObjAttrValue.indexOf(tempAttrValue) == -1) {
+						flag = false;
+					}
+				}
+				if(flag) {
+					resultArr.push(tempObj);
+				}
+			}
+			return resultArr;
+		},
+		showPage: function(uurl) {
+
+            top.layer.open({
+                type: 2,
+                title: '检定证书',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['1000px', '90%'],
+                content: uurl
+            });
+		}
+		
+			
+	}
+	
+	Ning.Tree = {
+		
+		
+		/**
+		 * 树形菜单的基本结构
+		 */
+		optionData : {
+			elem: "#iNickTree",
+			nodes: [{}],
+			click: function(node) {
+				null;
+		    }
+		},
+		
+		/**
+		 * 树形菜单的回调函数，当选中节点时会执行该方法
+		 * func： 你的方法
+		 * 可以用参数接收节点信息
+		 */
+		bindOnClick : function(func) {
+			this.optionData.click = func;
+		},
+		
+		/**
+		 * 设置树形菜单显示的元素和需要显示的数据
+		 * element: 显示元素的ID
+		 * typeData: 需要显示的的数据选择，（presite， corp，fixedsite,enforcecar）
+		 */
+		setStree : function(element, typeData) {
+
+			this.dataInit();
+			
+			var nodes = [];
+			var tempNodes = [];
+			
+			var tempDept = Ning.Tools.getObjOfVal(managerDeptData, 'id', deptid);
+			tempDept.spread = true;
+
+			//看到下面这些重复的判断,感动不?
+			//不敢动!不敢动!!
+			if(typeData == "presite") {
+				//定义一个临时的部门数据
+                var tempDeptData = [];
+				//将从数据库取出来的部门数据复制一份到临时的部门数据
+                cloneArray(managerDeptData, tempDeptData);
+                //获取剔除固定站的部门信息,原本这个方法只用于执法车,但是在这里也可以 		//这里可以去除,后台已经将固定站的数据剔除了
+                getTreeForCar(tempDeptData);
+                //将不停车站点附加到管理部门数据中
+                tempNodes = sitePresiteToTree(tempDeptData, presiteTreeData);
+                //根据用户的部门id拿到页面需要展示的部门目录树的顶级部门					//这里可以删除,因为下面是直接根据用户的部门id进行控制
+                tempDept = Ning.Tools.getObjOfVal(tempNodes, 'deptid', deptid);
+                //根据部门的id将目录树结构生成
+                tempDept.children = formatData(tempNodes, deptid);
+                //将目录树加到节点数据中,用于后面的目录树生成
+                nodes.push(tempDept);
+            } else if(typeData == "ose") {
+                var tempDeptData = []
+                cloneArray(managerDeptData, tempDeptData);
+                getTreeForCar(tempDeptData);
+                tempNodes = sitePresiteToTree(tempDeptData, oseTreeData);
+
+                tempDept.children = formatData(tempNodes, deptid);
+                nodes.push(tempDept);
+			} else if(typeData == "fixedsite") {
+				tempNodes = siteToTree(managerDeptData, fixedsiteTreeData);
+                tempDept = Ning.Tools.getObjOfVal(tempNodes, 'deptid', deptid);
+				tempDept.children = formatData(tempNodes, deptid);
+				nodes.push(tempDept);
+			} else if(typeData == "oaf") {
+                var tempDeptData = []
+                cloneArray(managerDeptData, tempDeptData);
+                //getTreeForCar(tempDeptData);
+                tempNodes = siteToTree(tempDeptData, fixedsiteTreeData);
+                tempNodes = sitePresiteToTree(tempNodes, oseTreeData);
+                tempDept.children = formatData(tempNodes, deptid);
+                nodes.push(tempDept);
+            } else if(typeData == "corp") {
+				tempNodes = corpToTree(areaTreeData, corpTreeData);	
+//				nodes = formatAreaData(tempNodes, 0);
+				//根据数据表中的顶级区域的id来找,作为树的根目录
+				var tempArea = Ning.Tools.getObjOfVal(areaTreeData, 'pId', 1);
+				tempArea.spread = true;
+				tempArea.children = formatAreaData(tempNodes, tempArea.id);
+				nodes.push(tempArea);
+				
+			} else if(typeData == "enforcecar") {
+				cloneArray(managerDeptData, tempNodes);
+				getTreeForCar(tempNodes);
+                tempDept = Ning.Tools.getObjOfVal(tempNodes, 'deptid', deptid);
+                tempDept.children = formatData(tempNodes, deptid);
+                nodes.push(tempDept);
+			} else {
+				//tempNodes = areaTreeData;
+				tempNodes = managerDeptData;
+				nodes = formatData(tempNodes, deptid);
+			}
+			
+			if(nodes[0].name == undefined) {
+                nodes = [];
+				var temp = {};
+                temp.name = "暂无权限";
+                temp.id = deptid;
+                temp.children = [];
+                nodes.push(temp);
+
+			};
+
+			this.treeElement = element;
+			this.myInit(nodes);
+		},
+		
+		/**
+		 * 根据传进来的站点id获取到它这一级以及它上面的树型结构1
+		 * element: 显示元素的ID
+		 * treeType: 需要显示的的数据类型，（presite，fixedsite）
+		 * selectId: 传进来的站点id
+		 * spread: 是否全部展开
+		 */
+		getOneTree : function(element, treeType, selectId, spread) {
+			this.dataInit();
+			var nodes = [];
+			var tempNodes = [];
+			if(treeType == "presite") {
+				tempNodes = getDeptTreeByPresiteId(selectId);	
+			} else if(treeType == "fixedsite") {
+				tempNodes = getDeptTreeByFixedsiteId(selectId);	
+			} else {
+				tempNodes = managerDeptData;
+			}
+			
+			for(var i in tempNodes) {
+				tempNodes[i].spread = spread;
+			}
+			this.treeElement = element;
+			nodes = formatData(tempNodes, deptid);
+            if(nodes[0].name == undefined) {
+                nodes = [];
+                var temp = {};
+                temp.name = "暂无权限";
+                temp.id = deptid;
+                temp.children = [];
+                nodes.push(temp);
+
+            };
+			this.myInit(nodes);
+		},
+		
+		/**
+		 * 根据传进来的站点id,展开它这一级以及它上面的树型结构2
+		 * element: 显示元素的ID
+		 * treeType: 需要显示的的数据类型，（presite，fixedsite）
+		 * selectId: 传进来的站点id
+		 * return 当前站点node
+		 */
+		setOneTree : function(element, treeType, selectId) {
+			this.dataInit();
+			var nodes = [];
+			var tempNodes = [];
+			cloneArray(managerDeptData, tempNodes);
+
+			if(treeType == "fixedsite") {
+                tempNodes = siteToTree(managerDeptData, fixedsiteTreeData);
+                var tempDept = Ning.Tools.getObjOfVal(tempNodes, 'deptid', deptid);
+                node = getTreeByStationId(treeType, selectId, tempNodes);
+                tempDept.children = formatData(tempNodes, deptid);
+                nodes.push(tempDept);
+
+			} else if(treeType == "presite") {
+				var tempDeptData = []
+				cloneArray(managerDeptData, tempDeptData);
+				//getTreeForCar(tempDeptData);
+				tempNodes = sitePresiteToTree(tempDeptData, presiteTreeData);
+				node = getTreeByStationId(treeType, selectId, tempNodes);
+                tempDept = Ning.Tools.getObjOfVal(tempNodes, 'deptid', deptid);
+                tempDept.children = formatData(tempNodes, deptid);
+                nodes.push(tempDept);
+                //nodes = formatData(tempNodes, deptid);
+			} else if(treeType == "ose") {
+                var tempDeptData = []
+                cloneArray(managerDeptData, tempDeptData);
+                getTreeForCar(tempDeptData);
+                tempNodes = sitePresiteToTree(tempDeptData, oseTreeData);
+                var node = getTreeByStationId(treeType, selectId, tempNodes);
+                nodes = formatData(tempNodes, deptid);
+            }
+			
+			this.treeElement = element;
+
+
+			//nodes = formatData(tempNodes, deptid);
+            if(nodes[0].name == undefined) {
+                nodes = [];
+                var temp = {};
+                temp.name = "暂无权限";
+                temp.id = deptid;
+                temp.children = [];
+                nodes.push(temp);
+
+            };
+			this.myInit(nodes);
+			return node;
+		},
+		
+		/**
+		 * 获取当前节点到子节点的所有节点id
+		 */
+		getzNodes: function(id) {			
+			var arr = [];
+			getSdeptid(managerDeptData,id,arr);
+			var result = "";
+			var i;
+			var length = arr.length;
+			if(length > 0) {
+				result = "";
+				for(i = 0; i < length; i++) {
+					if(i < length - 1) {
+						result = result + arr[i] + ",";
+					} else {
+						result = result + arr[i];
+					}
+				}
+			}
+			
+			return result;
+			
+		},
+        /**
+		 *
+         * @param ele 被点击的input元素 $("#***")
+         * @param fun 当树形下拉菜单被点击时的回调函数
+         */
+        createAnjianSelect : function(ele, fun) {
+            var stationStreeDiv = document.getElementById("idStationStree");
+            var parentNode = ele.parentNode;
+            if(stationStreeDiv == null) {
+                stationStreeDiv =  document.createElement("div");
+                stationStreeDiv.setAttribute("id", "idStationStree");
+                parentNode.appendChild(stationStreeDiv);
+            }
+
+            //初始化下拉组件的树
+            Ning.Tree.setStree("#idStationStree", "oaf");
+            //绑定点击事件,用于回显当前选中的站点
+            Ning.Tree.bindOnClick(
+                function(node) {
+
+                    if(typeof(fun) != 'undefined') {
+                        fun(node);
+                    }
+                }
+            );
+            //给ele绑定点击事件
+            ele.onclick = function () {
+                //显示下拉组件
+                $("#idStationStree").slideDown("fast");
+                //注册全局点击事件,用于判断用户是否还在选择下拉组件,否则收起组件
+                $("body").bind("mousedown", onBodyDown);
+            };
+            // //显示下拉组件
+            // $("#idStationStree").slideDown("fast");
+            // //注册全局点击事件,用于判断用户是否还在选择下拉组件,否则收起组件
+            // $("body").bind("mousedown", onBodyDown);
+		},
+
+
+        /**
+		 *  创建树形下拉菜单
+         * @param ele	dom元素
+         * @param type	下拉菜单的类型
+         * @param fun	点击事件回调函数
+         */
+		createTreeSelectt: function(ele,type,fun) {
+
+            var stationStreeDiv = document.getElementById("idStationStree");
+            var stationidInput = document.getElementById("stationid");
+
+            var parentNode = ele.parentNode;
+
+            if(type == "corp" || type == "enforcecar") {
+
+                if(stationStreeDiv != null) {
+                    parentNode.removeChild(stationStreeDiv);
+				}
+                if(stationidInput != null) {
+                    parentNode.removeChild(stationidInput);
+                }
+                return;
+            }
+
+            if(stationStreeDiv == null) {
+                stationStreeDiv =  document.createElement("div");
+                stationStreeDiv.setAttribute("id", "idStationStree");
+                parentNode.appendChild(stationStreeDiv);
+            }
+
+            if(stationidInput == null) {
+                stationidInput = document.createElement("input");
+                stationidInput.setAttribute("id", "stationid");
+                stationidInput.setAttribute("type", "hidden");
+                parentNode.appendChild(stationidInput);
+            }
+
+
+
+
+            //初始化下拉组件的树
+            Ning.Tree.setStree("#idStationStree", type);
+            //绑定点击事件,用于回显当前选中的站点
+            Ning.Tree.bindOnClick(
+                function(node) {
+
+                    if(node.type == "fixedsite") {
+                        $(ele).val(node.name).change();
+                        $("#stationid").val(node.sitecode).change();
+                    } else if(node.type == "presite") {
+                        $(ele).val(node.name).change();
+                        $("#stationid").val(node.sitecode).change();
+                    } else {
+                        $(ele).val("").change();
+                        $("#stationid").val("").change();
+                    }
+
+                    if(typeof(fun) != 'undefined') {
+                        fun(node);
+                    }
+                }
+            );
+            //给ele绑定点击事件
+            ele.onclick = function () {
+                //显示下拉组件
+                $("#idStationStree").slideDown("fast");
+                //注册全局点击事件,用于判断用户是否还在选择下拉组件,否则收起组件
+                $("body").bind("mousedown", onBodyDown);
+            };
+		},
+
+        /**
+		 * 创建固定治超站下拉选择器
+         * @param ele $("#***)将自己传进来,用于后面生成下拉组件的依据
+         */
+		createFixedsiteSelect : function(ele,fun) {
+
+
+            /**
+			 * 如果用于创建下拉组件和记录站点编号的元素不存在,
+			 * 则创建他们,并添加到与传进来的元素的父级,与传进来的元素同级
+             * @type {HTMLElement | null}
+             */
+            var stationStreeDiv = document.getElementById("idStationStree");
+            var stationidInput = document.getElementById("stationid");
+            var parentNode = ele.parentNode;
+            if(stationStreeDiv == null) {
+                stationStreeDiv =  document.createElement("div");
+                stationStreeDiv.setAttribute("id", "idStationStree");
+                parentNode.appendChild(stationStreeDiv);
+			}
+
+			if(stationidInput == null) {
+                stationidInput = document.createElement("input");
+                stationidInput.setAttribute("id", "stationid");
+                stationidInput.setAttribute("type", "hidden");
+                parentNode.appendChild(stationidInput);
+			}
+
+
+			//初始化下拉组件的树
+            Ning.Tree.setStree("#idStationStree", "fixedsite");
+            //绑定点击事件,用于回显当前选中的站点
+            Ning.Tree.bindOnClick(
+                function(node) {
+
+                    if(node.type == "fixedsite") {
+                        $(ele).val(node.name).change();
+                        $("#stationid").val(node.sitecode).change();
+                    } else {
+                        $(ele).val("").change();
+                        $("#stationid").val("").change();
+                    }
+                    if(typeof(fun) != 'undefined') {
+                        fun(node);
+                    }
+                }
+            );
+
+
+            //显示下拉组件
+            $("#idStationStree").slideDown("fast");
+            //注册全局点击事件,用于判断用户是否还在选择下拉组件,否则收起组件
+            $("body").bind("mousedown", onBodyDown);
+		},
+		
+		//仅仅做初始化,不做其他什么
+		myInit : function (nodes) {
+			var nodes = nodes;
+			this.optionData.elem = this.treeElement;
+			this.optionData.nodes = nodes;
+			$(this.treeElement).empty();
+			layui.tree(this.optionData);
+			$(this.treeElement).css("overflow-y","scroll");
+			$(this.treeElement).css("overflow-x","hidden");
+		},
+		//tree需要用到的数据初始化
+		dataInit : function() {
+			getManagerDeptData();
+			getAreaNodesList();
+			getPresiteList();
+			getFixedsiteList();
+			getCorpList();
+            getOseList();
+
+			treeWapper(managerDeptData,"dept");
+			treeWapper(areaTreeData,"area");
+			treeWapper(presiteTreeData,"presite");
+			treeWapper(fixedsiteTreeData,"fixedsite");
+			treeWapper(corpTreeData,"corp");
+            treeWapper(oseTreeData,"ose");
+			
+			//当树形菜单被选中的时候给它背景颜色
+			$("body").on("mousedown",".layui-tree a",function(){ 
+				
+				$(".layui-tree a cite").parent().css('background-color','#FEFEFE');
+				$(this).find('cite').parent().css('background-color','#ccc');
+
+			});
+		}
+	};
+	
+	//普通方法区
+
+
+    //body点击事件
+    /**
+     * 判断点击的元素的父元素中是否含有#***,
+     * 如果没有则代表用户点击到了树形菜单以外的区域,
+     * 需要将树形菜单隐藏,且取消页面点击事件的绑定
+     */
+    function onBodyDown(event) {
+        if(!$(event.target).parents("#idStationStree").length == 1) {
+            $("#idStationStree").fadeOut("fast");
+            $("body").unbind("mousedown", onBodyDown);
+        }
+    }
+
+	
+	//将不停车站点信息添加到tree列表中并返回一个新对象
+    function sitePresiteToTree(treeData, siteDate) {
+    	var result = [];            	
+    	for(var i in treeData) {
+    		result.push(treeData[i]);
+    		for(var j in siteDate) {
+    			if(treeData[i].id == siteDate[j].deptid) {
+    				var tempStree = siteDate[j];
+    				tempStree.name = tempStree.sitename;
+    				tempStree.pId = treeData[i].id;
+    				result.push(tempStree);
+    			}
+    		}
+    	}
+    	return result;
+    }
+	
+	//获取除了精检站的的部门数据,暂时用来做执法车的树形菜单,
+	function getTreeForCar(data) {
+		for(var i in data) {
+			for(var j in fixedsiteTreeData) {
+				if(fixedsiteTreeData[j].deptid == data[i].id && fixedsiteTreeData[j].deptpid == data[i].pid) {
+					data[i] = {};
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 根据站点代码 将从当前站点到顶级的tree展开
+	 * @param siteType 站点类型
+	 * @param siteId 站点代码
+	 * @param data 用于被改变的数据
+	 * @returns 当前站点node
+	 */
+	function getTreeByStationId(siteType, siteId, data) {
+		var tempSite;
+		if(siteType == "fixedsite") {
+			tempSite = Ning.Tools.getObjOfVal(fixedsiteTreeData, 'sitecode', siteId);
+		} else if(siteType == "presite") {
+			tempSite = Ning.Tools.getObjOfVal(presiteTreeData, 'sitecode', siteId);
+		} else if(siteType == "ose") {
+            tempSite = Ning.Tools.getObjOfVal(oseTreeData, 'sitecode', siteId);
+        }
+		setDeptSpread(data, tempSite.deptpid);
+		return tempSite;
+	}
+	
+	/**
+	 * 根据站点代码将指定站点到顶级的spread属性设置为真
+	 * @param data 用于遍历的数据
+	 * @param id 指定部门id
+	 * @returns
+	 */
+	function setDeptSpread(data,id) {
+		var i;
+		for(i in data) {
+			var temp = data[i];
+			if(temp.id == 0) {
+				break;
+			}
+			if(temp.type == "dept") {
+				if(temp.id == id) {
+					data[i].spread = true;
+					setDeptSpread(data, temp.pId);
+					break;
+				}
+			}
+		}
+	}
+	
+	//克隆数组
+	function cloneArray(obj1, obj2) {
+		for(var i in obj1) {
+			obj2.push(obj1[i]);
+		}
+	}
+	
+	//根据站点代码获取从站点到顶级的树
+	function getDeptTreeByFixedsiteId(siteId) {
+		var tempSite = Ning.Tools.getObjOfVal(fixedsiteTreeData, 'sitecode', siteId);	
+		var resultArr = [];
+		getDeptTreeByDeptId(managerDeptData, tempSite.deptid, resultArr);
+		resultArr.push(tempSite);
+		return resultArr;
+	}
+	function getDeptTreeByPresiteId(siteId) {
+		var tempSite = Ning.Tools.getObjOfVal(presiteTreeData, 'sitecode', siteId);
+		var resultArr = [];
+		getDeptTreeByDeptId(managerDeptData, tempSite.deptid, resultArr);
+		resultArr.push(tempSite);
+		return resultArr;
+	}
+	
+	/**
+	 * 从子级向上查找并保存到数组
+	 * data: 用来被查找的数据,例如区域信息
+	 * pid: 子级的id
+	 * arr: 用来存储的数组
+	 */
+	function getDeptTreeByDeptId(data, id, arr) {
+		var i;
+		var arr = arr;
+		for(i in data) {
+			var temp = data[i];
+			if(temp.id == 0) {
+				break;
+			}
+			if(temp.type == "dept") {
+				if(temp.id == id) {
+					arr.push(temp);
+					getDeptTreeByDeptId(data, temp.pId, arr);
+					break;
+				}
+			}
+		}		
+	}
+	
+	//将企业信息添加到tree列表中并返回一个新对象
+    function corpToTree(treeData, siteDate) {
+    	var result = [];            	
+    	for(var i in treeData) {
+    		result.push(treeData[i]);
+    		for(var j in siteDate) {
+    			if(treeData[i].areaCode == siteDate[j].areacode) {
+    				var tempStree = siteDate[j];
+    				tempStree.name = tempStree.corpname;
+    				tempStree.pId = treeData[i].id;
+    				result.push(tempStree);
+    			}
+    		}
+    	}
+    	return result;
+    }
+
+    //将站点信息添加到tree列表中并返回一个新对象
+    function siteToTree(treeData, siteDate) {
+        var result = [];
+        for(var i in treeData) {
+
+            for(var j in siteDate) {
+
+            	if(siteDate[j].deptpid == treeData[i].id) {
+            		var tempStree = siteDate[j];
+                    tempStree.name = tempStree.sitename;
+                    tempStree.id = tempStree.id;
+                    tempStree.pId = tempStree.deptpid;
+                    result.push(tempStree);
+				}
+
+            }
+
+            result.push(treeData[i]);
+        }
+
+        return result;
+    }
+
+	//将站点信息添加到tree列表中并返回一个新对象 old
+    function siteToTree1(treeData, siteDate) {
+    	var result = [];            	
+    	for(var i in treeData) {
+    		
+    		for(var j in siteDate) {
+    			if(treeData[i].id == siteDate[j].deptid) {
+    				var tempStree = siteDate[j];
+    				tempStree.name = tempStree.sitename;    				
+    				tempStree.id = treeData[i].id;
+    				tempStree.pId = treeData[i].pId;
+    				treeData[i] = tempStree;
+    			}
+    		}
+    		
+    		result.push(treeData[i]);
+    	}
+    	return result;
+    }
+
+    var deptid = 0;
+	
+	//获取管理部门列表 dept/tree
+	var managerDeptData = null;
+	function getManagerDeptData() {
+		var ajax = new $ax(Feng.ctxPath + "/tree/getDeptList", function (data) {
+            deptid = data.deptid;
+			managerDeptData = data.data;
+			for(var i = managerDeptData.length - 1; i >= 0; i--) {
+                managerDeptData[i].pId = managerDeptData[i].pid;
+                managerDeptData[i].name = managerDeptData[i].simplename;
+                managerDeptData[i].deptid = managerDeptData[i].id;
+			}
+	    }, function (data) {
+	        Feng.error("从后台获取管理部门数据失败!" + data.responseJSON.message + "!");
+	    });
+	    ajax.start();
+	}
+	
+	//获取区域信息列表
+	var areaTreeData = null;
+	function getAreaNodesList() {
+		var ajax = new $ax(Feng.ctxPath + "/tree/getAreaNodesList", function (data) {
+			areaTreeData = data;
+	    }, function (data) {
+	        Feng.error("从后台获取数据失败!" + data.responseJSON.message + "!");
+	    });
+	    ajax.start();
+	}
+	
+	//获取不停车监测站列表信息
+	var presiteTreeData = null;
+	function getPresiteList() {
+		var ajax = new $ax(Feng.ctxPath + "/tree/getPresiteList", function (data) {
+			presiteTreeData = data;
+	    }, function (data) {
+	        Feng.error("从后台获取数据失败!" + data.responseJSON.message + "!");
+	    });
+	    ajax.start();
+	}
+	
+	//获取固定治超站列表， getFixedsiteList
+	var fixedsiteTreeData= null;
+	function getFixedsiteList() {
+		var ajax = new $ax(Feng.ctxPath + "/tree/getFixedsiteList", function (data) {
+			fixedsiteTreeData = data;
+			if(data.length == 1) {
+                deptid = data[0].deptid;
+			}
+	    }, function (data) {
+	        Feng.error("从后台获取数据失败!" + data.responseJSON.message + "!");
+	    });
+	    ajax.start();
+	}
+	
+	// 获取源头企业列表，getCorpList
+	var corpTreeData= null;
+	function getCorpList() {
+		var ajax = new $ax(Feng.ctxPath + "/tree/getCorpList", function (data) {
+			corpTreeData = data;
+	    }, function (data) {
+	        Feng.error("从后台获取数据失败!" + data.responseJSON.message + "!");
+	    });
+	    ajax.start();
+	}
+
+
+    // 获取非现场监测站列表，bsOsesite/list
+    var oseTreeData= null;
+    function getOseList() {
+        var ajax = new $ax(Feng.ctxPath + "/bsOsesite/list", function (data) {
+            oseTreeData = data;
+        }, function (data) {
+            Feng.error("从后台获取数据失败!" + data.responseJSON.message + "!");
+        });
+        ajax.start();
+    }
+
+	
+	
+	//将接收到的数据转换成layui-tree需要的格式(管理部门)
+	function formatData(data,pid) {
+		var i;
+		var arrs = [];
+		for(i in data) {
+			var temp = data[i]
+			if(temp.pId == pid) {
+				var arr = temp;
+				if(temp.type == "dept") {
+					arr.children = formatData(data, arr.id);
+				}
+				arrs.push(arr);
+			}
+		}
+		return arrs;
+	}
+	
+	//将接收到的数据进行转换(区域)
+	function formatAreaData(data,pid) {
+		var i;
+		var arrs = [];
+		for(i in data) {
+			var temp = data[i]
+			if(temp.pId == pid) {
+				var arr = temp;
+				if(temp.type == "area") {
+					arr.children = formatAreaData(data, arr.id);
+				}
+					arrs.push(arr);
+			}
+		}
+		return arrs;
+	}
+	
+	/**
+	 * 根据传入的部门id获取子部门id列 接收的数据:[1,2,4]
+	 * @param data 用于遍历的数据
+	 * @param pid 用于查询的ipd
+	 * @param arr 用于接收的数组
+	 * @returns
+	 */
+	function getSdeptid(data,pid,arr) {
+		var i;
+		var arr = arr;
+		arr.push(pid);
+		for(i in data) {
+			var temp = data[i]
+			if(temp.pId == pid) {
+				getSdeptid(data, temp.id,arr);
+			}
+		}
+	}
+	
+    
+    /**
+     * 包装树形菜单数据
+     * data： 菜单数据
+     * type： 给菜单数据type属性的属性值
+     */
+    function treeWapper(data, type) {
+    	
+    	for(var i in data) {
+    		var temp = data[i];
+    		temp.type = type;
+    	}
+    	
+    }
+
+    $(function() {	
+	});
+
+    /*
+    整个tree生成流程是这样的
+    1.从后台获取到部门数据(区域信息),固定站,不停车等信息,
+    2.将部门数据和后面的站点信息整合到一个数组,并将站点信息和部门信息的对应关系调整好
+    3.将整理好的数据装换成tree需要的数据结构,
+    4.将整理之后的数据结构添加到tree配置里的nodes
+    5.将tree数据绑定到div,
+    6,对node节点绑定点击事件(回调函数)
+     */
+
+    //因后期的改动太多,再改下去难度太大,建议重构
+

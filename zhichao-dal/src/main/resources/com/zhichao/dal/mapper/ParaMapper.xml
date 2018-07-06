@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.mapper.ParaMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.zhichao.beans.guns.Para">
+		<id column="id" property="id" />
+		<result column="paracode" property="paracode" />
+		<result column="paraname" property="paraname" />
+		<result column="paravalue" property="paravalue" />
+		<result column="ramark" property="ramark" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, paracode, paraname, paravalue, ramark
+    </sql>
+ <select id="listPara" resultType="map">
+      select paracode,paravalue from sys_para 
+ </select>
+</mapper>

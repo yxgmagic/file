@@ -1,0 +1,51 @@
+﻿@layout("/common/_container.html"){
+
+
+	<style>
+        p {
+            margin: 10px;
+        }
+    </style>
+    <div style="margin: 10px auto;width: 400px;">
+            <div class="layui-row" >
+                <div id="idPrintText" class="layui-col-xs12"
+                     style="border: 1px #cccccc solid; margin:10px 0px 10px 0px; padding-top: 10px;">
+                    <h2 align="center">接货单</h2>
+                    <p align="right">（编号: ${item.makecargono}）</p>
+                    <p>接货车牌号：${item.makevehicleid} </p>
+                    <p>接货人姓名：${item.makevehicleman}</p>
+                    <p>车辆装货场所：${item.unloadarea}  </p>
+                    <p>接货重量：${item.unloadweight} kg</p>
+
+                    <p>驾驶员签名:              </p>
+                    <p align="right">（超限检测站盖章）</p>
+                    <p align="right"> ${item.makecargodateString}</p>
+                    <p>（公路管理机构留存联）</p>
+
+                </div>
+                <div class="text-center col-sm-12">
+                    <button class="layui-btn layui-btn-lg" id="idPrintButoon">打印</button>
+                    <button class="layui-btn layui-btn-danger layui-btn-lg" id="idClose">关闭</button>
+                </div>
+            </div>
+    </div>
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/jQuery.print.js"></script>
+    <script>
+
+		$("#idPrintButoon").click(function() {
+		    $("#idPrintText").print();
+		});
+		
+		$("#idClose").click(function() {
+			window.opener=null;
+			window.open('','_self');
+			window.close();
+		})
+		
+		$(function() {
+			
+		});
+
+    </script>	
+
+@}

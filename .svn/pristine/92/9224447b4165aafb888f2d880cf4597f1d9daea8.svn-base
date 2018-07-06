@@ -1,0 +1,140 @@
+﻿@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/sel/orso.css" rel="stylesheet"></link>
+<style>
+    .marg-rig-100{
+        margin-rig: 100px;
+    }
+</style>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/sel/orso.js"></script>
+<body>
+<div class="row box">
+    <div class="box_l">
+
+    </div>
+    <div class="box_m">
+        <!--<a href="javascript:" id="top">上移</a>-->
+        <a href="javascript:" id="left">左移</a>
+        <a href="javascript:" id="right">右移</a>
+        <!--<a href="javascript:" id="bottom">下移</a>-->
+    </div>
+    <div class="box_r">
+
+    </div>
+</div>
+<div class="row text-center">
+    <button class="btn btn-success marg-rig-100" id="enuse" onclick="fun()">确定</button>
+    <button class="btn btn-danger" id="close" onclick="close_open()">取消</button>
+</div>
+
+</body>
+
+<script>
+
+    var tp = '${item.tp}'
+    var page = '${item.page}'
+    var objId = '${item.id}'
+
+    $(function () {
+        getSelData()
+
+        //绑定事件
+        $(document).ready(function(){
+            $(".box").orso({
+                boxl:".box_l",//左边大盒子
+                boxr:".box_r",//右边大盒子
+                boxlrX:"li",//移动小盒子
+                boxon:"on",//点击添加属性
+                idclass:true,//添加的属性是否为class//true=class; false=id;
+                boxlan:"#left",//单个向左移动按钮
+                boxran:"#right",//单个向右移动按钮
+                boxtan:"#top",//单个向上移动按钮
+                boxban:"#bottom",//单个向下移动按钮
+                boxalllan:"#allleft",//批量向左移动按钮
+                boxallran:"#allright",//批量向右移动按钮
+                boxalltan:"#alltop",//移动第一个按钮
+                boxallban:"#allbottom"//移动最后一个按钮
+            })
+        });
+    })
+
+    //页面加载完成后请求后台左右选择框的内容
+    function getSelData() {
+        var ajax = new $ax(Feng.ctxPath + "/assessplan/getSelData/" + tp + "/" + objId, function(data){
+            createNode('box_l',data.selNotSelect)
+            createNode('box_r',data.selChose)
+        },function(data){
+            Feng.error("初始化控件失败,请刷新!" + data.responseJSON.message + "!");
+        });
+        ajax.start();
+    }
+
+    //生成页面元素
+    function createNode(id,arr) {
+        if (arr.length > 0){
+            for (var i in arr){
+                $('.'+id).append("<li value="+arr[i].id+">"+arr[i].name+"</li>")
+            }
+        }
+    }
+
+    //确定按钮的点击事件
+    function fun() {
+
+        var selElement = $(".box_r > li")
+
+        //判断是否选中
+        if (selElement.length <= 0){
+            Feng.info('请选择最少一个!')
+            return;
+        }
+
+        //将html元素的内容转化成数组
+        var selValue = []
+        var selBgIndex = []
+        for (var i = 0; i < selElement.length; i ++) {
+            selValue[i] = selElement[i].innerHTML
+            selBgIndex[i] = selElement[i].value
+        }
+
+        //给内容加逗号分隔
+        var resultValue = Yang.Tools.addCommaToArr(selValue)
+        var resultBgIndex = Yang.Tools.addCommaToArr(selBgIndex)
+
+        //修改父页面的值
+        editSourcePageValue(resultValue,resultBgIndex)
+    }
+
+    /**
+     * 修改源页面(add & edit)的文本框的值
+     */
+    function editSourcePageValue(resultValue, resultBgIndex) {
+
+        //判断是addPage还是editPage
+        var iframe
+        if ('add' === page){
+            iframe = Feng.GetFrame("/assessplan/peAssessplan_add");
+        }else if ('edit' === page){
+            iframe = Feng.GetFrame("/assessplan/peAssessplan_update/" + objId);
+        }
+
+        //站点
+        if ('site' === tp){
+
+            iframe.$("#assessObj").val(resultValue)
+            iframe.$('#assessObjHidden').val(resultBgIndex)
+        }else if ('indic' === tp){
+
+            iframe.$("#assessIndic").val(resultValue)
+            iframe.$('#assessIndicHidden').val(resultBgIndex)
+        }
+
+        close_open()
+    }
+
+    //关闭自己
+    function close_open() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+</script>
+@}

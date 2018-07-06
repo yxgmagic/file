@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhichao.dal.compreAnalysis.SiteYoyAnalysisDao">
+
+    <select id="selListSite" resultType="map">
+        SELECT
+        b.sitename, COUNT(a.id) AS 'number'
+        FROM
+        b_oefullinfo a,
+        bs_fixedsite b
+        WHERE a.violationlevel IN (2,3,4) AND
+        a.`stationid` = b.sitecode
+        <if test="casetime != null and casetime != ''">
+            AND casetime BETWEEN #{start} AND #{end}
+        </if>
+        <if test="violationlevel != null and violationlevel != ''">
+            AND violationlevel = #{violationlevel}
+        </if>
+        GROUP BY a.stationid
+        ORDER BY COUNT(a.id)
+    </select>
+
+    <select id="selListAxlesum" resultType="map">
+      SELECT
+        axlesum AS 'axlesum',
+        COUNT(id) AS 'number'
+        FROM
+        b_oefullinfo
+        WHERE
+        violationlevel IN (2,3,4)
+        <if test="casetime != null and casetime != ''">
+            AND casetime BETWEEN #{start} AND #{end}
+        </if>
+        <if test="violationlevel != null and violationlevel != ''">
+            AND violationlevel = #{violationlevel}
+        </if>
+        GROUP BY axlesum
+    </select>
+
+    <select id="selListTable" resultType="map">
+        SELECT
+        b.sitename,a.vehicleid,a.casetime,a.overlimited,a.overlimited,a.punishamount,a.damageamount
+        FROM
+        b_oefullinfo a,
+        bs_fixedsite b
+        WHERE a.violationlevel IN (2,3,4) AND
+        a.`stationid` = b.sitecode
+        <if test="casetime != null and casetime != ''">
+            AND casetime BETWEEN #{start} AND #{end}
+        </if>
+        <if test="violationlevel != null and violationlevel != ''">
+            AND violationlevel = #{violationlevel}
+        </if>
+        ORDER BY a.casetime DESC
+    </select>
+
+    <select id="selectNumberPreSite" resultType="map">
+        SELECT COUNT(a.id) as 'number', b.sitename
+        FROM b_hspinfo a,bs_presite b
+        WHERE 1=1 AND a.stationid=b.sitecode
+        <if test="hsptime != null and hsptime != ''">
+            AND hsptime BETWEEN #{start} AND #{end}
+        </if>
+        GROUP BY a.stationid
+        ORDER BY COUNT(a.id)
+    </select>
+
+    <select id="selectNumberFixedSite" resultType="map">
+        SELECT COUNT(a.id) as 'number', b.sitename
+        FROM b_lscinfo a,bs_fixedsite b
+        WHERE 1=1 AND a.stationid=b.sitecode
+        <if test="fctime != null and fctime != ''">
+            AND fctime BETWEEN #{start} AND #{end}
+        </if>
+        GROUP BY a.stationid
+        ORDER BY COUNT(a.id)
+    </select>
+
+    <select id="selectOverRun" resultType="map">
+        SELECT COUNT(a.id) as 'number', b.sitename
+        FROM b_oefullinfo a, bs_fixedsite b
+        WHERE a.stationid = b.sitecode
+        <if test="fctime != null and fctime !=''">
+            AND fctime BETWEEN #{start} AND #{end}
+        </if>
+        GROUP BY a.stationid
+        ORDER BY COUNT(a.id)
+    </select>
+
+    <select id="selectCargoType" resultType="map">
+        SELECT
+            COUNT(a.`id`) as 'number',
+            b.`name`
+        FROM
+            b_oefullinfo a,
+            sys_dict b
+        WHERE
+            b.`pname` = 'itemName' AND
+            a.`cargotype` = b.`num` AND
+        <if test="fctime != null and fctime !=''">
+            fctime BETWEEN #{start} AND #{end}
+        </if>
+        GROUP BY a.`cargotype`
+        ORDER BY COUNT(a.`id`)
+    </select>
+	
+</mapper>

@@ -1,0 +1,40 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="${item.id}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="主键id" value="${item.id}" underline="true"/>
+                            <#input id="vehicleid" name="车牌号" value="${item.vehicleid}" underline="true"/>
+                            <#input id="drivername" name="驾驶人姓名" value="${item.drivername}" underline="true"/>
+                            <#input id="corpname" name="企业名称" value="${item.corpname}" underline="true"/>
+                            <#input id="stationid" name="超重站号" value="${item.stationid}" underline="true"/>
+                            <#input id="cartype" name="车辆类型" value="${item.cartype}" underline="true"/>
+                            <#input id="caraxles" name="车轴数" value="${item.caraxles}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="ratedloading" name="核定载重量(kg)" value="${item.ratedloading}" underline="true"/>
+                            <#input id="overload" name="超重数(kg)" value="${item.overload}" underline="true"/>
+                            <#input id="fine" name="罚金" value="${item.fine}" underline="true"/>
+                            <#input id="ispunitive" name="是否完成惩罚" value="${item.ispunitive}" underline="true"/>
+                            <#input id="isblack" name="是否进入黑名单" value="${item.isblack}" underline="true"/>
+                            <#input id="remarks" name="备注" value="${item.remarks}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="BlacklistInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BlacklistInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/lawEnforcement/blacklist/blacklist_info.js"></script>
+@}

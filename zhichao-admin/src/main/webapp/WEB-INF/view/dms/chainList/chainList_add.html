@@ -1,0 +1,32 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="chainalias" name="数据服务链别名" underline="true"/>
+                            <#input id="chaindesc" name="数据服务链描述"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="inchainclass" name="接收服务" underline="true"/>
+                            <#input id="outchainclass" name="推送服务" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="ChainListInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ChainListInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/dms/chainList/chainList_info.js"></script>
+@}

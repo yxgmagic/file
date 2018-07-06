@@ -1,0 +1,93 @@
+﻿@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>检测记录管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+						<div class="row row-bottom">
+
+							<div class="col-sm-4" >
+
+								<label class="col-sm-3 control-label">所属区域</label>
+								<div class="col-sm-9">
+									<input type="text" id="areaName" class="form-control"
+										   onclick="Hlcminfo.showAreaSelectTree()" readonly="readonly">
+								</div>
+
+							</div>
+
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="col-sm-3 control-label">站点类别</label>
+									<div class="col-sm-9">
+										<#SelectDict id="sitetype" dictName="sitetype" dataStyle="btn"
+										cssName="form-control  ">
+										</#SelectDict>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<#input id="sitename" name="检测站点" />
+							</div>
+
+						</div>
+
+						<div class="row row-bottom">
+
+							<div class="col-sm-4">
+								<label for="timeArea" class="col-sm-3 control-label" >检测时间</label>
+								<div class="col-sm-9">
+									<input id="timeArea" class="form-control" name="timeArea"
+										   readonly="readonly" placeholder="点击选择时间">
+								</div>
+							</div>
+
+							<div class="col-sm-4">
+								<#input id="vehicleid" name="车牌号" />
+							</div>
+
+						</div>
+
+						<div class="row text-center">
+							<div class="col-sm-12">
+								<#button name="搜索" icon="fa-search" clickFun="Hlcminfo.search()" />
+							</div>
+						</div>
+
+                        <div class="hidden-xs" id="HlcminfoTableToolbar" role="group">
+                            @if(shiro.hasPermission("/hlcminfo/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="Hlcminfo.openAddHlcminfo()"/>
+                            @}
+                            @if(shiro.hasPermission("/hlcminfo/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="Hlcminfo.openHlcminfoDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/hlcminfo/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="Hlcminfo.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="HlcminfoTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 区域的选择框 -->
+<div id="parentAreaMenu" class="menuContent"
+	 style="display: none; position: absolute; z-index: 200;">
+	<ul id="parentAreaMenuTree" class="ztree tree-box" style="width: 229px !important;"></ul>
+</div>
+
+<script>
+    layui.laydate.render({
+        elem: '#timeArea'
+        ,range: '~' //或 range: '~' 来自定义分割字符
+    });
+</script>
+<script src="${ctxPath}/static/modular/compreAnalysis/hlcminfo/hlcminfo.js"></script>
+@}

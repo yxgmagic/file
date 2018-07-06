@@ -1,0 +1,200 @@
+﻿﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="lawEnforcecarFrom">
+
+			<input type="hidden" id="id" value="${item.id}">
+
+			<div class="row">
+				<div class="col-sm-2">
+					<div class="panel-body">
+						<img alt="photo" src="${ctxPath}/static/img/loading.gif" class="img-responsive center-block" id="img_show">
+					</div>
+					<div class="panel-body text-center">
+						车辆图片
+						<label for="img_hidden" class="btn btn-primary">
+							<i class="glyphicon glyphicon-upload"></i>&nbsp;上传
+						</label>
+						<input type="file" id="img_hidden" style="display: none" />
+						<input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+						<input type="hidden" value="law_enforcecar" id="imagetype">
+					</div>
+				</div>
+				<div class="col-sm-5">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">执法车辆牌号</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="vehicleid" name="vehicleid" type="text" value="${item.vehicleid}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">执法车编号</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="vehicleno" name="vehicleno" type="text" value="${item.vehicleno}"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">车型</label>
+						<div class="col-sm-9">
+							<!-- <input class="form-control" id="carTypeName" name="carTypeName" value="${cName}"
+                        type="text"
+                        readonly="readonly"
+                        onclick="LawEnforcecarInfoDlg.showCarTypeSelectTree(); return false;"
+                        style="background-color: #ffffff !important;">
+                            <input class="form-control" type="hidden" id="vehicletype" value="${item.vehicletype}"/> -->
+							<#SelectDict id="vehicletype" name="vehicletype" dictName="cartype" dataStyle="btn"
+							cssName="form-control"></#SelectDict>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">GPS设备</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="gpsdeviceid" name="gpsdeviceid"
+							   type="text"  value="${item.gpsdeviceid}"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="certificate" class="col-sm-3 control-label">检定证书:</label>
+					<div class="col-sm-9">
+						<div class="col-sm-5">
+							<a id="certificateA" href="javascript:showCertificate();"
+							   style="line-height: 34px;color: #00B83F;">暂无</a>
+							<input type="text" id="certificate" name="certificate" class="form-control"
+								   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+						</div>
+						<label for="file_input" class="btn btn-primary" style="margin-left: 30px">
+							<i class="glyphicon glyphicon-upload"></i>&nbsp;重新上传
+						</label>
+						<input type="file" id="file_input" style="display: none"/>
+					</div>
+
+				</div>
+
+				<div class="form-group">
+					<label for="certificateValidityPeriod" class="col-sm-3 control-label">检定证书有效期</label>
+					<div class="col-sm-9">
+						<input type="text" id="certificateValidityPeriod" name="certificateValidityPeriod"
+							   value="${item.certificateValidityPeriod}" class="form-control text-center" />
+					</div>
+				</div>
+				<#input id="dueBank" name="收款银行" value="${item.dueBank}"/>
+
+				<!-- <div class="form-group">
+                    <label class="col-sm-4 control-label">所属站点</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="vehicletype" name="vehicletype"
+                            type="text" />
+                    </div>
+                </div> -->
+				<!--<#select id="isdisting" name="是否有车牌识别" selectItem="${roadList}" itemValue="roadcode" itemName="roadname">
+                     @for(road in roadList){
+                            <option value="1">是</option>
+                    @}
+                            <option value="0">否</option>
+                        </#select> -->
+			</div>
+
+			<div class="col-sm-5">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">联系人</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="manager" name="manager" type="text" value="${item.manager}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">联系方式</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="managertel" name="managertel" type="text" value="${item.managertel}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">管理部门</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="deptName" name="deptName" value="${pName}"
+							   type="text"
+							   readonly="readonly"
+							   onclick="LawEnforcecarInfoDlg.showDeptSelectTree(); return false;"
+							   style="background-color: #ffffff !important;">
+						<input class="form-control" type="hidden" id="deptid" value="${item.deptid}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">所属区域</label>
+					<div class="col-sm-9">
+						<input class="form-control" id="areaName" name="areaName"  value="${aName}"
+							   type="text"
+							   readonly="readonly"
+							   onclick="LawEnforcecarInfoDlg.showAreaSelectTree(); return false;"
+							   style="background-color: #ffffff !important;">
+						<input class="form-control" type="hidden" id="areacode" value="${item.areacode}" />
+					</div>
+				</div>
+				<#input id="judicialOrgan" name="审判机关" value="${item.judicialOrgan}" />
+				<#input id="bankAccountName" name="银行户名" value="${item.bankAccountName}"/>
+				<#input id="bankAccount" name="银行账号" value="${item.bankAccount}"/>
+				<#input id="bankAddress" name="银行地址" value="${item.bankAddress}"/>
+
+
+			</div>
+		</div>
+		<!-- 父级部门的选择框 -->
+		<div id="parentDeptMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+		<!-- 区域的选择框 -->
+		<div id="parentAreaMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentAreaMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+		<!-- 车型的选择框 -->
+		<div id="parentCarMenu" class="menuContent"
+			 style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentCarMenuTree" class="ztree tree-box" style="width: 188px !important;"></ul>
+		</div>
+
+		<!-- <div class="row">
+            <div class="col-sm-6 b-r">
+                        <#input id="vehicleid" name="执法车辆牌号" value="${item.vehicleid}" underline="true"/>
+                        <#input id="vehicleno" name="执法车编号" value="${item.vehicleno}" underline="true"/>
+                        <#input id="vehicletype" name="车型" value="${item.vehicletype}" />
+            </div>
+
+            <div class="col-sm-6">
+                        <#input id="manager" name="联系人" value="${item.manager}" underline="true"/>
+                        <#input id="managertel" name="联系方式" value="${item.managertel}" underline="true"/>
+                        <#input id="deptid" name="管理部门" value="${item.deptid}" underline="true"/>
+                        <#input id="areacode" name="所属区域" value="${item.areacode}" />
+            </div>
+        </div>
+-->
+
+
+
+		<div class="row btn-group-m-t">
+			<div class="col-sm-12 text-center">
+				<#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="LawEnforcecarInfoDlg.editSubmit()"/>
+				<#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="LawEnforcecarInfoDlg.close()"/>
+			</div>
+		</div>
+	</div>
+
+</div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/lawEnforcecar/lawEnforcecar_info.js"></script>
+<script type="text/javascript">
+
+    var certificateUrl = "${item.certificateUrl}";
+    var certificateValue = "${item.certificate}";
+
+    //显示证书
+    if(certificateValue.length > 0) {
+        $("#certificateA").text(certificateValue);
+    } else {
+        $("#certificateA").text("暂无");
+    }
+
+    $("#vehicletype").val("${item.vehicletype}");
+</script>
+@}

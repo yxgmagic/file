@@ -1,0 +1,279 @@
+<HTML>
+<head>
+<title>${title} --- 视频监控管理</title>
+
+<!-- 全局js -->
+    <script src="/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="/static/js/plugins/bootstrap-select-1.12.4/dist/js/bootstrap-select.js"></script>
+    <script src="/static/js/plugins/ztree/jquery.ztree.all.min.js"></script>
+    <script src="/static/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/static/js/plugins/validate/bootstrapValidator.min.js"></script>
+    <script src="/static/js/plugins/validate/zh_CN.js"></script>
+    <script src="/static/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="/static/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/js/plugins/jquery-treegrid/js/jquery.treegrid.min.js"></script>
+    <script src="/static/js/plugins/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"></script>
+    <script src="/static/js/plugins/jquery-treegrid/extension/jquery.treegrid.extension.js"></script>
+    <script src="/static/js/plugins/layer/layer.min.js"></script>
+    <script src="/static/js/plugins/iCheck/icheck.min.js"></script>
+    <script src="/static/js/plugins/layer/laydate/laydate.js"></script>
+    <script src="/static/js/plugins/webuploader/webuploader.min.js"></script>
+    <script src="/static/js/common/ajax-object.js"></script>
+    <script src="/static/js/common/bootstrap-table-object.js"></script>
+    <script src="/static/js/common/tree-table-object.js"></script>
+    <script src="/static/js/common/web-upload-object.js"></script>
+    <script src="/static/js/common/ztree-object.js"></script>
+    <script src="/static/js/common/Feng.js"></script>
+    <script src="/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+    <script src="/static/js/common/Ning.js"></script>
+
+<script language="javascript">
+		$().ready(function(){
+			OCXTest.RefreshUI();
+		});
+		function toShowUI(skinIdx, ServerIP, ServerPort, UserName, UserPwd){
+			var skinIdx = skinIdx;
+			var ServerIP = ServerIP;
+			var ServerPort = ServerPort;
+			var UserName = UserName;
+			var UserPwd = UserPwd;
+			OCXTest.InitUI(skinIdx, ServerIP, ServerPort, UserName, UserPwd, "", 0);
+		}
+		
+		<!--当前功能索引号为23时，设置实时预览面板画面分割数 -->		
+		function toSplitter(nSplitter){
+			var nSplitter = nSplitter;
+			OCXTest.Splitter = nSplitter;
+		}
+		<!-- -->
+		function toCaptureVisible(nVisible){
+			var nVisible = nVisible
+			OCXTest.CaptureVisible = nVisible;
+		}
+		<!--当前功能索引号为23时,在指定预览面板打开指定摄像头视频 -->
+		<!--ChannelIdx 面板索引号0~63 -->
+		<!--CameraID 摄像机ID -->
+		<!--wLinkMode 0： 主码流　1: 子码流 -->
+		function toOpenChannel(ChannelIdx, CameraID, wLinkMode){
+			var ChannelIdxIdx = ChannelIdx;
+			var CameraID = CameraID;
+			var wLinkMode = wLinkMode;
+			var errNo = OCXTest.OpenChannel(ChannelIdx, CameraID, wLinkMode);
+			if (errNo != 0){
+				alert("打开通道失败,errNo = " + errNo.toString());
+			}
+		}
+		<!--当前功能索引号为23时，关闭指定预览面板实时视频画面 -->
+		function toCloseChannel(ChannelIdx){
+			var ChannelIdxIdx = ChannelIdx;
+			var errNo = OCXTest.CloseChannel(ChannelIdx);
+			if (errNo != 0){
+			}
+		}
+		<!--当前功能索引号为5时，在指定预览面板播放指定时间段的摄像机历史视频 -->
+		<!--ChannelIdx 面板索引号0~3 -->
+		<!--CameraID 摄像机ID号 -->
+		<!--startTime 开始时间 时间格式: 2000-01-01 01:01:01-->
+		<!--endTime 结束时间 -->
+		<!--startTime和endTime时间必须在同一天内 -->
+        function toPlayVideo(ChannelIdx, CameraID, startTime, endTime){
+			var ChannelIdx = ChannelIdx;
+            var CameraID = CameraID;
+  			var startTime = startTime;
+			var endTime = endTime;
+			var errNo = OCXTest.PlayVideo(ChannelIdx, CameraID, startTime, endTime, 1);
+			if(errNo != 0){
+				errNo = OCXTest.PlayVideo(ChannelIdx, CameraID, startTime, endTime, 0);
+			}
+			if(errNo != 0){
+				alert("播放历史视频失败，errNo = " + errNo.toString());
+			}
+		}
+		<!--当前功能索引号为5时，关闭指定预览面板历史视频 -->
+		function toStopVideo(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StopVideo(ChannelIdx);
+			if(errNo != 0){
+				alert("停止历史视频失败，errNo = " + errNo.toString());
+			}
+		}
+
+		function toCaptureBmp(ChannelIdx, sSaveBmpFileName){
+			var ChannelIdx = ChannelIdx;
+			var sSaveBmpFileName = sSaveBmpFileName;
+			var errNo = OCXTest.CaptureBMP(ChannelIdx, sSaveBmpFileName);
+			if (errNo != 0){
+				alert("capturebmp errno = " + errNo.toString());
+			}else{
+				alert("抓图成功");
+			}
+		}
+		<!--当前功能更索引号为23时，对当前实时视频画面进行抓拍，并保存到sSaveBmpFileName指定文件 -->
+		function toCaptureBmpEx(ChannelIdx, sSaveBmpFileName){
+			var ChannelIdx = ChannelIdx;
+			var sSaveBmpFileName = sSaveBmpFileName;
+			var errNo = OCXTest.CaptureBMPEx(ChannelIdx, sSaveBmpFileName);
+			if (errNo != 0){
+				alert("capturebmpex errno = " + errNo.toString());
+				///重新编码
+				if (errNo == 11 || errNo == 31){
+					var errNo1 = OCXTest.EncodeBase64ForBMP(sSaveBmpFileName);
+					if (errNo1 != 0){
+						alert("EncodeBase64ForBMP errno = " + errNo1.toString());	
+					}else{
+						alert("编码文件成功");	
+					}
+				}
+			}else{
+				alert("抓图并上传图片成功");
+			}
+		}
+		
+		function toPTZControl(ChannelIdx, wCommand, bytStop, bytSpeed){
+			var ChannelIdx = ChannelIdx;
+			var wCommand = wCommand;
+					var bytStop = bytStop;
+			var bytSpeed = bytSpeed;
+					var errNo = OCXTest.PTZControl(ChannelIdx, wCommand, bytStop, bytSpeed);
+			if (errNo != 0){
+				alert("PTZControl errno = " + errNo.toString());
+			}else{
+				alert("Command = " +  wCommand.toString() + " " + bytStop.toString + " " + bytSpeed.toString());
+			}
+		}
+		
+		function toRefresh(){
+			alert("test");
+			OCXTest.RefreshUI;	
+		}
+		<!--判断当前摄像机在线状态 -->
+		function toIsOnline(CameraID){
+			var CameraID = CameraID;
+            		var errNo = OCXTest.IsOnline(CameraID);
+            		if (errNo == 0){
+				alert("设备不在线");
+			}else if (errNo == 1){
+				alert("设备在线");
+   			}else{
+				alert("参数不正确");
+            		}        
+		}
+		
+		function toStartAudioTalk(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StartAudioTalk(ChannelIdx);
+			if(0 != errNo){
+				alert("failed:" + errNo.toString());
+			}
+		}
+		
+		function toStopAudioTalk(ChannelIdx){
+			var ChannelIdx = ChannelIdx;
+			var errNo = OCXTest.StopAudioTalk(ChannelIdx);
+			if(0 != errNo){
+				alert("failed:" + errNo.toString());
+			}
+		}
+		<!--当当前功能索引号为22时，根据设备ID及类型在ocx上显示当前设备详细信息 -->
+		<!--DeviceID 设备ID byDeviceType 设备类型 由设备管理增加修改时提交到WebServers -->
+		function toShowDetailInfo(DeviceID, byDeviceType){
+			var DeviceID = DeviceID;
+			var byDeviceType = byDeviceType;
+			var errNo = OCXTest.ShowDeviceDetailInfo(DeviceID, byDeviceType);
+			if (errNo != 0){
+				alert("ShowDeviceDetailInfo errno = " + errNo.toString());
+			}
+		}
+		
+		function toSendChannelData(sData, iSize){
+			var sData = sData;
+			var iSize = iSize;
+			var errNo = OCXTest.SendChannelData(sData, iSize);
+			if (errNo != 0){
+				alert("toSendChannelData errNo = " + errNo.toString());
+			} else {
+				alert("透传数据成功");
+			}
+		}
+
+</script>
+</head>
+<body onLoad="javacript:toRefresh">
+<p>
+  <input name="left4222" type="button" id="left4222" onClick="toShowUI(23, '192.168.20.12', 3000, 'admin', '12345', '', 0)" value="登录" style="width:100">
+  <input name="left4222" type="button" id="left4222" onClick="toSplitter(9)" value="一画面" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toSplitter(4)" value="四画面" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toSplitter(103)" value="三画面" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toOpenChannel(0, '{94361574-18A8-4E95-8D45-A3926CA92B57}_0001', 0)" value="打开预览" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toCloseChannel(0)" value="关闭预览" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toCaptureBmp(0, 'C:\\capturebmp.bmp')" value="抓图" style="width:100">
+  <input name="left422" type="button" id="left422" onMouseDown="toPTZControl(0, 23, 0, 7)" onMouseUp="toPTZControl(0,23,1,7)" value="左转" style="width:100">
+  <input name="left422" type="button" id="left422" onMouseDown="toPTZControl(0, 24, 0, 7)" OnMouseUp="toPTZControl(0,24,1,7)" value="右转" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toPTZControl(0, 39, 8, 0)" value="复位" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toIsOnline('{D92EFA63-E5C7-488F-AAC5-1E7F76EBB070}_0001')" value="在线" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toCaptureBmpEx(-1, '')" value="抓拍并上传" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toPlayVideo(0, '{D92EFA63-E5C7-488F-AAC5-1E7F76EBB070}_0001', '2015-11-05 01:00:00', '2015-11-05 23:00:00')" value="回放" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toStopVideo(0)" value="停止回放" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toShowDetailInfo('{1B3BB290-C0FB-4B0F-BF50-582444C93691}', 7)" value="显示设备" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toStartAudioTalk(0)" value="开始对讲" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toStopAudioTalk(0)" value="停止对讲" style="width:100">
+  <input name="left422" type="button" id="left422" onClick="toSendChannelData('中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国中国',0)" value="透传数据" style="width:100">
+</p>
+<p>
+  <object
+	  classid="clsid:D7CBB81A-1A2C-4FA7-AB12-DDC381FC7570"
+	  codebase="WebOCX.cab#version=1,0,0,307"	
+	  id="OCXTest"
+	  width=100%
+	  height=100%
+	  align=center
+	  hspace=0
+	  vspace=0
+>
+    <param name="SkinSelectIdx" value="32">			<!--功能索引号 -->
+    <param name="ServerIP" value="192.168.20.12">    <!--视频监控平台服务器IP地址 -->
+    <param name="ServerPort" value="3000">			<!--视频监控平台服务器端口号 -->
+    <param name="UserName" value="admin">			<!--如果bMustWebServers=1表示WebServers用户名 反之表示视频监控平台登录用户名 -->
+    <param name="UserPassword" value="12345">		<!--视频监控平台登录密码 -->
+	<!--当bMustWebServers=1是有效，表示WebServers服务器地址 -->
+    <param name="WebServers_Get_Org" value="http://43.1.34.80:8080/csjj/services1/synOrgForDevice?wsdl">	
+	<!--value=1 设备从WebServers加载 反之从视频监控平台加载 -->
+    <param name="bMustWebServers" value=0>	
+<!--	value =1 应用终端通过代理服务器访问 反之直接登录 -->
+	<param name="ProxyStartup" value=0>	
+<!--	代理服务器IP地址 -->
+	<param name="ProxyServerIP" value="43.1.34.85">	
+<!--	代理服务器端口 -->
+	<param name="ProxyServerPort" value=3030>		
+  </object>
+  <a href="WebOCX.exe" title="下载插件" target="_self">下载插件</a></p>
+<script language="javascript" event="OnBeforeLogin" for="OCXTest">
+<!--  alert("please modify user information");	 -->
+</script>
+<script language="javascript" event="OnLoginFaild" for="OCXTest">
+  alert("web close");	
+  window.close();
+</script>
+<script language="javascript" event="OnAfterLogin(iErr)" for="OCXTest">
+  alert(iErr);
+</script>
+<script language="javascript" event="OnPreviewMouse(iEvent, iChannel)" for="OCXTest">
+  if(2 == iEvent){
+    alert(iEvent + '/' + iChannel);
+  }
+  if(1024 == iEvent){	
+	alert(iChannel);
+  }
+  if(1025 == iEvent){
+	alert(iChannel);
+  }
+</script>
+<script language="javascript" event="OnBmpStream(bmpfile)" for="OCXTest">
+  alert(bmpfile);
+</script>
+<script language="javascript" event="OnBmpStreamEx(captureType, cameraID, sBmpFileName, sBmpData)" for="OCXTest">
+  alert("类型:" + captureType.toString() + " 摄像机ID:" + cameraID + " 图片文件名:" + sBmpFileName + " 编码后数据:" + sBmpData);
+</script>
+</body>
+</HTML>

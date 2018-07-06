@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>抄告信息结果反馈</title>
+    <meta charset="utf-8" />
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body class="layui-bg-gray">
+<div class="body-nopadding">
+    <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />抄告信息反馈列表</h2>
+    <div class="ibox-content margin-bottom-30">
+        <div class="layui-row margin-bottom-10">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">车牌号</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="vehicleId">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">驾驶员</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="driver">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row margin-bottom-10">
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">检测地点</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="checkAddress">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-col-md4 text-right">
+                    <label class="layui-form-label1">抄告类型</label>
+                </div>
+                <div class="layui-col-md6 text-left">
+                    <form class="layui-form">
+                        <select lay-verify="required" id="chaoguType">
+                            <option value="">全部</option>
+                            <option value="超限超载">超限超载</option>
+                            <option value="黑名单">黑名单</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="text-center margin-top-30">
+            <button class="layui-btn" id="btn_search">查询</button>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <div class="text-right">
+            <button class="layui-btn  layui-btn-sm editor" id="btn_insert_show">新增</button>
+        </div>
+        <div class="layui-form">
+            <table class="layui-table text-center" id="data-table">
+                <thead>
+                <tr>
+                    <th class="text-center">序号</th>
+                    <th>检测单号</th>
+                    <th>检测地点</th>
+                    <th>车牌号</th>
+                    <th>驾驶员</th>
+                    <th>驾驶证员</th>
+                    <th>处罚日期</th>
+                    <th>超告类型</th>
+                    <th>反馈情况</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="text-center" id="demo7"></div>
+        </div>
+    </div>
+</div>
+
+<!--弹框-->
+<div style="height: 0px;overflow: hidden;">
+
+
+    <div class="body-nopadding" id="info_view">
+        <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;" />
+            <span id="popup_title"></span>
+        </h2>
+        <div class="ibox-content margin-top-30">
+            <input type="hidden" id="idi">
+            <div class="layui-row">
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">抄告类型</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <form class="layui-form">
+                        <select lay-verify="required" id="chaoguTypei">
+                            <option value="">抄告类型</option>
+                            <option value="超限超载">超限超载</option>
+                            <option value="黑名单">黑名单</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div class="layui-row margin-top-10">
+                <div class="layui-col-md2 text-right ">
+                    <label class="layui-form-label1">检测单号</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="checkNoi">
+                    </div>
+                </div>
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">检测地点</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="checkAddressi">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-top-10">
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">车牌号</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="vehicleIdi">
+                    </div>
+                </div>
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">驾驶员</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="driveri">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-top-10">
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">驾驶证号</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input type="text" class="layui-input" id="driversLicensei">
+                    </div>
+                </div>
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">处罚日期</label>
+                </div>
+                <div class="layui-col-md3 text-left">
+                    <div>
+                        <input class="layui-input" id="punishDatei" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row margin-top-10">
+                <div class="layui-col-md2 text-right">
+                    <label class="layui-form-label1">反馈结果</label>
+                </div>
+                <div class="layui-col-md8 text-left">
+                    <div>
+                        <textarea class="layui-textarea" id="feedbacki"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center margin-top-30" id="box_insert">
+                <button class="layui-btn" id="btn_insert">确定</button>
+                <button class="layui-btn layui-btn-primary cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/jquery-3.2.1.min.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Plugins/layui/layui.all.js"></script>
+<script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+<script src="${ctxPath}/static/js/common/Ning.js"></script>
+<script src="${ctxPath}/static/js/common/Yang.js"></script>
+<script>
+
+    //用来记录打开的弹窗的index
+    var index = 0;
+    //本页面基本数据对象
+    var baseObject = {
+        id: '',
+        checkNo: '',
+        checkAddress: '',
+        vehicleId: '',
+        driver: '',
+        driversLicense: '',
+        punishDate: '',
+        chaoguType: '',
+        feedback: ''
+    };
+    //本页面数据
+    var chaoguInfoResultData = [
+        {
+            id: '0',
+            checkNo: 'JCD2018032300001',
+            checkAddress: '山玉检测站',
+            vehicleId: '湘A896702',
+            driver: '王珊',
+            driversLicense: '26852315251',
+            punishDate: '2018-03-23',
+            chaoguType: '超限超载',
+            feedback: '已反馈',
+        },
+        {
+            id: '1',
+            checkNo: 'JCD2018032300002',
+            checkAddress: '罗湖检测站',
+            vehicleId: '湘A825702',
+            driver: '谢玉',
+            driversLicense: '12145231566',
+            punishDate: '2018-03-23',
+            chaoguType: '超限超载',
+            feedback: '已反馈',
+        },
+        {
+            id: '2',
+            checkNo: 'JCD2018032300003',
+            checkAddress: '南山检测站',
+            vehicleId: '湘A82451',
+            driver: '罗杰',
+            driversLicense: '12145231567',
+            punishDate: '2018-03-23',
+            chaoguType: '超限超载',
+            feedback: '已反馈',
+        },
+    ];
+
+    //设置分页栏
+    layui.laypage.render({
+        elem: 'demo7'
+        , count: 1
+        , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+        , jump: function (obj) {
+
+        }
+    });
+
+    //将数据展示到页面
+    function dataToTable(tempData) {
+        $("#data-table tbody").empty();
+        var length = tempData.length;
+
+        for(var i = 0; i < length; i++) {
+            var temp = tempData[i];
+            $("#data-table tbody").append($('<tr>' +
+                '<td>' + (i+1) + '</td>' +
+                '<td>' + temp.checkNo + '</td>' +
+                '<td>'+temp.checkAddress+'</td>' +
+                '<td>'+temp.vehicleId+'</td>' +
+                '<td>'+temp.driver+'</td>' +
+                '<td>'+temp.driversLicense+'</td>' +
+                '<td>'+temp.punishDate+'</td>' +
+                '<td>'+temp.chaoguType+'</td>' +
+                '<td>'+temp.feedback+'</td>' +
+                '<td>' +
+                '<button class="layui-btn  layui-btn-sm editor" objId="'+temp.id+'">查看</button>' +
+                '<button class="layui-btn  layui-btn-sm del" objId="'+temp.id+'">删除</button>' +
+                '</td>' +
+                '</tr>'));
+        }
+    }
+
+    //绑定搜索按钮
+    $("#btn_search").click(function() {
+        //生成一个用于查询的对象
+        var tempObj = {};
+        //用于接收查询之后的结果
+        var tmepArr = [];
+        //给临时变量属性一一赋值
+        for(var i in baseObject) {
+            tempObj[i] = $("#" + i).val();
+        }
+        //查询
+        tmepArr = Ning.Tools.selectArray(chaoguInfoResultData, tempObj);
+        //展示数据
+        dataToTable(tmepArr);
+    });
+
+    //绑定删除事件
+    $("#data-table tbody").on("click",".del",function(){
+        var dataIndex = $(this).attr("objId");
+
+        layer.confirm('是否删除？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            Ning.Tools.deleteArrayById(chaoguInfoResultData, dataIndex);
+            dataToTable(chaoguInfoResultData);
+            layer.msg("删除成功",{time:500});
+        });
+
+    });
+
+
+    //绑定详情弹出框
+    $("#data-table tbody").on("click",".editor",function(){
+
+
+        //获取到需要展示的对象的id(index)
+        var objId = $(this).attr("objId");
+        //将添加按钮隐藏
+        $("#box_insert").hide();
+
+        //设置标签为查看详情
+        $("#popup_title").text("查看抄告反馈信息");
+        //清空详情页面的值
+        for(var i in baseObject) {
+            $("#" + i + 'i').val('');
+        }
+
+        //从数据中获取到需要展示的obj
+        var tempArr = Ning.Tools.selectArray(chaoguInfoResultData,{id:objId});
+        var tempObj = tempArr[0];
+        //给相关input赋值,用于展示
+        for(var i in tempObj) {
+            $("#" + i + 'i').val(tempObj[i]);
+        }
+        layui.form.render('select');
+        //弹框
+        index = layer.open({
+            type: 1,
+            area: ['1000px', '500px'], //宽高
+            content: $("#info_view")
+        });
+    });
+
+    //绑定关闭事件
+    $('.cancel').click(function () {
+        Module.Box.Close(index);
+    });
+
+    //展示添加页面
+    $("#btn_insert_show").click(function() {
+        $("#popup_title").text("添加抄告反馈信息");
+        //将添加按钮显示
+        $("#box_insert").show();
+        // 清空基本对象,和input
+        for(var i in baseObject) {
+            baseObject[i] = '';
+            $("#" + i + 'i').val('');
+        }
+        layui.form.render('select');
+        index = layer.open({
+            type: 1,
+            area: ['1000px', '500px'], //宽高
+            content: $("#info_view")
+        });
+    });
+
+
+    //绑定添加按钮(将按钮添加到数据)
+    $('#btn_insert').click(function () {
+        var chaoguTypeiValue = $("#chaoguTypei").val()
+        if(chaoguTypeiValue == null || chaoguTypeiValue == '') {
+            layer.msg("请选择抄告类型");
+            return;
+        }
+
+        var timestamp = new Date().getTime();
+        $("#idi").val(timestamp);
+        //用来存储的对象
+        var tempObj = {
+            id: '',
+            checkNo: '',
+            checkAddress: '',
+            vehicleId: '',
+            driver: '',
+            driversLicense: '',
+            punishDate: '',
+            chaoguType: '',
+            feedback: '',
+        };
+        for(var i in tempObj) {
+            tempObj[i] = $("#" + i + 'i').val();
+        }
+        //将对象存进去
+        Ning.Tools.insertArray(chaoguInfoResultData,tempObj);
+        //刷新页面数据展示
+        dataToTable(chaoguInfoResultData);
+        //弹出提示并关闭
+        layer.msg("添加成功",{time:500});
+        Module.Box.Close(index);
+    });
+
+
+    //初始化
+    $(function() {
+        //初始化表格
+        dataToTable(chaoguInfoResultData);
+
+        //设置时间选择控件
+        layui.laydate.render({
+            elem: '#punishDatei'
+        });
+    })
+
+
+</script>
+</body>
+</html>

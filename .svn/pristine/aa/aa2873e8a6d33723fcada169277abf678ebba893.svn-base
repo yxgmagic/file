@@ -1,0 +1,37 @@
+@layout("/common/_container.html"){
+	<div id="timeSelect">		
+	</div>
+
+	
+	<script type="text/javascript">
+		$(function() {
+			
+		});
+		
+		layui.use(['laydate'],function() {
+			var laydate = layui.laydate;
+			var ins1 = laydate.render({
+			    elem: '#timeSelect'
+			    ,type: 'year'
+			    ,position: 'static'
+			    ,show: true //直接显示
+			    ,btns: ['confirm']
+			   	,done: function(value, date, endDate){
+			   	    console.log(value); 
+			   	 	console.log(date);
+			   		console.log(endDate);
+			   		ins1.hint(value); //在控件上弹出value值
+			   	 	//closeWindow();
+			   	  }
+			});
+		});
+		
+		function closeWindow() {
+			var winOpen=Feng.GetFrame("/blacklist");
+			if (winOpen!=undefined){
+				top.layer.close(winOpen.Blacklist.layerIndex);
+				top.layer.msg("更新数据:" + "0条");
+			}
+		}
+	</script>
+@}

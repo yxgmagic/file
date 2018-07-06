@@ -1,0 +1,354 @@
+@layout("/common/_container.html"){
+
+
+
+	<form class="form-horizontal" data-toggle="validator" id="idFixedSiteForm">
+        <div class="body-nopadding" >
+            <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>基础信息</h2>
+            <div class="ibox-content margin-bottom-30">
+                <div class="layui-row margin-bottom-30">
+                    <div class="layui-col-md2 text-center">
+                    
+							<!-- 图片上传组件 -->
+							<div class="panel-body">
+								<img alt="photo" src="${ctxPath}/static/img/notfoundbl.png" class="img-responsive center-block" id="img_show">
+							</div>
+							<div class="panel-body text-center">
+								治超站图片
+								<label for="img_hidden" class="btn btn-primary">
+									<i class="layui-icon">&#xe67c;</i>上传图片
+								</label>
+								<!-- 隐藏的文件上传框 -->
+								<input type="file" id="img_hidden" style="display: none" />
+								<!-- 标记图片id,默认为0 -->
+								<input type="text" id="img_id" name="imgId" value="0" style="opacity:0;"/>
+								<input type="hidden" value="fixedsite" id="imagetype">
+							</div>
+
+                    
+                        <!-- <img src="${ctxPath}/static/Resource/Images/p1.jpg" id="photo" style="width:125px;"/>
+                        <div class="layui-col-md12 text-center">
+                            <label class="layui-form-label1">站点图片</label>   
+                        </div>
+                        <button type="button" class="layui-btn" id="test1">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button> -->
+                        
+                        
+                    </div>
+                    <div class="layui-col-md10">
+                        <div class="layui-row">
+                            <div class="layui-col-md6 form-group">
+                                <label for="sitename" class="col-sm-4 control-label">检测站名称</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="sitename" name="sitename" class="form-control" placeholder="检测站名称">
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="siteorder" class="col-sm-4 control-label">站点顺序号（无需填）</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="siteorder" name="siteorder" class="form-control" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md6 form-group">
+                                <label for="sitelevel" class="col-sm-4 control-label">治超站等级</label>
+                                <div class="col-sm-8">
+                                    <select id="sitelevel" name="sitelevel" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="sitecode" class="col-sm-4 control-label">站点唯一标识</label>
+                                <div class="col-sm-8">
+                                    <input id="sitecode" name="sitecode" class="form-control" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md6 form-group">
+                                <label class="col-sm-4 control-label">地理坐标</label>
+                                <div class="col-sm-8 row">
+                                    <div class="col-sm-6" style="padding:2px;">
+                                        <label for="longitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">经</label>
+                                        <div class="col-sm-8" style="padding:0px;margin:0px;">
+                                            <input id="longitude" name="longitude" readonly class="form-control getcoor" style="padding:2px;" type="text"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6" style="padding:2px;">
+                                        <label for="latitude" class="col-sm-4 control-label" style="padding:7px;margin:0px;">纬</label>
+                                        <div class="col-sm-8" style="padding:0px;margin:0px;">
+                                            <input id="latitude" name="latitude" readonly class="form-control getcoor" style="padding:2px;" type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 form-group">
+                                <label for="address" class="col-sm-4 control-label">地址</label>
+                                <div class="col-sm-8">
+                                    <input id="address" name="address" class="form-control" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+                            <div class="layui-col-md6 form-group">
+                                <label for="planarea" class="col-sm-4 control-label">规划面积</label>
+                                <div class="col-sm-8">
+                                    <input id="planarea" name="planarea" class="form-control" type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 form-group">
+                                <label for="unloadarea" class="col-sm-4 control-label">卸货厂面积</label>
+                                <div class="col-sm-8">
+                                    <input id="unloadarea" name="unloadarea" class="form-control" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-row">
+
+                            <input type="hidden" id="id" value="0">
+                            <input type="hidden" id="deptid" value="0">
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="dueBank" class="col-sm-4 control-label">收款银行</label>
+                                <div class="col-sm-8">
+                                    <input id="dueBank" name="dueBank" class="form-control" type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 form-group">
+                                <label for="bankAddress" class="col-sm-4 control-label">银行地址</label>
+                                <div class="col-sm-8">
+                                    <input id="bankAddress" name="bankAddress" class="form-control" type="text" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 form-group">
+                                <label for="bankAccountName" class="col-sm-4 control-label">银行户名</label>
+                                <div class="col-sm-8">
+                                    <input id="bankAccountName" name="bankAccountName" class="form-control" type="text" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 form-group">
+                                <label for="bankAccount" class="col-sm-4 control-label">银行账号</label>
+                                <div class="col-sm-8">
+                                    <input id="bankAccount" name="bankAccount" class="form-control" type="text" />
+                                </div>
+                            </div>
+
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="judicialOrgan" class="col-sm-4 control-label">审判机关</label>
+                                <div class="col-sm-8">
+                                    <input id="judicialOrgan" name="judicialOrgan" class="form-control" type="text" />
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6 form-group">
+                                <label for="Select1" class="col-sm-4 control-label">管理路段</label>
+                                <div class="col-sm-8">
+                                    <div>
+                                        <input id="areacode" name="areacode" type="hidden" class="form-control" />
+                                        <input id="roadcode" name="roadcode" type="hidden" class="form-control" />
+                                        <div class="col-sm-4 text-center" style="padding:3px">
+                                            <select id="Select1" name="Select1"  class="form-control" style="padding:0px 3px" onchange="selectCity('Select1','Select2',document.getElementById('areacode'),'0');" ></select>
+                                        </div>
+                                        <div class="col-sm-4" style="padding:3px">
+                                            <select id="Select2" name="Select2" class="form-control" style="padding:0px 3px"
+                                                    onchange="selectArea('Select1','Select2',document.getElementById('areacode'),'0');" ></select>
+                                        </div>
+                                        <div class="col-sm-4" style="padding:3px">
+                                            <select id="Select3" name="Select3" class="form-control" style="padding:0px 3px"
+                                                    onchange="selectRoad(document.getElementById('roadcode'));" ></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>信息详情</h2>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="lawperson" class="col-md-4 control-label">法定代表人</label>
+                        <div class="col-md-8">
+                            <input id="lawperson" name="lawperson" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="lawpersontel" class="col-md-4 control-label">联系电话</label>
+                        <div class="col-md-8">
+                            <input id="lawpersontel" name="lawpersontel" class="form-control" type="text" style="padding:7px;"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="setbegindate" class="col-md-4 control-label">设置时间</label>
+                        <div class="col-md-8">
+                            <input value="" id="setbegindate" name="setbegindate" type="" 
+                                class="form-control" 
+                                onclick="laydate({istime: false, format: 'YYYY-MM-DD', change: $(this).change()})" style="padding:7px;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="unloadcode" class="col-md-4 control-label">卸货场</label>
+                        <div class="col-md-8">
+                        	<input id="ulloadname" class="form-control" readonly="readonly" placeholder="单击选择卸货场"/>
+                        	<input id="unloadcode" name="unloadcode" type="hidden"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="unloadperson" class="col-md-4 control-label">卸货场联系人</label>
+                        <div class="col-md-8">
+                            <input id="unloadperson" name="unloadperson" class="form-control" type="text" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="unloadpersontel" class="col-md-4 control-label">卸货场联系人电话</label>
+                        <div class="col-md-8">
+                            <input id="unloadpersontel" name="unloadpersontel" class="form-control" type="text" readonly="readonly" style="padding:7px;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="pName" class="col-md-4 control-label">管理部门</label>
+                        <div class="col-md-8">
+                            <input  placeholder="单击选择部门" value="" 
+                            class="form-control" id="pName" name="pName"  readonly="readonly"
+                            onclick="DeptInfoDlg.showDeptSelectTree(); return false;"/>
+                            <input style="display:none;" id="deptpid"/>
+                            <!-- 父级部门的选择框 -->
+                            <div id="parentDeptMenu" class="menuContent" style="display: none; position: absolute; z-index: 200;">
+                                <ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 139px !important;margin: 15px;"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="manager" class="col-md-4 control-label">站点负责人</label>
+                        <div class="col-md-8">
+                            <input id="manager" name="manager" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="managertel" class="col-md-4 control-label">站点联系方式</label>
+                        <div class="col-md-8">
+                            <input id="managertel" name="managertel" class="form-control" type="text" style="padding:7px;"/>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4 form-group">
+                        <label for="certificate" class="col-sm-4 control-label">检定证书:</label>
+                        <div class="col-sm-8">
+                            <a id="certificateA" href="javascript:showCertificate();"
+                               style="line-height: 34px;color: #00B83F;">请点击上传按钮上传</a>
+                            <input type="text" id="certificate" name="certificate" class="form-control"
+                                   placeholder="请点击上传证书按钮" readonly="readonly" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <div class="col-sm-4"></div>
+                        <label for="file_input" class="btn btn-primary" style="margin-left: 30px">
+                            <i class="glyphicon glyphicon-upload"></i>&nbsp;上传证书
+                        </label>
+                        <input type="file" id="file_input" style="display: none"/>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="certificateValidityPeriod" class="col-sm-4 control-label">检定证书有效期</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="certificateValidityPeriod" name="certificateValidityPeriod"
+                                   style="padding: 0 !important;" class="form-control text-center" />
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <h2 class="margin-left-30"><img src="${ctxPath}/static/Resource/Images/title.png" style="width: 25px;"/>人员信息</h2>
+            <div class="ibox-content">
+                <div class="layui-row">
+                   <div class="layui-col-md6 form-group">
+                       <label for="approves" class="col-md-4 control-label">核定编制</label>
+                       <div class="col-md-8">
+                           <input id="approves" name="approves" class="form-control" type="text"/>
+                       </div>
+                   </div>
+                   <div class="layui-col-md6 form-group">
+                       <label for="actuals" class="col-md-4 control-label">实配人数</label>
+                       <div class="col-md-8">
+                           <input id="actuals" name="actuals" class="form-control" type="text"/>
+                       </div>
+                   </div>
+                </div>
+                <div class="layui-row">
+                    <div class="layui-col-md6 form-group">
+                        <label for="checks" class="col-md-4 control-label">检测人数</label>
+                        <div class="col-md-8">
+                            <input id="checks" name="checks" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 form-group">
+                        <label for="contracts" class="col-md-4 control-label">合同制人数</label>
+                        <div class="col-md-8">
+                            <input id="contracts" name="contracts" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center margin-top-30">
+                    <button class="layui-btn" onclick="FixedsiteInfoDlg.addSubmit()">保存</button>
+                    <button class="layui-btn layui-btn-primary cancel">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <link href="${ctxPath}/static/Resource/Css/main.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Css/mycss.css" rel="stylesheet" />
+    <link href="${ctxPath}/static/Resource/Scripts/Plugins/layui/css/layui.css" rel="stylesheet" />
+
+    <script src="${ctxPath}/static/Resource/Scripts/Js/modules/module.js"></script>
+    <script src="${ctxPath}/static/modular/platformConfig/area/area_select.js"></script>
+    
+    
+    <script>
+		$('.cancel').on('click', function () {
+            Module.Box.CloseDialog()
+        });
+		layui.use('upload', function(){
+          var upload = layui.upload;
+
+          //执行实例
+          var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            ,url: '/upload/' //上传接口
+            ,done: function(res){
+              //上传完毕回调
+            }
+            ,error: function(){
+              //请求异常回调
+            }
+          });
+        });
+
+	
+    //我新添加的代码
+    var certificateUrl = "";
+    var sitelevelValue = "";
+    var areacodeValue = "";
+    var unloadcodeValue = "";
+    var deptpidValue = "";
+
+    var roadcodeValue = "";
+    var areacodeValue = "";
+    </script>
+
+
+
+<script src="${ctxPath}/static/modular/siteRegistration/fixedsite/fixedsite_info.js"></script>
+@}

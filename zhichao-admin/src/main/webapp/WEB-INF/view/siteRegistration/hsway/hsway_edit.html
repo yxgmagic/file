@@ -1,0 +1,96 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="hswayForm">
+            <input type="hidden" id="id" value="${item.id}">
+			<input type="hidden" id="isnetValue" value="${item.isnet}">
+			<input type="hidden" id="isdistingValue" value="${item.isdisting}">
+			<input type="hidden" id="lng" value="${item.lng}">
+			<input type="hidden" id="lat" value="${item.lat}">
+			
+            <div class="row">
+            	<div class="col-sm-2">
+            		<div class="panel-body">
+							<img alt="photo" src="${ctxPath}/static/img/notfoundbl.png" class="img-responsive center-block" id="img_show">
+						</div>
+						<div class="panel-body text-center">
+							出入口图片
+							<label for="img_hidden" class="btn btn-primary">
+								<i class="glyphicon glyphicon-upload"></i>&nbsp;上传
+							</label>
+							<input type="file" id="img_hidden" style="display: none" />
+							<input type="hidden" id="img_id" name="img_id" value="0" style="display: none" />
+							<input type="hidden" value="hsway" id="imagetype">
+					</div>
+            	</div>
+                <div class="col-sm-5">
+                            <#input id="hswayname" name="出入口名称" value="${item.hswayname}" />
+                            <!-- <#input id="address" name="位置" value="${item.address}" /> -->
+                            
+                            <div class="form-group">
+            					    <label class="col-sm-3 control-label">位置</label>
+            					    <div class="col-sm-6">
+            					        <input class="form-control" id="address" name="address" type="text" value="${item.address}"/>
+            					    </div>
+            					    <div class="col-sm-3">
+            					        <#button name="地图标注" icon="fa-map-marker" id="btnGis"/>
+            					    </div>
+            				</div>
+                            
+                            <#input id="devicefirm" name="检测设备厂商" value="${item.devicefirm}" />
+                            <#select id="isnet" name="是否可联网">
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</#select>
+                            <#select id="isdisting" name="是否有车牌识别">
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</#select>
+                            <#input id="roadwidth" name="车道宽度" value="${item.roadwidth}" />
+                            <#input id="stakeNumber" name="桩号" value="${item.stakeNumber}"/>
+                            <#input id="bankAccount" name="银行账号" value="${item.bankAccount}"/>
+                            <#input id="dueBank" name="收款银行" value="${item.dueBank}"/>
+                </div>
+
+                <div class="col-sm-5">
+                            <#input id="setbegindate" name="设置时间" type="date" value="${item.setbegindate}"
+								clickFun="laydate({istime: false, format: 'YYYY-MM-DD'})"/>
+                            <#input id="maxweight" name="最大测重(kg)" value="${item.maxweight}"/>
+                            <#input id="cameras" name="摄像头个数" value="${item.cameras}" />
+                            <#input id="camerabrand" name="摄像头品牌" value="${item.camerabrand}" />
+                            <#input id="checkdirection" name="检测方向" value="${item.checkdirection}" />
+							<#input id="areaName" name="所属区域" readonly="readonly" hidden="areacode"
+							hiddenValue="${item.areacode}" value="${areaName}"
+                            clickFun="HswayInfoDlg.showAreaSelectTree(); return false;"
+                            style="background-color: #ffffff !important;"/>
+                            <#input id="judicialOrgan" name="审判机关" value="${item.judicialOrgan}"/>
+                            <#input id="bankAccountName" name="银行户名" value="${item.bankAccountName}"/>
+                            <#input id="bankAddress" name="银行地址" value="${item.bankAddress}"/>
+                           <!-- <#input id="roadName" name="所属道路" readonly="readonly" hidden="roadcode"
+                            hiddenValue="${item.roadcode}" value="${roadName}"
+                            clickFun="HswayInfoDlg.showRoadSelectTree(); return false;"
+                            style="background-color: #ffffff !important;"/> --> 
+                </div>
+            </div>
+			<!-- 区域的选择框 -->
+            <div id="parentAreaMenu" class="menuContent"
+                 style="display: none; position: absolute; z-index: 200;">
+                <ul id="parentAreaMenuTree" class="ztree tree-box" style="width: 229px !important;"></ul>
+            </div>
+            <!-- 道路的选择框 -->
+            <div id="parentRoadMenu" class="menuContent"
+                 style="display: none; position: absolute; z-index: 200;">
+                <ul id="parentRoadMenuTree" class="ztree tree-box" style="width: 229px !important;"></ul>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="HswayInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="HswayInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/hsway/hsway_info.js"></script>
+@}

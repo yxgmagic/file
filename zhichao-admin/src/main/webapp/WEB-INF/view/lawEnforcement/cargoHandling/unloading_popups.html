@@ -1,0 +1,117 @@
+﻿@layout("/common/_container.html"){
+
+	<!-- 卸货场弹窗 -->
+	
+	<div class="row">
+	    <div class="col-sm-12">
+	        <div class="ibox float-e-margins">
+	            <div class="ibox-title">
+	                <h5>卸货场管理管理</h5>
+	            </div>
+	            <div class="ibox-content">
+	                <div class="row row-lg">
+	                    <div class="col-sm-12">
+	                    
+	                    	<form class="form-horizontal row" data-toggle="validator" role="form">
+								<div class="form-group col-sm-6 col-xs-12">
+							    	<label for="ulname" class="col-sm-4 control-label">名称</label>
+							    	<div class="col-sm-8">
+							      		<input type="text" id="ulname" name="ulname" class="form-control" placeholder="企业名称">
+							    	</div>
+							  	</div>
+							  	
+							  	<div class="form-group col-sm-6 col-xs-12">
+							    	<label for="address" class="col-sm-4 control-label">位置</label>
+							    	<div class="col-sm-8">
+							      		<input type="text" id="address" name="address" class="form-control" placeholder="位置">
+							    	</div>
+							  	</div>
+							  	
+							  	<div class="form-group col-sm-6 col-xs-12">
+						    		<label for="manager" class="col-sm-4 control-label">负责人</label>
+						    		<div class="col-sm-8">
+						    			<input type="text" id="manager" name="manager" class="form-control" placeholder="负责人">
+						  			</div>
+						  		</div>
+						  		
+						  		<div class="form-group col-sm-6 col-xs-12">
+						    		<label for="managertel" class="col-sm-4 control-label">电话</label>
+						    		<div class="col-sm-8">
+						    			<input type="text" id="managertel" name="managertel" class="form-control" placeholder="电话">
+						  			</div>
+						  		</div>
+						  		
+						  		<div class="form-group col-sm-6 col-xs-12">
+						    		<label for="sitecode" class="col-sm-4 control-label">所属站点</label>
+						    		<div class="col-sm-8">
+						    			<input type="text" id="sitecode" name="sitecode" class="form-control" placeholder="所属站点">
+						  			</div>
+						  		</div>
+						  		<div class="form-group col-sm-12 col-xs-12">
+						    		<div class="col-sm-12 text-center">
+						    			<#button name="搜索" icon="fa-search" clickFun="Unloading.search()"/>
+						  			</div>
+						  		</div>
+						  	</form>
+	                    
+	                        <#table id="UnloadingTable"/>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
+	
+	
+	<script src="${ctxPath}/static/modular/siteRegistration/unloading/unloading.js"></script>
+	
+	<script type="text/javascript">
+		$("#UnloadingTable").on("click", function() {
+
+			var selected = $('#' + this.id).bootstrapTable('getSelections');
+		    if(selected.length == 0){
+		        Feng.info("请先选中表格中的某一记录！");
+		        return false;
+		    }else{
+
+
+
+                var winOpen=Feng.GetFrame("/cargoHandling_add");
+
+                if(winOpen == undefined) {
+                    winOpen=Feng.GetFrame("/cargoHandling_update");
+                }
+
+                if (winOpen!=undefined){
+
+                    //暂时给固定治超站用
+                    winOpen.unloadItem = selected[0];
+                    winOpen.$("#ulloadname").val(selected[0].ulname).change();
+                    winOpen.$("#ulloadcode").val(selected[0].ulcode).change();
+                    winOpen.$("#unloadperson").val(selected[0].manager).change();
+                    winOpen.$("#unloadpersontel").val(selected[0].managertel).change();
+                    var index = parent.layer.getFrameIndex(window.name)//获取子窗口索引
+                    parent.layer.close(index);
+                } else {
+                    layer.msg("没有找到窗口:cargoHandling_");
+                }
+
+
+
+
+				// //暂时给固定治超站用
+				// parent.unloadItem = selected[0];
+                // parent.$("#ulloadname").val(selected[0].ulname).change();
+                // parent.$("#ulloadcode").val(selected[0].ulcode).change();
+                // parent.$("#unloadperson").val(selected[0].manager).change();
+                // parent.$("#unloadpersontel").val(selected[0].managertel).change();
+                // var index = parent.layer.getFrameIndex(window.name);//获取子窗口索引
+				// parent.layer.close(index);
+                //
+		    }
+		
+		}); 
+
+	</script>
+@}

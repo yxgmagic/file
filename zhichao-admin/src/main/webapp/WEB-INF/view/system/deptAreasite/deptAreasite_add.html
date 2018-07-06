@@ -1,0 +1,98 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                             
+                        <div class="form-group">
+						<label class="col-sm-3 control-label">管理部门</label>
+						<div class="col-sm-9">
+							<input class="form-control" id="deptName" name="deptName"
+								type="text" readonly="readonly" value=""
+								onclick="DeptAreasite.showDeptSelectTree(); return false;"
+								style="background-color: #ffffff !important;"> <input
+								class="form-control" type="hidden" id="deptid" value="">
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					        <#input id="areaName" name="区域或站点" readonly="readonly" hidden="areasitecode"
+                            clickFun="DeptAreasiteInfoDlg.showAreaSelectTree(); return false;"
+                            style="background-color: #ffffff !important;"/>
+                           
+					<div class="form-group">
+						<label class="col-sm-3 control-label">区域或站点类型</label>
+						<div class="col-sm-9">
+							<#SelectDict id="areasitetype" dictName="areatype"
+								dataStyle="btn" cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+<div class="hr-line-dashed"></div>
+
+					 
+                </div>
+
+                <div class="col-sm-6">
+                					<div class="form-group">
+						<label class="col-sm-3 control-label">新增权限</label>
+						<div class="col-sm-9">
+							<#SelectDict id="authadd" dictName="yes_no"
+								dataStyle="btn" cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+
+				<div class="hr-line-dashed"></div>	
+					<div class="form-group">
+						<label class="col-sm-3 control-label">删除权限</label>
+						<div class="col-sm-9">
+							<#SelectDict id="authdelete" dictName="yes_no" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">查询权限</label>
+						<div class="col-sm-9">
+							<#SelectDict id="authselect" dictName="yes_no" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">修改权限</label>
+						<div class="col-sm-9">
+							<#SelectDict id="authupdate" dictName="yes_no" dataStyle="btn"
+								cssName="form-control  "></#SelectDict>
+						</div>
+					</div>
+					 
+                <div class="hr-line-dashed"></div>             
+  
+                </div>
+            </div>
+		<!-- 父级部门的选择框 -->
+		<div id="parentDeptMenu" class="menuContent"
+			style="display: none; position: absolute; z-index: 200;">
+			<ul id="parentDeptMenuTree" class="ztree tree-box"
+				style="width: 188px !important;"></ul>
+		</div>
+            <div id="parentAreaMenu" class="menuContent"
+                 style="display: none; position: absolute; z-index: 200;">
+                <ul id="parentAreaMenuTree" class="ztree tree-box" style="width: 229px !important;"></ul>
+            </div>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="DeptAreasiteInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="DeptAreasiteInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/system/deptAreasite/deptAreasite_info.js"></script>
+<script src="${ctxPath}/static/modular/system/deptAreasite/deptAreasite.js"></script>
+@}

@@ -1,0 +1,56 @@
+﻿@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <!--添加非现场执法-->
+
+            <input type="hidden" id="id" value="">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" underline="true"/>
+                            <#input id="oseid" name="非现场执法序号" underline="true"/>
+                            <#input id="osetime" name="检测时间" underline="true"/>
+                            <#input id="stationid" name="检测站号" underline="true"/>
+                            <#input id="vehicleid" name="车牌号码" underline="true"/>
+                            <#input id="vehicletype" name="货车类型" underline="true"/>
+                            <#input id="axlesum" name="轴数" underline="true"/>
+                            <#input id="speed" name="车速" underline="true"/>
+                            <#input id="laneno" name="车道" underline="true"/>
+                            <#input id="totalweight" name="总重" underline="true"/>
+                            <#input id="overlimited" name="超限量" underline="true"/>
+                            <#input id="axle1" name="轴重1" underline="true"/>
+                            <#input id="axle2" name="轴重2" underline="true"/>
+                            <#input id="axle3" name="轴重3"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="axle4" name="轴重4" underline="true"/>
+                            <#input id="axle5" name="轴重5" underline="true"/>
+                            <#input id="axle6" name="轴重6" underline="true"/>
+                            <#input id="axle7" name="轴重7" underline="true"/>
+                            <#input id="axle8" name="轴重8" underline="true"/>
+                            <#input id="vehicleimage" name="车头照片" underline="true"/>
+                            <#input id="vehicleimage1" name="车头照片1" underline="true"/>
+                            <#input id="vehicleimage2" name="车头照片2" underline="true"/>
+                            <#input id="videourl" name="视频" underline="true"/>
+                            <#input id="prostatus" name="处理状态" underline="true"/>
+                            <#input id="result" name="上传返回代码" underline="true"/>
+                            <#input id="message" name="上传返回信息" underline="true"/>
+                            <#input id="isshow" name="是否显示" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-12 text-center">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="BOseinfoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BOseinfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/detecManage/bOseinfo/bOseinfo_info.js"></script>
+@}

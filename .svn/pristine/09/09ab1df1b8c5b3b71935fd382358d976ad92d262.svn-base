@@ -1,0 +1,57 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input type="hidden" id="id" value="">
+            
+            <form class="form-horizontal classUnloading row" data-toggle="validator" role="form">
+           		<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="ulname" class="col-sm-4 control-label">名称</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="ulname" name="ulname" class="form-control" placeholder="名称" required>
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="ulcode" class="col-sm-4 control-label">编码</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="ulcode" name="ulcode" class="form-control"  readonly="readonly" value="${resMap.sequence}">
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="address" class="col-sm-4 control-label">位置</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="address" name="address" class="form-control" placeholder="位置" required>
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="manager" class="col-sm-4 control-label">负责人</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="manager" name="manager" class="form-control" placeholder="负责人" required>
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-6 col-xs-12">
+			    	<label for="managertel" class="col-sm-4 control-label">联系电话</label>
+			    	<div class="col-sm-8 heig-55">
+			      		<input type="text" id="managertel" name="managertel" class="form-control" placeholder="联系电话" required>
+			    	</div>
+			  	</div>
+			  	
+			  	<div class="form-group col-sm-12 col-xs-12">
+			    	<div class="col-sm-12 text-center">
+	                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="UnloadingInfoDlg.addSubmit()"/>
+	                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="UnloadingInfoDlg.close()"/>
+	                </div>	
+			  	</div>
+		  	</form>
+
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/siteRegistration/unloading/unloading_info.js"></script>
+@}
